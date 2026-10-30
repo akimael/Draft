@@ -113,3 +113,41 @@ body{background-color:#171817;background-image:radial-gradient(ellipse at 12% 8%
 .button-collection:hover span {
   color: #142B45;
 }
+/* Informações de nacionalidade, química e campo 3x3 */
+.ht-player-flag{position:absolute;right:12px;top:10px;z-index:2;font-size:23px;filter:drop-shadow(1px 2px 2px #0008)}
+.ht-player-nationality{font-size:9px;color:#cfc3a8;margin-top:5px;line-height:1.5}
+.ht-chemistry-preview{display:grid;grid-template-columns:1fr auto;gap:9px 15px;align-items:center;margin-bottom:22px;padding:15px;border:1px solid #c28a3e66;background:#29271f;border-radius:10px 4px 10px 4px}
+.ht-chemistry-preview strong{font-size:10px;letter-spacing:1.3px;color:#ffd27b}
+.ht-chemistry-preview b{font-size:20px;color:#ffd27b}
+.ht-chemistry-preview small{grid-column:1/-1;color:#c9c0ac;font-size:10px}
+.ht-chemistry-bar,.ht-live-track{height:10px;overflow:hidden;border-radius:999px;background:#10110f;border:1px solid #60543b}
+.ht-chemistry-bar span,.ht-live-track span{display:block;height:100%;background:linear-gradient(90deg,#b77b27,#ffd27b);transition:width .2s}
+.ht-chemistry-panel{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:18px 0}
+.ht-chemistry-panel>div{padding:16px;border:1px solid #66583c;background:#22231f;border-radius:10px 4px 10px 4px}
+.ht-chemistry-panel strong,.ht-chemistry-panel span{display:block}
+.ht-chemistry-panel strong{font-size:13px;margin-bottom:7px}
+.ht-chemistry-panel span{font-size:9px;color:#d6c39b;margin-bottom:10px}
+.ht-pitch{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:16px;margin:18px 0;border:2px solid #6b8053;border-radius:12px;background:repeating-linear-gradient(0deg,#2c4a32,#2c4a32 34px,#315438 34px,#315438 68px);position:relative}
+.ht-pitch:after{content:"";position:absolute;left:50%;top:0;bottom:0;border-left:2px solid #d5e0ca77}
+.ht-field-team{min-width:0;position:relative;z-index:1}
+.ht-field-team-name{text-align:center;font-size:10px;font-weight:900;color:#fff4d7;text-shadow:1px 2px 3px #000;margin-bottom:10px;overflow-wrap:anywhere}
+.ht-field-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}
+.ht-field-card{display:flex;min-width:0;min-height:105px;flex-direction:column;align-items:center;justify-content:center;padding:6px 3px;text-align:center;background:#252720;border:1px solid #c49a52;border-radius:7px 3px 7px 3px;box-shadow:2px 3px 0 #10110f}
+.ht-field-card[data-rarity="GOAT"]{border-color:#bd8bea;background:#30233a}
+.ht-field-card[data-rarity="A HISTÓRIA"]{border-color:#f4e0af;background:#e5d3a8;color:#342b1e}
+.ht-field-card strong{font-size:16px;color:#ffd27b}
+.ht-field-card span{font-size:17px;margin:3px 0}
+.ht-field-card b{font-size:8px;line-height:1.2;overflow-wrap:anywhere}
+.ht-field-card small{font-size:7px;margin-top:5px;color:#d2c4a2}
+.ht-field-chemistry{text-align:center;margin-top:9px;font-size:9px;font-weight:900;color:#fff1c9}
+.ht-live-score{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px;padding:20px 12px;text-align:center;background:#22231f;border:2px solid #c28a3e;border-radius:12px 4px 12px 4px}
+.ht-live-score>span{font-size:11px;font-weight:800;overflow-wrap:anywhere}
+.ht-live-score>span:last-of-type{text-align:right}
+.ht-live-score>span:first-of-type{text-align:left}
+.ht-live-score strong{font-size:clamp(25px,5vw,42px);color:#ffd27b;white-space:nowrap}
+.ht-live-score strong i{font-style:normal;color:#aaa}
+.ht-live-minute{grid-column:1/-1;font-size:11px;letter-spacing:1px;color:#e8c57c}
+.ht-live-track{margin:12px 0 18px}
+.ht-penalty-feedback{margin:15px 0;padding:13px;border:1px solid #b88a42;background:#342819;color:#ffe0a1;font-size:12px;line-height:1.7}
+.collection-flag{position:absolute;right:11px;top:9px;z-index:2;font-size:20px}
+@media(max-width:600px){.ht-chemistry-panel{grid-template-columns:1fr}.ht-pitch{padding:9px;gap:7px}.ht-field-card{min-height:90px}.ht-field-card b{font-size:7px}.ht-field-card strong{font-size:14px}.ht-live-score{gap:5px;padding:15px 8px}.ht-live-score>span{font-size:9px}}

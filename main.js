@@ -10,7 +10,7 @@
     {id:"pele",name:"Pelé",overall:105,rarity:"A HISTÓRIA",position:"ATACANTE",era:"O Rei",years:["Edição histórica"],achievement:"Ícone histórico",stats:[99,105,104]},
     {id:"cruyff",name:"Johan Cruyff",overall:105,rarity:"A HISTÓRIA",position:"MEIA",era:"Futebol total",years:["Edição histórica"],achievement:"Ícone histórico",stats:[98,101,105]},
     {id:"maradona",name:"Diego Maradona",overall:105,rarity:"A HISTÓRIA",position:"MEIA",era:"El Pibe",years:["Edição histórica"],achievement:"Ícone histórico",stats:[96,103,105]},
-    {id:"messi",name:"Lionel Messi",overall:103,rarity:"GOAT",position:"ATACANTE",era:"Gênio argentino",years:[2009,2010,2011,2012,2015,2019,2021,2023],achievement:"Bola de Ouro",stats:[98,103,103]},
+    {id:"messi",name:"Lionel Messi",overall:103,rarity:"GOAT",position:"ATACANTE",era:"Gênio argentino",years:[2009,2010,2011,2012,2015,2019,2021,2022,2023],achievement:"Bola de Ouro",stats:[98,103,103]},
     {id:"cristiano",name:"Cristiano Ronaldo",overall:103,rarity:"GOAT",position:"ATACANTE",era:"Máquina de gols",years:[2008,2013,2014,2016,2017],achievement:"Bola de Ouro",stats:[101,103,98]},
     {id:"ronaldo",name:"Ronaldo",overall:101,rarity:"GOAT",position:"ATACANTE",era:"O Fenômeno",years:[1997,2002],achievement:"Bola de Ouro",stats:[102,102,99]},
     {id:"ronaldinho",name:"Ronaldinho",overall:98,rarity:"LENDÁRIO",position:"MEIA",era:"Alegria do futebol",years:[2005],achievement:"Bola de Ouro",stats:[94,97,100]},
@@ -105,6 +105,25 @@
     }
     return p;
   });
+  const nationalityData = {
+    "Pelé":["Brasil","🇧🇷","América do Sul"],"Ronaldo":["Brasil","🇧🇷","América do Sul"],"Ronaldo Nazário":["Brasil","🇧🇷","América do Sul"],"Ronaldinho":["Brasil","🇧🇷","América do Sul"],"Rivaldo":["Brasil","🇧🇷","América do Sul"],"Kaká":["Brasil","🇧🇷","América do Sul"],"Neymar Jr.":["Brasil","🇧🇷","América do Sul"],"Vinícius Júnior":["Brasil","🇧🇷","América do Sul"],"Roberto Carlos":["Brasil","🇧🇷","América do Sul"],"Roberto Baggio":["Itália","🇮🇹","Europa"],"Lionel Messi":["Argentina","🇦🇷","América do Sul"],"Diego Maradona":["Argentina","🇦🇷","América do Sul"],"Ángel Di María":["Argentina","🇦🇷","América do Sul"],"Cristiano Ronaldo":["Portugal","🇵🇹","Europa"],"Luís Figo":["Portugal","🇵🇹","Europa"],"Johan Cruyff":["Países Baixos","🇳🇱","Europa"],"Marco van Basten":["Países Baixos","🇳🇱","Europa"],"Virgil van Dijk":["Países Baixos","🇳🇱","Europa"],"Zinedine Zidane":["França","🇫🇷","Europa"],"Thierry Henry":["França","🇫🇷","Europa"],"Karim Benzema":["França","🇫🇷","Europa"],"Kylian Mbappé":["França","🇫🇷","Europa"],"Ousmane Dembélé":["França","🇫🇷","Europa"],"Luka Modrić":["Croácia","🇭🇷","Europa"],"Erling Haaland":["Noruega","🇳🇴","Europa"],"Robert Lewandowski":["Polônia","🇵🇱","Europa"],"Andrés Iniesta":["Espanha","🇪🇸","Europa"],"Raúl":["Espanha","🇪🇸","Europa"],"Rodri":["Espanha","🇪🇸","Europa"],"Lamine Yamal":["Espanha","🇪🇸","Europa"],"David Beckham":["Inglaterra","🏴","Europa"],"Harry Kane":["Inglaterra","🏴","Europa"],"Wayne Rooney":["Inglaterra","🏴","Europa"],"Jürgen Klinsmann":["Alemanha","🇩🇪","Europa"],"Lothar Matthäus":["Alemanha","🇩🇪","Europa"],"Matthias Sammer":["Alemanha","🇩🇪","Europa"],"Franz Beckenbauer":["Alemanha","🇩🇪","Europa"],"Hristo Stoichkov":["Bulgária","🇧🇬","Europa"],"George Weah":["Libéria","🇱🇷","África"],"Samuel Eto'o":["Camarões","🇨🇲","África"],"Sadio Mané":["Senegal","🇸🇳","África"],"Didier Drogba":["Costa do Marfim","🇨🇮","África"],"Mohamed Salah":["Egito","🇪🇬","África"],"Son Heung-min":["Coreia do Sul","🇰🇷","Ásia"],"Ali Daei":["Irã","🇮🇷","Ásia"],"Tim Cahill":["Austrália","🇦🇺","Oceania"],"Salvatore Schillaci":["Itália","🇮🇹","Europa"],"Jean-Pierre Papin":["França","🇫🇷","Europa"],"Dennis Bergkamp":["Países Baixos","🇳🇱","Europa"],"Roberto Baggio":["Itália","🇮🇹","Europa"],"Predrag Mijatović":["Sérvia","🇷🇸","Europa"],"Davor Šuker":["Croácia","🇭🇷","Europa"],"Michael Owen":["Inglaterra","🏴","Europa"],"Pavel Nedvěd":["República Tcheca","🇨🇿","Europa"],"Andriy Shevchenko":["Ucrânia","🇺🇦","Europa"],"Deco":["Portugal","🇵🇹","Europa"],"Frank Lampard":["Inglaterra","🏴","Europa"],"Fabio Cannavaro":["Itália","🇮🇹","Europa"],"Gianluigi Buffon":["Itália","🇮🇹","Europa"],"Andrea Pirlo":["Itália","🇮🇹","Europa"],"Harry Kane":["Inglaterra","🏴","Europa"],"Kylian Mbappé":["França","🇫🇷","Europa"],"Raúl":["Espanha","🇪🇸","Europa"],"Roberto Carlos":["Brasil","🇧🇷","América do Sul"],"Davor Šuker":["Croácia","🇭🇷","Europa"],"Hristo Stoichkov":["Bulgária","🇧🇬","Europa"],"George Weah":["Libéria","🇱🇷","África"],"Matthias Sammer":["Alemanha","🇩🇪","Europa"],"Fabio Cannavaro":["Itália","🇮🇹","Europa"],"Lothar Matthäus":["Alemanha","🇩🇪","Europa"],"Jean-Pierre Papin":["França","🇫🇷","Europa"],"Demba Ba":["Senegal","🇸🇳","África"],"Kevin De Bruyne":["Bélgica","🇧🇪","Europa"],"Sadio Mané":["Senegal","🇸🇳","África"],"Wayne Rooney":["Inglaterra","🏴","Europa"],"Erling Haaland":["Noruega","🇳🇴","Europa"],"Robert Lewandowski":["Polônia","🇵🇱","Europa"],"Vinícius Júnior":["Brasil","🇧🇷","América do Sul"],"Ousmane Dembélé":["França","🇫🇷","Europa"],"Rodri":["Espanha","🇪🇸","Europa"],"Lamine Yamal":["Espanha","🇪🇸","Europa"],"Sergio Ramos":["Espanha","🇪🇸","Europa"],"Luis Suárez":["Uruguai","🇺🇾","América do Sul"],"Samuel Eto'o":["Camarões","🇨🇲","África"],"Didier Drogba":["Costa do Marfim","🇨🇮","África"],"Mohamed Salah":["Egito","🇪🇬","África"],"George Weah":["Libéria","🇱🇷","África"],"Deco":["Portugal","🇵🇹","Europa"],"Rivaldo":["Brasil","🇧🇷","América do Sul"],"Karim Benzema":["França","🇫🇷","Europa"],"David Beckham":["Inglaterra","🏴","Europa"],"Erling Haaland":["Noruega","🇳🇴","Europa"],"Robert Lewandowski":["Polônia","🇵🇱","Europa"]
+  };
+  const defaultNationality = ["Internacional","🌐","Europa"];
+  const penaltyRatings = {"Lionel Messi":96,"Cristiano Ronaldo":94,"Neymar Jr.":92,"Pelé":95,"Diego Maradona":92,"Johan Cruyff":91,"Ronaldo":88,"Ronaldinho":86,"Zinedine Zidane":88,"Kaká":87,"Robert Lewandowski":91,"Harry Kane":93,"Kylian Mbappé":89,"Erling Haaland":86,"Luka Modrić":88,"Karim Benzema":92,"Rodri":84,"Andrés Iniesta":82,"David Beckham":90,"Thierry Henry":88,"Wayne Rooney":87,"Roberto Baggio":91,"Andrea Pirlo":90,"Francesco Totti":90,"Sadio Mané":82,"Samuel Eto'o":85,"Mohamed Salah":87,"Vinícius Júnior":82,"Ousmane Dembélé":78,"Lamine Yamal":80,"Rivaldo":90,"Marco van Basten":90,"Luís Figo":88,"Hristo Stoichkov":88,"Jean-Pierre Papin":86,"George Weah":85,"Lothar Matthäus":88,"Roberto Carlos":84,"Gianluigi Buffon":45};
+  const seasonRatings = {
+    "Lionel Messi":{2009:99,2010:100,2011:102,2012:105,2015:104,2019:102,2021:101,2023:103},
+    "Cristiano Ronaldo":{2008:100,2013:101,2014:102,2016:104,2017:103},
+    "Ronaldo":{1997:99,2002:101},
+    "Marco van Basten":{1988:97,1989:99,1992:96}
+  };
+  players.forEach(p=>{
+    const info=nationalityData[p.name]||defaultNationality;
+    p.nationality=info[0];p.flag=info[1];p.continent=info[2];
+    p.penaltyRating=penaltyRatings[p.name]||Math.max(65,Math.min(99,Math.round((p.stats?.[1]||p.overall)*.55+(p.stats?.[2]||p.overall)*.45)));
+    const seasonal=seasonRatings[p.name]?.[Number(p.year)];
+    if(seasonal) p.overall=seasonal;
+    if(p.name==="Lionel Messi"&&Number(p.year)===2022){p.overall=105;p.achievement="Campeão do Mundo 2022";p.edition="2022 • Campeão do Mundo";}
+  });
   const trivia = [
     {q:"Qual seleção venceu a Copa do Mundo de 2002?",answers:["Alemanha","Brasil","Itália","Argentina"],correct:1},
     {q:"Quem marcou o famoso gol conhecido como 'La Mano de Dios'?",answers:["Pelé","Johan Cruyff","Diego Maradona","Zinedine Zidane"],correct:2},
@@ -125,8 +144,8 @@
   function rarityLabel(r){return r;}
   function playerCard(p, index){
     return `<button class="ht-player-card" data-player-id="${p.id}" data-rarity="${p.rarity}" aria-label="Escolher ${p.name}">
-      <div class="ht-player-art"><span class="ht-player-rating">${p.overall}</span><span class="ht-player-figure">${p.rarity==="A HISTÓRIA"?"♔":p.rarity==="GOAT"?"♛":p.rarity==="LENDÁRIO"?"♜":"✦"}</span><span class="ht-player-position">${p.position}</span></div>
-      <div class="ht-player-info"><div class="ht-player-name">${p.name}</div><div class="ht-player-era">${p.year==="Edição histórica"?"EDIÇÃO HISTÓRICA":p.year+" • "+p.achievement}</div><div class="ht-player-rarity">${rarityLabel(p.rarity)}</div></div></button>`;
+      <div class="ht-player-art"><span class="ht-player-rating">${p.overall}</span><span class="ht-player-flag" title="${p.nationality}">${p.flag}</span><span class="ht-player-figure">${p.rarity==="A HISTÓRIA"?"♔":p.rarity==="GOAT"?"♛":p.rarity==="LENDÁRIO"?"♜":"✦"}</span><span class="ht-player-position">${p.position}</span></div>
+      <div class="ht-player-info"><div class="ht-player-name">${p.name}</div><div class="ht-player-nationality">${p.flag} ${p.nationality} · ${p.continent}</div><div class="ht-player-era">${p.year==="Edição histórica"?"EDIÇÃO HISTÓRICA":p.year+" • "+p.achievement}</div><div class="ht-player-rarity">${rarityLabel(p.rarity)}</div></div></button>`;
   }
   function openGame(){
     previousScroll = window.scrollY;
@@ -177,10 +196,19 @@
     else if(selected.length===2){stage=2;renderStage();}
     else {stage=4;renderCaptain();}
   }
+  function teamChemistry(team, captain){
+    const continents=team.map(p=>p.continent||"Europa");
+    const unique=new Set(continents).size;
+    let value=unique===1?90:(unique===2?60:30);
+    const captainPlayer=team.find(p=>p.id===captain);
+    if(value===90&&captainPlayer?.rarity==="A HISTÓRIA")value=100;
+    return value;
+  }
+  function chemistryLabel(team,captain){const value=teamChemistry(team,captain);return value===100?"Química máxima com capitão A HISTÓRIA":value===90?"Trio do mesmo continente":value===60?"Dois jogadores do mesmo continente":"Continentes diferentes";}
   function renderCaptain(){
     const root=$("#ht-game-content");
     if(!selected.some(p=>p.id===captainId)) captainId=selected[0]?.id;
-    root.innerHTML=`<div class="ht-kicker">IDENTIDADE DO CLUBE</div><h1 class="ht-title">O trio está formado.</h1><p class="ht-description">Escolha o capitão que vai liderar sua equipe e dê um nome ao seu clube antes do início do mata-mata.</p><div class="ht-result-grid captain-selection">${selected.map(p=>`<button class="ht-result-player captain-option ${p.id===captainId?"is-captain":""}" data-captain="${p.id}" type="button" aria-pressed="${p.id===captainId}" style="text-align:left;color:inherit;cursor:pointer"><span>${p.overall} OVR · ${p.rarity}</span><strong>${p.name}</strong><span>${p.year} · ${p.achievement||"Edição histórica"}</span><span>${p.position}</span><span class="captain-choice">${p.id===captainId?"★ CAPITÃO ESCOLHIDO":"ESCOLHER COMO CAPITÃO"}</span></button>`).join("")}</div><div class="ht-panel"><label for="ht-club-name" class="ht-kicker">NOME DO CLUBE</label><input id="ht-club-name" class="ht-input" maxlength="28" placeholder="Ex.: Galácticos FC" autocomplete="off"><p class="ht-small-note">O torneio terá 16 equipes: oitavas, quartas, semifinal e final.</p><div class="ht-action-row"><button class="ht-btn" id="ht-confirm-team">Confirmar trio e iniciar →</button><button class="ht-btn secondary" id="ht-change-team">Refazer escolhas</button></div></div>`;
+    root.innerHTML=`<div class="ht-kicker">IDENTIDADE DO CLUBE</div><h1 class="ht-title">O trio está formado.</h1><p class="ht-description">Escolha o capitão que vai liderar sua equipe e dê um nome ao seu clube antes do início do mata-mata.</p><div class="ht-result-grid captain-selection">${selected.map(p=>`<button class="ht-result-player captain-option ${p.id===captainId?"is-captain":""}" data-captain="${p.id}" type="button" aria-pressed="${p.id===captainId}" style="text-align:left;color:inherit;cursor:pointer"><span>${p.overall} OVR · ${p.rarity}</span><strong>${p.name}</strong><span>${p.year} · ${p.achievement||"Edição histórica"}</span><span>${p.flag||"🌐"} ${p.nationality||"Nacionalidade não informada"} · ${p.continent||"Europa"}</span><span>${p.position}</span><span class="captain-choice">${p.id===captainId?"★ CAPITÃO ESCOLHIDO":"ESCOLHER COMO CAPITÃO"}</span></button>`).join("")}</div><div class="ht-panel"><div class="ht-chemistry-preview"><strong>QUÍMICA DO TRIO</strong><div class="ht-chemistry-bar"><span style="width:${teamChemistry(selected,captainId)}%"></span></div><b>${teamChemistry(selected,captainId)}%</b><small>${chemistryLabel(selected,captainId)}</small></div><label for="ht-club-name" class="ht-kicker">NOME DO CLUBE</label><input id="ht-club-name" class="ht-input" maxlength="28" placeholder="Ex.: Galácticos FC" autocomplete="off"><p class="ht-small-note">O torneio terá 16 equipes: oitavas, quartas, semifinal e final.</p><div class="ht-action-row"><button class="ht-btn" id="ht-confirm-team">Confirmar trio</button><button class="ht-btn secondary" id="ht-change-team">Refazer escolhas</button></div></div>`;
     $$("[data-captain]",root).forEach(btn=>btn.addEventListener("click",()=>{captainId=btn.dataset.captain;renderCaptain();}));
     $("#ht-confirm-team",root).addEventListener("click",()=>{
       const clubName=$("#ht-club-name",root).value.trim();
@@ -227,8 +255,8 @@
         </article>`;
       }
       return `<article class="collection-item" data-rarity="${rarity}"><span class="owned-count">×${owned.count||1}</span>
-        <div class="collection-art"><span class="collection-rating">${owned.overall??card.overall}</span><span class="collection-figure">${figure}</span><span class="collection-year">${owned.year??card.year}</span></div>
-        <div class="collection-name">${owned.name}</div><div class="collection-meta">${rarity} · ${owned.achievement||card.achievement||"EDIÇÃO HISTÓRICA"}</div>
+        <div class="collection-art"><span class="collection-rating">${owned.overall??card.overall}</span><span class="collection-flag">${owned.flag||card.flag||"🌐"}</span><span class="collection-figure">${figure}</span><span class="collection-year">${owned.year??card.year}</span></div>
+        <div class="collection-name">${owned.name}</div><div class="collection-meta">${owned.nationality||card.nationality||"Nacionalidade não informada"} · ${rarity} · ${owned.achievement||card.achievement||"EDIÇÃO HISTÓRICA"}</div>
       </article>`;
     }).join("");
   }
