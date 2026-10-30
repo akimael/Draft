@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101111">
+  <title>HAT-TRICK d'OR — Apenas os melhores do mundo</title>
+  <meta name="description" content="Monte seu trio histórico e dispute o torneio 3x3 do HAT-TRICK d'OR.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/main.js" defer></script>
+  <script src="js/tournament.js" defer></script>
+</head>
+<body>
+  <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
+  <header class="site-header">
+    <a class="brand" href="#inicio" aria-label="HAT-TRICK d'OR início"><span class="brand-name">HAT-TRICK <b>d'OR</b></span></a>
+    <nav class="main-nav" aria-label="Navegação principal">
+      <a href="#inicio">Início</a><a href="#categorias">Cartas</a><a href="colecao.html">Coleção</a><a href="#como-jogar">Como jogar</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero section-wrap" id="inicio">
+      <div class="hero-copy">
+        <h1>HAT-TRICK<br><span>d'OR</span></h1>
+        <p class="hero-slogan">Jogue, desafie e colecione novas cartas ao ser Campeão.<br><strong>QUEM VENCE O 3X3?</strong></p>
+        <p class="hero-description">Monte seu trio e participe de um torneio 3v3 contra a CPU ou desafie seus amigos.</p>
+        <div class="hero-actions">
+  <button class="button button-gold" data-mode="campaign">
+    JOGAR <span>→</span>
+  </button>
+
+  <button class="button button-ghost" data-mode="online">
+    Desafiar um amigo <span>→</span>
+  </button>
+
+  <a href="colecao.html" class="button button-collection">
+    ACESSE SUA COLEÇÃO <span>→</span>
+  </a>
+</div>
+        <div class="hero-proof"><span class="proof-dot"></span> UM CAMPO. TRÊS JOGADORES.</div>
+      </div>
+      <div class="hero-art" aria-label="Cartas colecionáveis do jogo">
+        <div class="orbit orbit-a"></div><div class="orbit orbit-b"></div>
+        <div class="hero-card card-goat tilt-left"><div class="card-top"><span>GOAT</span><span>✦</span></div><div class="card-rating">103</div><div class="card-silhouette">✦</div><div class="card-player">RONALDO</div><div class="card-position">O FENÔMENO</div><div class="mini-stats"><span>PAC <b>99</b></span><span>FIN <b>103</b></span><span>TEC <b>100</b></span></div></div>
+        <div class="hero-card card-history tilt-right"><div class="card-top"><span>A HISTÓRIA</span><span>✧</span></div><div class="card-rating">105</div><div class="card-silhouette">♔</div><div class="card-player">PELÉ</div><div class="card-position">O REI DO FUTEBOL</div><div class="mini-stats"><span>PAC <b>99</b></span><span>FIN <b>105</b></span><span>TEC <b>104</b></span></div></div>
+        <div class="hero-card card-legendary tilt-center"><div class="card-top"><span>LENDÁRIO</span><span>✦</span></div><div class="card-rating">98</div><div class="card-silhouette">♜</div><div class="card-player">ZIDANE</div><div class="card-position">MAESTRO</div><div class="mini-stats"><span>PAC <b>91</b></span><span>PAS <b>99</b></span><span>TEC <b>98</b></span></div></div>
+      </div>
+      <div class="hero-bottom"><span>01 / 04</span><span class="hero-bottom-line"></span></div>
+    </section>
+
+    
+
+    <section class="section-wrap categories-section" id="categorias">
+      <div class="section-heading"><div><div class="eyebrow left"><span class="eyebrow-line"></span>ENTENDA AS CLASSES.</div><h2>Quatro raridades.<br><em>Conheça.</em></h2></div><p>Cada carta surgiu a partir de uma pré-definição, ter concorrido ao Melhor do Mundo, ou, conquistado. Assim foram feitas as separações.</p></div>
+      <div class="category-grid">
+        <article class="category-card category-iconic"><div class="cat-number">01</div><div class="cat-card-art"><span class="cat-rating">94</span><span class="cat-silhouette">✦</span><span class="cat-name">ÍCONES</span></div><div class="cat-footer"><div><h3>Icônicos</h3><p>Vice-campeões da Bola de Ouro</p></div><span class="rarity-pill">BRONZE NOBRE</span></div><div class="cat-max">GERAL MÁXIMO <b>94</b></div></article>
+        <article class="category-card category-legendary"><div class="cat-number">02</div><div class="cat-card-art"><span class="cat-rating">98</span><span class="cat-silhouette">♜</span><span class="cat-name">LENDAS</span></div><div class="cat-footer"><div><h3>Lendários</h3><p>Vencedores da Bola de Ouro</p></div><span class="rarity-pill">OURO</span></div><div class="cat-max">GERAL MÁXIMO <b>98</b></div></article>
+        <article class="category-card category-goat"><div class="cat-number">03</div><div class="cat-card-art"><span class="cat-rating">103</span><span class="cat-silhouette">♛</span><span class="cat-name">GOAT</span></div><div class="cat-footer"><div><h3>GOAT</h3><p>Versões a partir da 2ª conquista</p></div><span class="rarity-pill">ROXO MÍSTICO</span></div><div class="cat-max">GERAL MÁXIMO <b>103</b></div></article>
+        <article class="category-card category-history"><div class="cat-number">04</div><div class="cat-card-art"><span class="cat-rating">105</span><span class="cat-silhouette">♔</span><span class="cat-name">A HISTÓRIA</span></div><div class="cat-footer"><div><h3>A História</h3><p>Pelé, Cruyff e Maradona</p></div><span class="rarity-pill">ETÉREO</span></div><div class="cat-max">GERAL MÁXIMO <b>105</b></div></article>
+      </div>
+    </section>
+
+    
+
+    <section class="how-section" id="como-jogar"><div class="section-wrap how-inner"><div class="how-heading"><div class="eyebrow left"><span class="eyebrow-line"></span> SIMPLES DE ENTENDER</div><h2>Entenda as regras.</h2><p>Jogadores premiados ou que concorreram ao Melhor do mundo desde 1990 até 2026. Menção honrosa a Pelé, Maradona e Cruyff.<br>Lista com base na FIFA, pode haver erros.</p><button class="button button-gold" data-mode="campaign">JOGAR<span>→</span></button></div><div class="steps"><article class="step"><span>01</span><div><h3>Escolha seus craques</h3><p>Monte seu trio entre cartas de diferentes raridades. Algumas aparições são mais raras que outras.</p></div><b>✦</b></article><article class="step"><span>02</span><div><h3>Defina seu capitão</h3><p>Escolha quem vai liderar a equipe e dê um nome ao seu clube.</p></div><b>♜</b></article><article class="step"><span>03</span><div><h3>Supere o mata-mata</h3><p>Oitavas, quartas, semifinal e final. Vença e acompanhe os artilheiros do torneio.</p></div><b>♛</b></article></div></div></section>
+    <section class="final-cta section-wrap"><div class="cta-emblem">✦</div><div><h2>Grandes jogadores.<br><em>Um confronto 3v3.</em></h2></div><button class="button button-gold" data-mode="campaign">Entrar em campo <span>→</span></button></section>
+  </main>
+  <footer class="site-footer"><a class="brand" href="#inicio"><span class="brand-name">HAT-TRICK <b>d'OR</b></span></a><p>Divirta-se com os Melhores jogadores.</p><span>PROTÓTIPO DE JOGO • 2026</span></footer>
+
+  <dialog class="game-modal" id="game-modal">
+    <button class="modal-close" id="modal-close" aria-label="Fechar">×</button><div class="modal-eyebrow" id="modal-eyebrow">HAT-TRICK d'OR</div><h2 id="modal-title">Em breve</h2><p id="modal-description"></p><button class="button button-gold modal-confirm" id="modal-confirm">Entendi <span>→</span></button>
+  </dialog>
+  <div id="ht-game-root" aria-live="polite"></div>
+</body>
+</html>
