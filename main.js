@@ -176,6 +176,17 @@
       : [84,76,74,40];
     const measured=attributeRatings[p.name]||roleDefaults;
     p.attributes={finalizacao:measured[0],drible:measured[1],passe:measured[2],defesa:measured[3]};
+    // Resistência e especialidades são derivadas dos dados já existentes; não mudam o OVR da carta.
+    p.stamina= Math.max(62,Math.min(99,Math.round(76+p.attributes.passe*.10+p.attributes.defesa*.08-p.attributes.finalizacao*.025)));
+    p.keeperRating=role.includes("GOLEIRO")
+      ? Math.max(55,Math.min(99,Math.round(p.attributes.defesa*.92+p.overall*.08)))
+      : Math.max(35,Math.min(78,Math.round(35+p.attributes.defesa*.30)));
+    p.specialties=[];
+    if(p.attributes.finalizacao>=94)p.specialties.push("Finalizador");
+    if(p.attributes.drible>=96)p.specialties.push("Driblador");
+    if(p.attributes.passe>=96)p.specialties.push("Maestro");
+    if(p.attributes.defesa>=90)p.specialties.push(role.includes("GOLEIRO")?"Muralha":"Desarme");
+    if(!p.specialties.length)p.specialties.push("Versátil");
     p.penaltyRating=penaltyRatings[p.name]||Math.max(55,Math.min(99,Math.round(p.attributes.finalizacao*.7+p.attributes.passe*.3)));
   });
   // Banco único compartilhado com o simulador de torneio e os desafios diários.
