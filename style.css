@@ -114,8 +114,8 @@ body{background-color:#171817;background-image:radial-gradient(ellipse at 12% 8%
   color: #142B45;
 }
 /* Informações de nacionalidade, química e campo 3x3 */
-.ht-player-flag{position:absolute;right:12px;top:10px;z-index:2;font-size:23px;filter:drop-shadow(1px 2px 2px #0008)}
-.ht-player-nationality{font-size:9px;color:#cfc3a8;margin-top:5px;line-height:1.5}
+.ht-player-flag{position:absolute;right:12px;top:10px;z-index:2;width:27px;height:19px;object-fit:cover;border:1px solid #ffffff80;border-radius:2px;box-shadow:1px 2px 4px #0008}.ht-player-flag-fallback{position:absolute;right:12px;top:10px;z-index:2;font-size:20px;filter:drop-shadow(1px 2px 2px #0008)}
+.ht-player-continent{margin-top:10px;padding-top:7px;border-top:1px solid #bca36b55;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:#cdb578}
 .ht-chemistry-preview{display:grid;grid-template-columns:1fr auto;gap:9px 15px;align-items:center;margin-bottom:22px;padding:15px;border:1px solid #c28a3e66;background:#29271f;border-radius:10px 4px 10px 4px}
 .ht-chemistry-preview strong{font-size:10px;letter-spacing:1.3px;color:#ffd27b}
 .ht-chemistry-preview b{font-size:20px;color:#ffd27b}
@@ -149,5 +149,96 @@ body{background-color:#171817;background-image:radial-gradient(ellipse at 12% 8%
 .ht-live-minute{grid-column:1/-1;font-size:11px;letter-spacing:1px;color:#e8c57c}
 .ht-live-track{margin:12px 0 18px}
 .ht-penalty-feedback{margin:15px 0;padding:13px;border:1px solid #b88a42;background:#342819;color:#ffe0a1;font-size:12px;line-height:1.7}
-.collection-flag{position:absolute;right:11px;top:9px;z-index:2;font-size:20px}
+.collection-flag{position:absolute;right:11px;top:9px;z-index:2;width:25px;height:18px;object-fit:cover;border:1px solid #ffffff80;border-radius:2px;box-shadow:1px 2px 4px #0008}.collection-continent{margin-top:9px;padding-top:7px;border-top:1px solid #bca36b55;font-size:8px;letter-spacing:1.4px;text-transform:uppercase;color:#cdb578}.collection-item[data-rarity="A HISTÓRIA"] .collection-continent{color:#75613e}
 @media(max-width:600px){.ht-chemistry-panel{grid-template-columns:1fr}.ht-pitch{padding:9px;gap:7px}.ht-field-card{min-height:90px}.ht-field-card b{font-size:7px}.ht-field-card strong{font-size:14px}.ht-live-score{gap:5px;padding:15px 8px}.ht-live-score>span{font-size:9px}}
+
+/* Joias de raridade: um emblema para cada uma das quatro classes. */
+
+
+/* Herói BR: escudo do clube associado à edição da carta */
+.category-grid{grid-template-columns:repeat(5,minmax(0,1fr))}
+.category-hero-br .cat-card-art{background:radial-gradient(ellipse at 50% 45%,#3c7657,#193a2b 62%,#111b16);border-color:#72b58c;color:#e5ffe9}
+.category-hero-br .cat-card-art:before{border-color:#a6e0b877}
+.category-hero-br .rarity-pill{color:#a8e5bd;border-color:#72b58c88}
+.ht-club-crest{position:absolute;z-index:3;right:10px;bottom:10px;width:39px;height:39px;object-fit:contain;padding:4px;border-radius:8px;background:#fff;color:#1b211c;filter:drop-shadow(0 2px 3px #0009)}
+.ht-club-crest-fallback{display:grid;place-items:center;font-size:9px;font-weight:900;letter-spacing:.4px;border:1px solid #e5d4a1;background:#f1e5c5;color:#27251f}
+.collection-club-crest{top:8px;right:8px;bottom:auto;width:34px;height:34px}
+.ht-field-crest{width:26px;height:26px;object-fit:contain;padding:3px;border-radius:6px;background:#fff;display:block;margin:0 auto 4px}
+.ht-field-crest-fallback{width:26px;height:26px;display:grid;place-items:center;margin:0 auto 4px;border-radius:6px;background:#f0dfb7;color:#272016;font-size:7px;font-weight:900}
+.ht-reward-card .ht-club-crest{position:relative;display:block;inset:auto;margin:0 auto 8px;width:48px;height:48px}
+.collection-item[data-rarity="HERÓI BR"]{border-color:#68a981;background:#17251d}
+.collection-item[data-rarity="HERÓI BR"] .collection-art{background:radial-gradient(ellipse at center,#3c7657,#193a2b 70%)}
+.ht-player-card[data-rarity="HERÓI BR"]{border-color:#65a77b;background:#1d2b21}
+.ht-player-card[data-rarity="HERÓI BR"] .ht-player-art{background:radial-gradient(ellipse at 50% 50%,#3c7657,#193a2b 65%,#111b16)}
+.daily-section{padding:35px 0 95px}
+.daily-card{display:flex;align-items:center;gap:25px;padding:30px;border:2px solid #8e713e;background:linear-gradient(120deg,#29271e,#1b201b);border-radius:14px 5px 14px 5px;box-shadow:5px 6px 0 #090a09}
+.daily-emblem{width:58px;height:58px;flex:0 0 58px;display:grid;place-items:center;border:2px solid var(--gold);border-radius:12px 4px 12px 4px;color:#ffd27b;font-size:30px}
+.daily-copy{flex:1}.daily-copy h2{margin:10px 0;font-size:clamp(24px,3vw,36px);font-weight:900}.daily-copy p{max-width:580px;margin:0;color:#c3bba9;font-size:12px;line-height:1.8}
+.button-daily{border:2px solid #8d7145;background:#29271e;color:#ffdb9a;border-radius:10px 4px 10px 4px;box-shadow:3px 4px 0 #090a09}
+.ht-daily-progress{display:flex;justify-content:space-between;gap:15px;margin:22px 0 12px;padding:15px;border:1px solid #b88d4c;background:#29271f;color:#ffda9a;font-size:11px;letter-spacing:1px}
+.ht-daily-selected{margin:0 0 18px}.ht-daily-selected .ht-result-player{min-height:105px}.ht-daily-empty{opacity:.55;border-style:dashed!important}
+.ht-daily-status{margin:12px 0 20px;padding:13px;border:1px solid #986f3c;background:#332719;color:#f6d49b;font-size:11px;line-height:1.7}
+.ht-daily-status.success{border-color:#5d9b70;background:#1d3324;color:#b9edc6}
+.ht-daily-player-grid{max-height:720px;overflow:auto;padding:3px}.ht-daily-player-grid .ht-player-card[hidden]{display:none}
+.ht-daily-player-grid .ht-player-card{min-width:0}
+.ht-daily-player-grid .ht-player-art{height:145px}
+.ht-daily-player-grid .ht-player-name{font-size:13px}
+.ht-daily-player-grid .ht-player-era{font-size:8px}
+@media(max-width:900px){.category-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.daily-card{align-items:flex-start;flex-wrap:wrap}.daily-card .button{margin-left:83px}}
+@media(max-width:600px){.category-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.daily-card{padding:18px;gap:14px}.daily-emblem{width:42px;height:42px;flex-basis:42px;font-size:22px}.daily-copy{flex-basis:calc(100% - 58px)}.daily-card .button{margin-left:0;width:100%}.ht-daily-progress{display:block}.ht-daily-progress span{display:block;margin-top:7px}.ht-daily-player-grid{max-height:560px}.ht-daily-player-grid .ht-player-art{height:125px}}
+
+.collection-item[data-rarity="HERÓI BR"] .collection-flag{right:auto;left:11px}
+.ht-daily-selected-card{position:relative;text-align:left;color:inherit;cursor:pointer;padding:17px}
+.ht-daily-selected-card:hover{border-color:var(--gold)}
+.ht-daily-selected-card .ht-club-crest{width:30px;height:30px;right:9px;bottom:9px}
+.captain-option .ht-club-crest{width:31px;height:31px;right:10px;bottom:10px}
+
+.ht-field-card[data-rarity="HERÓI BR"]{border-color:#78bd91;background:#203d2b}
+.ht-reward-card[data-rarity="HERÓI BR"]{border-color:#72b58c;background:radial-gradient(ellipse at top,#315b3e,#17251d 75%)}
+
+/* BOX DIÁRIA */
+.button-daily{background:linear-gradient(135deg,#4a315e,#24182f);color:#f5e8ff;border:2px solid #9e75c6}
+.button-daily:hover{filter:brightness(1.15);transform:translateY(-2px)}
+.daily-box-promo{border-color:#9e75c6;background:linear-gradient(115deg,#282032,#20211d 72%)}
+.daily-box-promo .daily-emblem{color:#d8b8ff;border-color:#9e75c6}
+.ht-daily-box-panel{max-width:620px;margin:24px auto;padding:25px;border:2px solid #665080;border-radius:16px 5px 16px 5px;background:linear-gradient(145deg,#282033,#1d1f1b);text-align:center;box-shadow:6px 7px 0 #090a09}
+.ht-daily-box-art{height:205px;width:min(280px,100%);margin:8px auto 20px;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;border:2px solid #b58be0;border-radius:15px 5px 15px 5px;background:radial-gradient(ellipse at 50% 35%,#8158a8,#352344 60%,#17131d);box-shadow:inset 0 0 0 8px #d7b6ff18,0 16px 32px #0008;overflow:hidden;transition:transform .5s,filter .5s}
+.ht-daily-box-art:before{content:"";position:absolute;inset:12px;border:1px solid #e4caff66;pointer-events:none}
+.ht-daily-box-art strong{z-index:2;font-weight:900;font-size:20px;letter-spacing:2px;color:#fff0ff;text-shadow:0 2px 8px #170d22}
+.ht-daily-box-art small{z-index:2;font-size:8px;letter-spacing:3px;color:#e1c5ff}
+.ht-daily-box-spark{z-index:3;font-size:36px;color:#f1d8ff;text-shadow:0 0 24px #fff}
+.ht-daily-box-lid{position:absolute;top:43px;left:26px;right:26px;height:38px;border:2px solid #d5b0ff;border-radius:7px 3px 7px 3px;background:linear-gradient(90deg,#6a438b,#bd8ce6,#6a438b);box-shadow:0 5px 0 #291a38}
+.ht-daily-box-base{position:absolute;bottom:28px;left:38px;right:38px;height:74px;border:2px solid #d5b0ff;border-radius:5px 5px 12px 12px;background:linear-gradient(90deg,#4b2d67,#9665bd,#4b2d67)}
+.ht-daily-box-art.is-opened{filter:brightness(1.25);transform:scale(1.02);box-shadow:0 0 38px #b58be066,inset 0 0 0 8px #d7b6ff18}
+.ht-daily-box-status{margin:12px 0 18px;color:#e2d0f3;font-size:12px;line-height:1.7}
+.ht-daily-box-panel .ht-btn:disabled{opacity:.55;cursor:not-allowed;filter:grayscale(.3);transform:none;box-shadow:none}
+.ht-daily-box-panel .ht-small-note{max-width:450px;margin:15px auto 0}
+.ht-player-flag.ht-england-flag,.ht-field-flag{display:inline-block;width:27px;height:18px;object-fit:cover;border:1px solid #ffffff80;border-radius:2px;vertical-align:middle;box-shadow:1px 2px 4px #0008}
+.ht-field-card .ht-field-flag{width:24px;height:15px;margin:3px 0}
+.ht-club-crest,.collection-club-crest,.ht-field-crest{object-fit:contain;object-position:center}
+
+/* Atributos individuais visíveis na escolha e na definição do capitão */
+.ht-player-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;margin:8px 0 7px;padding:7px 5px;border-block:1px solid #bca36b44}
+.ht-player-stats span{font-size:7px;letter-spacing:.5px;color:#cdbf9e;text-align:center}
+.ht-player-stats b{display:block;margin-top:3px;color:#ffe0a1;font-size:10px}
+.ht-captain-stats{display:block!important;color:#ffdc9c!important;font-size:9px!important;letter-spacing:.3px}
+
+/* Conquistas e estatísticas de carreira */
+.achievements-section{padding-top:78px;padding-bottom:84px}
+.career-stats-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin:28px 0 34px}
+.career-stat{padding:19px 12px;border:1px solid #b99b5b55;border-radius:12px 4px 12px 4px;background:linear-gradient(145deg,#24241f,#171916);text-align:center}
+.career-stat strong{display:block;color:#e6c77e;font-family:'Playfair Display',serif;font-size:30px;line-height:1.2}
+.career-stat span{display:block;margin-top:7px;color:#bdb7a8;font-size:10px;font-weight:800;letter-spacing:1.1px;text-transform:uppercase}
+.achievements-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:16px}
+.achievement-card{position:relative;min-height:218px;padding:17px 12px 15px;border:1px solid #a78b4b55;border-radius:14px 5px 14px 5px;background:linear-gradient(150deg,#24241f,#151714);text-align:center;overflow:hidden;box-shadow:0 8px 20px #0003}
+.achievement-art{height:112px;display:flex;align-items:center;justify-content:center;margin-bottom:10px;color:#d6b86f;transition:filter .2s,transform .2s}
+.achievement-art svg{width:100px;height:105px;overflow:visible}
+.achievement-card.locked .achievement-art{filter:grayscale(1);opacity:.28}
+.achievement-card.locked .achievement-art svg{filter:brightness(.45)}
+.achievement-card.unlocked{border-color:#d7b96d;background:linear-gradient(150deg,#30291b,#191a16);box-shadow:0 0 22px #d0a94a20}
+.achievement-card h3{margin:4px 0 8px;color:#f0dfb6;font-family:'Playfair Display',serif;font-size:15px}
+.achievement-card p{min-height:30px;margin:0;color:#a9a394;font-size:10px;line-height:1.5}
+.achievement-status{display:inline-block;margin-top:12px;padding:5px 9px;border-radius:30px;background:#7773;color:#c8c3b5;font-size:8px;font-weight:900;letter-spacing:1.2px}
+.achievement-card.unlocked .achievement-status{background:#b99b5b22;color:#e8c978;border:1px solid #c6a85b66}
+@media(max-width:900px){.achievements-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.career-stats-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:560px){.achievements-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.achievement-card{min-height:205px;padding:13px 8px}.career-stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.career-stat strong{font-size:25px}}

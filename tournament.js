@@ -2,55 +2,72 @@
   "use strict";
   const $ = (s, r=document) => r.querySelector(s);
   const names = ["Atlético Imortal","Onze de Ouro","Lendas FC","Real Fantasia","Seleção Eterna","Aurora United","Estrelas do Sul","Galácticos","Clube dos Craques","Dinastia FC","Fúria Mundial","Elite 3x3","Ordem do Futebol","Império FC","Legado United"];
-  const pool = [
-    {name:"Zinedine Zidane",overall:98,year:1998,rarity:"LENDÁRIO"},{name:"Ronaldinho",overall:98,year:2005,rarity:"LENDÁRIO"},{name:"Kaká",overall:96,year:2007,rarity:"LENDÁRIO"},{name:"Rivaldo",overall:96,year:1999,rarity:"LENDÁRIO"},{name:"Thierry Henry",overall:94,year:2003,rarity:"ICÔNICO"},{name:"Neymar Jr.",overall:94,year:2015,rarity:"ICÔNICO"},{name:"Andrés Iniesta",overall:94,year:2010,rarity:"ICÔNICO"},{name:"Luís Figo",overall:95,year:2000,rarity:"LENDÁRIO"},{name:"Wayne Rooney",overall:91,year:2004,rarity:"ICÔNICO"},{name:"Samuel Eto'o",overall:90,year:2005,rarity:"ICÔNICO"},{name:"David Beckham",overall:91,year:1999,rarity:"ICÔNICO"},{name:"Luka Modrić",overall:97,year:2018,rarity:"LENDÁRIO"},{name:"Cristiano Ronaldo",overall:103,year:2017,rarity:"GOAT"},{name:"Lionel Messi",overall:103,year:2023,rarity:"GOAT"},{name:"Pelé",overall:105,year:"Edição histórica",rarity:"A HISTÓRIA"},{name:"Diego Maradona",overall:105,year:"Edição histórica",rarity:"A HISTÓRIA"},{name:"Johan Cruyff",overall:105,year:"Edição histórica",rarity:"A HISTÓRIA"},{name:"Robert Lewandowski",overall:93,year:2021,rarity:"ICÔNICO"},{name:"Kylian Mbappé",overall:92,year:2023,rarity:"ICÔNICO"},{name:"Erling Haaland",overall:91,year:2023,rarity:"ICÔNICO"},{name:"Andrea Pirlo",overall:90,year:2007,rarity:"ICÔNICO"},{name:"Ronaldo",overall:101,year:2002,rarity:"GOAT"},{name:"Marco van Basten",overall:98,year:1992,rarity:"GOAT"}
-  ];
-
-  const annualPool = [
-    ["Lothar Matthäus",1990,97,"LENDÁRIO"],["Salvatore Schillaci",1990,91,"ICÔNICO"],
-    ["Jean-Pierre Papin",1991,94,"LENDÁRIO"],["Hristo Stoichkov",1992,96,"LENDÁRIO"],
-    ["Roberto Baggio",1993,97,"LENDÁRIO"],["Dennis Bergkamp",1993,93,"ICÔNICO"],
-    ["Hristo Stoichkov",1994,96,"LENDÁRIO"],["George Weah",1995,97,"LENDÁRIO"],
-    ["Jürgen Klinsmann",1995,92,"ICÔNICO"],["Matthias Sammer",1996,95,"LENDÁRIO"],
-    ["Predrag Mijatović",1997,90,"ICÔNICO"],["Davor Šuker",1998,92,"ICÔNICO"],
-    ["David Beckham",1999,91,"ICÔNICO"],["Michael Owen",2001,94,"LENDÁRIO"],
-    ["Raúl",2001,93,"ICÔNICO"],["Roberto Carlos",2002,92,"ICÔNICO"],
-    ["Pavel Nedvěd",2003,95,"LENDÁRIO"],["Andriy Shevchenko",2004,96,"LENDÁRIO"],
-    ["Deco",2004,92,"ICÔNICO"],["Frank Lampard",2005,92,"ICÔNICO"],
-    ["Fabio Cannavaro",2006,95,"LENDÁRIO"],["Gianluigi Buffon",2006,94,"ICÔNICO"],
-    ["Andrés Iniesta",2010,94,"ICÔNICO"],["Sadio Mané",2022,92,"ICÔNICO"],
-    ["Rodri",2024,94,"LENDÁRIO"],["Vinícius Júnior",2024,94,"ICÔNICO"],
-    ["Ousmane Dembélé",2025,95,"LENDÁRIO"],["Lamine Yamal",2025,92,"ICÔNICO"],
-    ["Harry Kane",2026,96,"LENDÁRIO"],["Kylian Mbappé",2026,94,"ICÔNICO"],
-    ["Pelé","Edição histórica",105,"A HISTÓRIA"],["Diego Maradona","Edição histórica",105,"A HISTÓRIA"],
-    ["Johan Cruyff","Edição histórica",105,"A HISTÓRIA"]
-  ].map(([name,year,overall,rarity],i)=>({id:`annual-${i}-${year}`,name,year,overall,rarity}));
-  pool.push(...annualPool);
-  const countryByPlayer = {
-    "Pelé":["Brasil","🇧🇷","América do Sul"],"Ronaldo":["Brasil","🇧🇷","América do Sul"],"Ronaldo Nazário":["Brasil","🇧🇷","América do Sul"],"Ronaldinho":["Brasil","🇧🇷","América do Sul"],"Rivaldo":["Brasil","🇧🇷","América do Sul"],"Kaká":["Brasil","🇧🇷","América do Sul"],"Neymar Jr.":["Brasil","🇧🇷","América do Sul"],"Vinícius Júnior":["Brasil","🇧🇷","América do Sul"],"Roberto Carlos":["Brasil","🇧🇷","América do Sul"],"Roberto Baggio":["Itália","🇮🇹","Europa"],"Lionel Messi":["Argentina","🇦🇷","América do Sul"],"Diego Maradona":["Argentina","🇦🇷","América do Sul"],"Ángel Di María":["Argentina","🇦🇷","América do Sul"],"Cristiano Ronaldo":["Portugal","🇵🇹","Europa"],"Luís Figo":["Portugal","🇵🇹","Europa"],"Johan Cruyff":["Países Baixos","🇳🇱","Europa"],"Marco van Basten":["Países Baixos","🇳🇱","Europa"],"Virgil van Dijk":["Países Baixos","🇳🇱","Europa"],"Zinedine Zidane":["França","🇫🇷","Europa"],"Thierry Henry":["França","🇫🇷","Europa"],"Karim Benzema":["França","🇫🇷","Europa"],"Kylian Mbappé":["França","🇫🇷","Europa"],"Ousmane Dembélé":["França","🇫🇷","Europa"],"Luka Modrić":["Croácia","🇭🇷","Europa"],"Erling Haaland":["Noruega","🇳🇴","Europa"],"Robert Lewandowski":["Polônia","🇵🇱","Europa"],"Andrés Iniesta":["Espanha","🇪🇸","Europa"],"Raúl":["Espanha","🇪🇸","Europa"],"Rodri":["Espanha","🇪🇸","Europa"],"Lamine Yamal":["Espanha","🇪🇸","Europa"],"David Beckham":["Inglaterra","🏴","Europa"],"Harry Kane":["Inglaterra","🏴","Europa"],"Wayne Rooney":["Inglaterra","🏴","Europa"],"Jürgen Klinsmann":["Alemanha","🇩🇪","Europa"],"Lothar Matthäus":["Alemanha","🇩🇪","Europa"],"Matthias Sammer":["Alemanha","🇩🇪","Europa"],"Franz Beckenbauer":["Alemanha","🇩🇪","Europa"],"Hristo Stoichkov":["Bulgária","🇧🇬","Europa"],"George Weah":["Libéria","🇱🇷","África"],"Samuel Eto'o":["Camarões","🇨🇲","África"],"Sadio Mané":["Senegal","🇸🇳","África"],"Didier Drogba":["Costa do Marfim","🇨🇮","África"],"Mohamed Salah":["Egito","🇪🇬","África"],"Son Heung-min":["Coreia do Sul","🇰🇷","Ásia"],"Ali Daei":["Irã","🇮🇷","Ásia"],"Tim Cahill":["Austrália","🇦🇺","Oceania"],"Salvatore Schillaci":["Itália","🇮🇹","Europa"],"Jean-Pierre Papin":["França","🇫🇷","Europa"],"Dennis Bergkamp":["Países Baixos","🇳🇱","Europa"],"Roberto Baggio":["Itália","🇮🇹","Europa"],"Predrag Mijatović":["Sérvia","🇷🇸","Europa"],"Davor Šuker":["Croácia","🇭🇷","Europa"],"Michael Owen":["Inglaterra","🏴","Europa"],"Pavel Nedvěd":["República Tcheca","🇨🇿","Europa"],"Andriy Shevchenko":["Ucrânia","🇺🇦","Europa"],"Deco":["Portugal","🇵🇹","Europa"],"Frank Lampard":["Inglaterra","🏴","Europa"],"Fabio Cannavaro":["Itália","🇮🇹","Europa"],"Gianluigi Buffon":["Itália","🇮🇹","Europa"],"Andrea Pirlo":["Itália","🇮🇹","Europa"],"Harry Kane":["Inglaterra","🏴","Europa"],"Kylian Mbappé":["França","🇫🇷","Europa"],"Raúl":["Espanha","🇪🇸","Europa"],"Roberto Carlos":["Brasil","🇧🇷","América do Sul"],"Davor Šuker":["Croácia","🇭🇷","Europa"],"Hristo Stoichkov":["Bulgária","🇧🇬","Europa"],"George Weah":["Libéria","🇱🇷","África"],"Matthias Sammer":["Alemanha","🇩🇪","Europa"],"Fabio Cannavaro":["Itália","🇮🇹","Europa"],"Lothar Matthäus":["Alemanha","🇩🇪","Europa"],"Jean-Pierre Papin":["França","🇫🇷","Europa"],"Demba Ba":["Senegal","🇸🇳","África"],"Kevin De Bruyne":["Bélgica","🇧🇪","Europa"],"Sadio Mané":["Senegal","🇸🇳","África"],"Wayne Rooney":["Inglaterra","🏴","Europa"],"Erling Haaland":["Noruega","🇳🇴","Europa"],"Robert Lewandowski":["Polônia","🇵🇱","Europa"],"Vinícius Júnior":["Brasil","🇧🇷","América do Sul"],"Ousmane Dembélé":["França","🇫🇷","Europa"],"Rodri":["Espanha","🇪🇸","Europa"],"Lamine Yamal":["Espanha","🇪🇸","Europa"],"Sergio Ramos":["Espanha","🇪🇸","Europa"],"Luis Suárez":["Uruguai","🇺🇾","América do Sul"],"Samuel Eto'o":["Camarões","🇨🇲","África"],"Didier Drogba":["Costa do Marfim","🇨🇮","África"],"Mohamed Salah":["Egito","🇪🇬","África"],"George Weah":["Libéria","🇱🇷","África"],"Deco":["Portugal","🇵🇹","Europa"],"Rivaldo":["Brasil","🇧🇷","América do Sul"],"Karim Benzema":["França","🇫🇷","Europa"],"David Beckham":["Inglaterra","🏴","Europa"],"Erling Haaland":["Noruega","🇳🇴","Europa"],"Robert Lewandowski":["Polônia","🇵🇱","Europa"]
-  };
-  const penaltyRatings = {"Lionel Messi":96,"Cristiano Ronaldo":94,"Neymar Jr.":92,"Pelé":95,"Diego Maradona":92,"Johan Cruyff":91,"Ronaldo":88,"Ronaldinho":86,"Zinedine Zidane":88,"Kaká":87,"Robert Lewandowski":91,"Harry Kane":93,"Kylian Mbappé":89,"Erling Haaland":86,"Luka Modrić":88,"Karim Benzema":92,"Rodri":84,"Andrés Iniesta":82,"David Beckham":90,"Thierry Henry":88,"Wayne Rooney":87,"Roberto Baggio":91,"Andrea Pirlo":90,"Sadio Mané":82,"Samuel Eto'o":85,"Vinícius Júnior":82,"Ousmane Dembélé":78,"Lamine Yamal":80,"Rivaldo":90,"Marco van Basten":90,"Luís Figo":88,"Hristo Stoichkov":88,"Jean-Pierre Papin":86,"George Weah":85,"Lothar Matthäus":88,"Roberto Carlos":84,"Gianluigi Buffon":45};
-  function enrichPlayer(p){
-    const info=countryByPlayer[p.name]||["Internacional","🌐","Europa"];
-    return {...p,nationality:p.nationality||info[0],flag:p.flag||info[1],continent:p.continent||info[2],penaltyRating:p.penaltyRating||penaltyRatings[p.name]||Math.max(65,Math.min(99,Math.round((p.overall||90)*.92)))};
-  }
-  pool.splice(0,pool.length,...pool.map(enrichPlayer));
+  // O simulador usa exatamente o mesmo banco de jogadores da montagem do trio.
+  const pool = window.HT_PLAYER_DATABASE || [];
+  if(!pool.length) console.error("HT_PLAYER_DATABASE não foi carregado. Confira a ordem dos scripts no HTML.");
+  function enrichPlayer(player){return {...player};}
   let tournament=null;
+  const ACH_KEY="ht-career-achievements-v1";
+  const achievementDefs=[
+    ["brasileirao","Taça Brasileirão","Vença com três jogadores Herói BR","⚽"],
+    ["lendas","Taça Lendas","Vença com três jogadores Lendários","♜"],
+    ["americas","Taça das Américas","Vença com três jogadores da América do Sul","✦"],
+    ["mundial","Taça Mundial","Vença com três jogadores de continentes diferentes","🌐"],
+    ["bola-ouro","Taça Bola de Ouro","Vença com três jogadores GOAT","♛"],
+    ["artilheiro","Taça Artilheiro","Vença com um jogador marcando pelo menos 5 gols no torneio","⚽"],
+    ["nacional","Taça Nacional","Vença com três jogadores da mesma nacionalidade","🏳"],
+    ["equilibrio","Taça Equilíbrio","Vença com química de pelo menos 90%","⚖"],
+    ["improvavel","Taça Improvável","Vença com OVR total abaixo de 270","◇"],
+    ["rumo-gloria","Taça Rumo à Glória","Vença com três jogadores Icônicos","✧"]
+  ];
+  function readCareer(){try{const v=JSON.parse(localStorage.getItem(ACH_KEY)||"{}");return {stats:{matches:0,goals:0,conceded:0,wins:0,losses:0,...v.stats},unlocked:v.unlocked||[]};}catch(e){return {stats:{matches:0,goals:0,conceded:0,wins:0,losses:0},unlocked:[]};}}
+  function saveCareer(data){localStorage.setItem(ACH_KEY,JSON.stringify(data));window.dispatchEvent(new CustomEvent("ht:achievements-updated"));}
+  function normalize(v){return String(v||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toUpperCase().trim();}
+  function recordUserMatch(match){if(match._careerRecorded)return;match._careerRecorded=true;const userA=match.a.isUser;const gf=userA?match.ga:match.gb,gc=userA?match.gb:match.ga;const data=readCareer();data.stats.matches++;data.stats.goals+=gf;data.stats.conceded+=gc;if(match.winner?.isUser)data.stats.wins++;else data.stats.losses++;saveCareer(data);}
+  function checkTrophies(){const team=tournament.user,players=team.players,rarities=players.map(p=>normalize(p.rarity)),continents=players.map(p=>normalize(p.continent)),countries=players.map(p=>normalize(p.nationality));const total=players.reduce((n,p)=>n+(Number(p.overall)||0),0);const scorerGoal=Object.entries(tournament.scorers).some(([name,g])=>g>=5&&players.some(p=>p.name===name));const conditions={
+    brasileirao:rarities.every(r=>r==="HEROI BR"||r==="HEROI BRASILEIRO"),lendas:rarities.every(r=>r==="LENDARIO"),americas:continents.every(c=>c==="AMERICA DO SUL"),mundial:new Set(continents).size===3,"bola-ouro":rarities.every(r=>r==="GOAT"),artilheiro:scorerGoal,nacional:new Set(countries).size===1,equilibrio:chemistry(team)>=90,improvavel:total<270,"rumo-gloria":rarities.every(r=>r==="ICONICO")};
+    const data=readCareer();const newly=[];Object.entries(conditions).forEach(([id,ok])=>{if(ok&&!data.unlocked.includes(id)){data.unlocked.push(id);newly.push(id);}});if(newly.length)saveCareer(data);return newly;
+  }
   const roundNames=["OITAVAS DE FINAL","QUARTAS DE FINAL","SEMIFINAL","GRANDE FINAL"];
   function average(team){return team.players.reduce((s,p)=>s+p.overall,0)/team.players.length;}
   function shuffle(arr){return [...arr].sort(()=>Math.random()-.5);}
-  function chemistry(team){
-    const continents=team.players.map(p=>p.continent||"Europa");
-    const unique=new Set(continents).size;
-    let value=unique===1?90:(unique===2?60:30);
-    const captain=team.players.find(p=>p.id===team.captainId);
-    if(value===90&&captain?.rarity==="A HISTÓRIA")value=100;
-    return value;
+  function baseChemistry(team){
+    const players=team.players||[];const countries=players.map(p=>p.nationality||"Internacional");const continents=players.map(p=>p.continent||"Europa");
+    const counts={};countries.forEach(c=>counts[c]=(counts[c]||0)+1);const maxCountry=Math.max(0,...Object.values(counts));
+    const sameContinent=players.length===3&&new Set(continents).size===1;
+    const twoSameContinent=players.length===3&&continents.some((c,i)=>continents.some((other,j)=>i!==j&&c===other));
+    if(maxCountry===3)return 70;if(maxCountry===2&&sameContinent)return 65;if(maxCountry===2)return 45;if(sameContinent)return 55;if(twoSameContinent)return 35;return 25;
   }
-  function chemistryLabel(value){return value===100?"Química máxima · capitão A HISTÓRIA":value===90?"Trio do mesmo continente":value===60?"Dois jogadores do mesmo continente":"Continentes diferentes";}
-  function effectiveStrength(team){return average(team)*(0.75+chemistry(team)/200);}
+  function captainBonus(rarity){return ({"HERÓI BR":30,"HERÓI BRASILEIRO":30,"ICÔNICO":20,"LENDÁRIO":15,"GOAT":10,"A HISTÓRIA":5})[String(rarity||"").toUpperCase()]||0;}
+  function chemistry(team){const captain=team.players.find(p=>p.id===team.captainId);return Math.min(100,baseChemistry(team)+captainBonus(captain?.rarity));}
+  function chemistryLabel(value){return `Química efetiva ${value}%` ;}
+  function effectiveAttributes(player,team){
+    const a=player.attributes||{finalizacao:70,drible:70,passe:70,defesa:50};
+    // 100% de química = +10% em cada um dos quatro atributos.
+    const boost=1+(chemistry(team)/100)*0.10;
+    return {finalizacao:a.finalizacao*boost,drible:a.drible*boost,passe:a.passe*boost,defesa:a.defesa*boost};
+  }
+  function teamProfile(team){
+    const roles=team.players.map(p=>String(p.position||"MEIA").toUpperCase());
+    const count=pattern=>roles.filter(r=>pattern.test(r)).length;
+    const attackers=count(/ATACANTE|PONTA/), defenders=count(/ZAGUEIRO|LATERAL|GOLEIRO/), midfielders=count(/MEIA|VOLANTE/);
+    const attrs=team.players.map(p=>effectiveAttributes(p,team));
+    const mean=k=>attrs.reduce((s,a)=>s+a[k],0)/Math.max(1,attrs.length);
+    // O ataque valoriza finalização, drible e passe; a defesa valoriza marcação e saída de bola.
+    // A composição do trio complementa os atributos, mas não substitui as habilidades individuais.
+    const attack=mean("finalizacao")*.45+mean("drible")*.30+mean("passe")*.25
+      +attackers*2.2+midfielders*1.4-defenders*1.1;
+    const defense=mean("defesa")*.62+mean("passe")*.18+mean("drible")*.10+mean("finalizacao")*.10
+      +defenders*2.8+midfielders*1.2-attackers*2.0;
+    const hasAttackers=attackers>0,hasMidfielders=midfielders>0,hasDefenders=defenders>0;
+    const balanceBonus=hasAttackers&&hasMidfielders&&hasDefenders?2.5:0;
+    const missingLinkPenalty=(!hasMidfielders?2.0:0)+(!hasDefenders?1.5:0);
+    return {attack:attack+balanceBonus,defense:defense+balanceBonus-missingLinkPenalty,attackers,midfielders,defenders};
+  }
+  function effectiveStrength(team){const profile=teamProfile(team);return profile.attack*.52+profile.defense*.48;}
   function randomTeam(name){
-    const chosen=shuffle(pool).slice(0,3).map(p=>({...p}));
+    const teamKey=`cpu-${name.toLowerCase().replace(/[^a-z0-9]+/g,"-")}`;
+    const chosen=shuffle(pool).slice(0,3).map(p=>({...p,id:`${teamKey}-${p.id}`}));
     const captain=chosen[Math.floor(Math.random()*chosen.length)];
     return {name,players:chosen,captainId:captain.id,isUser:false};
   }
@@ -64,24 +81,34 @@
   }
   function addScorer(name){tournament.scorers[name]=(tournament.scorers[name]||0)+1;}
   function makeGoalSchedule(match){
-    const strengthA=effectiveStrength(match.a),strengthB=effectiveStrength(match.b);
-    const meanA=Math.max(.12,1.35+(strengthA-strengthB)/28);
-    const meanB=Math.max(.12,1.35+(strengthB-strengthA)/28);
-    const goalsA=Math.min(5,poissonLike(meanA)),goalsB=Math.min(5,poissonLike(meanB));
+    const profileA=teamProfile(match.a),profileB=teamProfile(match.b);
+    const chanceA=Math.max(.18,Math.min(3.2,1.25+(profileA.attack-profileB.defense)*.018+(average(match.a)-average(match.b))*.003));
+    const chanceB=Math.max(.18,Math.min(3.2,1.25+(profileB.attack-profileA.defense)*.018+(average(match.b)-average(match.a))*.003));
+    const goalsA=Math.min(5,poissonLike(chanceA)),goalsB=Math.min(5,poissonLike(chanceB));
     const goals=[];
-    for(let i=0;i<goalsA;i++)goals.push({minute:Math.floor(Math.random()*89)+1,side:"a"});
-    for(let i=0;i<goalsB;i++)goals.push({minute:Math.floor(Math.random()*89)+1,side:"b"});
+    for(let i=0;i<goalsA;i++)goals.push({minute:Math.floor(Math.random()*89)+1,side:"a",scorer:chooseScorer(match.a,profileA)});
+    for(let i=0;i<goalsB;i++)goals.push({minute:Math.floor(Math.random()*89)+1,side:"b",scorer:chooseScorer(match.b,profileB)});
     return goals.sort((x,y)=>x.minute-y.minute);
   }
+  function chooseScorer(team,profile){
+    const weights=team.players.map(p=>{const a=effectiveAttributes(p,team);const role=/ATACANTE|PONTA/.test(p.position||"")?1.22:/MEIA|VOLANTE/.test(p.position||"")?1:.72;return Math.max(.1,(a.finalizacao*.58+a.drible*.24+a.passe*.18)*role);});
+    let pick=Math.random()*weights.reduce((s,w)=>s+w,0);for(let i=0;i<weights.length;i++){pick-=weights[i];if(pick<=0)return team.players[i];}return team.players[team.players.length-1];
+  }
   function poissonLike(mean){let count=0;for(let i=0;i<5;i++)if(Math.random()<Math.min(.85,mean/4))count++;return count;}
+  function clubBadge(player){
+    if(!player?.club)return "";
+    const initials=player.clubShort||player.club.slice(0,3).toUpperCase();
+    if(!player.clubCrest)return `<span class="ht-field-crest-fallback" title="${player.club}">${initials}</span>`;
+    return `<img class="ht-field-crest" src="${player.clubCrest}" alt="Escudo do ${player.club}" title="${player.club}" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'ht-field-crest-fallback',textContent:'${initials}'}))">`;
+  }
   function renderField(teamA,teamB){
-    const cards=(team,side)=>`<div class="ht-field-team ${side}"><div class="ht-field-team-name">${team.name}</div><div class="ht-field-cards">${team.players.map(p=>`<div class="ht-field-card" data-rarity="${p.rarity||"ICÔNICO"}"><strong>${p.overall}</strong><span>${p.flag||"🌐"}</span><b>${p.name}</b><small>${p.year||"Edição histórica"}</small></div>`).join("")}</div><div class="ht-field-chemistry">QUÍMICA ${chemistry(team)}%</div></div>`;
+    const cards=(team,side)=>`<div class="ht-field-team ${side}"><div class="ht-field-team-name">${team.name}</div><div class="ht-field-cards">${team.players.map(p=>{const a=effectiveAttributes(p,team);return `<div class="ht-field-card" data-rarity="${p.rarity||"ICÔNICO"}">${clubBadge(p)}<strong>${p.overall}</strong><span>${p.countryCode==="gb-eng"?'<svg class="ht-field-flag ht-england-flag" viewBox="0 0 60 36" role="img" aria-label="Bandeira da Inglaterra"><rect width="60" height="36" fill="#fff"/><path d="M24 0h12v12h24v12H36v12H24V24H0V12h24z" fill="#c8102e"/></svg>':(p.flag||"🌐")}</span><b>${p.name}</b><small>${p.position||"MEIA"} · FIN ${Math.round(a.finalizacao)} DRB ${Math.round(a.drible)} PAS ${Math.round(a.passe)} DEF ${Math.round(a.defesa)}</small></div>`;}).join("")}</div><div class="ht-field-chemistry">QUÍMICA ${chemistry(team)}%</div></div>`;
     return `<div class="ht-pitch">${cards(teamA,"home")}${cards(teamB,"away")}</div>`;
   }
   function renderStart(panel){
     const match=tournament.userMatch, userIsA=match.a.isUser, user=userIsA?match.a:match.b, opponent=userIsA?match.b:match.a;
-    const userChem=chemistry(user),oppChem=chemistry(opponent);
-    panel.innerHTML=`<div class="ht-kicker">${roundNames[tournament.round]}</div><h1 class="ht-title">Seu próximo confronto.</h1><p class="ht-description">Confira as equipes e suas químicas. A partida só começa quando você clicar em INICIAR PARTIDA.</p>${renderField(user,opponent)}<div class="ht-chemistry-panel"><div><strong>${user.name}</strong><span>${userChem}% · ${chemistryLabel(userChem)}</span><div class="ht-chemistry-bar"><span style="width:${userChem}%"></span></div></div><div><strong>${opponent.name}</strong><span>${oppChem}% · ${chemistryLabel(oppChem)}</span><div class="ht-chemistry-bar"><span style="width:${oppChem}%"></span></div></div></div><div class="ht-panel"><div class="ht-match-meta">MÉDIA GERAL ${Math.round(average(user))} × ${Math.round(average(opponent))} · FORÇA COM QUÍMICA ${Math.round(effectiveStrength(user))} × ${Math.round(effectiveStrength(opponent))}</div><div class="ht-action-row"><button class="ht-btn" id="ht-start-match">INICIAR PARTIDA →</button></div></div>`;
+    const userChem=chemistry(user),oppChem=chemistry(opponent),userProfile=teamProfile(user),oppProfile=teamProfile(opponent);
+    panel.innerHTML=`<div class="ht-kicker">${roundNames[tournament.round]}</div><h1 class="ht-title">Seu próximo confronto.</h1><p class="ht-description">Confira as equipes e suas químicas. A partida só começa quando você clicar em INICIAR PARTIDA.</p>${renderField(user,opponent)}<div class="ht-chemistry-panel"><div><strong>${user.name}</strong><span>${userChem}% · ${chemistryLabel(userChem)}</span><div class="ht-chemistry-bar"><span style="width:${userChem}%"></span></div></div><div><strong>${opponent.name}</strong><span>${oppChem}% · ${chemistryLabel(oppChem)}</span><div class="ht-chemistry-bar"><span style="width:${oppChem}%"></span></div></div></div><div class="ht-panel"><div class="ht-match-meta">MÉDIA GERAL ${Math.round(average(user))} × ${Math.round(average(opponent))} · FORÇA COM QUÍMICA ${Math.round(effectiveStrength(user))} × ${Math.round(effectiveStrength(opponent))} · ATAQUE/DEFESA ${Math.round(userProfile.attack)}/${Math.round(userProfile.defense)} × ${Math.round(oppProfile.attack)}/${Math.round(oppProfile.defense)}</div><div class="ht-action-row"><button class="ht-btn" id="ht-start-match">INICIAR PARTIDA →</button></div></div>`;
     $("#ht-start-match",panel).addEventListener("click",()=>startLiveMatch(panel));
   }
   function startLiveMatch(panel){
@@ -96,7 +123,7 @@
       tournament.minute++;
       tournament.goalSchedule.filter(g=>g.minute===tournament.minute).forEach(g=>{
         const team=g.side==="a"?match.a:match.b;
-        const scorer=team.players[Math.floor(Math.random()*team.players.length)];
+        const scorer=g.scorer||team.players[Math.floor(Math.random()*team.players.length)];
         if(g.side==="a")match.ga++;else match.gb++;
         const event=`${tournament.minute}' — GOL de ${scorer.name} (${team.name})`;
         match.events.push(event);if(team.isUser)addScorer(scorer.name);
@@ -163,12 +190,14 @@
   function finishUserMatch(panel,penaltyFeedback=""){
     const match=tournament.userMatch;
     if(!match.winner)match.winner=match.ga>match.gb?match.a:match.b;
+    recordUserMatch(match);
     const allMatches=tournament.matches;
     allMatches.filter(m=>m!==match).forEach(m=>{
-      const strengthA=effectiveStrength(m.a),strengthB=effectiveStrength(m.b);
-      const totalA=Math.floor(Math.random()*4),totalB=Math.floor(Math.random()*4);
-      m.ga=totalA;m.gb=totalB;
-      if(m.ga===m.gb){if(Math.random()<(strengthA/(strengthA+strengthB)))m.ga++;else m.gb++;}
+      const profileA=teamProfile(m.a),profileB=teamProfile(m.b);
+      const meanA=Math.max(.12,1.35+(profileA.attack-profileB.defense)*.018+(average(m.a)-average(m.b))*.012);
+      const meanB=Math.max(.12,1.35+(profileB.attack-profileA.defense)*.018+(average(m.b)-average(m.a))*.012);
+      m.ga=Math.min(5,poissonLike(meanA));m.gb=Math.min(5,poissonLike(meanB));
+      if(m.ga===m.gb){const chanceA=effectiveStrength(m.a)/(effectiveStrength(m.a)+effectiveStrength(m.b));if(Math.random()<chanceA)m.ga++;else m.gb++;}
       m.winner=m.ga>m.gb?m.a:m.b;
     });
     tournament.history.push(allMatches);
@@ -182,22 +211,23 @@
     const opponent=userIsA?userMatch.b:userMatch.a;
     const campaignFinished=!won||isFinal;
     if(campaignFinished)tournament.finished=true;
+    const newTrophies=won&&isFinal?checkTrophies():[];
     const stateText=won?(isFinal?"VOCÊ É CAMPEÃO!":"VOCÊ AVANÇOU!"):"FIM DE CAMPANHA";
     const otherResults=matches.filter(m=>!m.a.isUser&&!m.b.isUser).map(m=>`<tr><td>${m.a.name}</td><td>${m.ga} – ${m.gb}${m.ga===m.gb?" (PÊNALTIS)":""}</td><td>${m.b.name}</td></tr>`).join("");
     const events=[...userMatch.events,...(userMatch.penaltyEvents||[])].map(e=>`<li>${e}</li>`).join("")||"<li>Partida sem gols.</li>";
     const scorers=Object.entries(tournament.scorers).sort((a,b)=>b[1]-a[1]).slice(0,8).map(([n,g],i)=>`<tr><td>${i+1}</td><td>${n}</td><td>${g}</td></tr>`).join("")||'<tr><td colspan="3">Nenhum gol registrado ainda.</td></tr>';
     const rewardBox=won&&isFinal?`<div class="ht-panel ht-reward-panel"><div class="ht-kicker">RECOMPENSA DE CAMPEÃO</div><h3>Uma box exclusiva espera por você.</h3><p class="ht-small-note">Abra sua box para sortear uma carta e adicioná-la à coleção. Cartas raras têm chances menores de aparecer.</p><div id="ht-box-reveal" class="ht-box-closed"><span>✦</span><strong>HAT-TRICK BOX</strong><small>CAMPEÃO DO TORNEIO</small></div><div class="ht-action-row"><button class="ht-btn" id="ht-open-box">Abrir minha box →</button></div><div id="ht-reward-result"></div></div>`:"";
-    panel.innerHTML=`<div class="ht-kicker">${roundNames[tournament.round]}</div><h1 class="ht-title">${stateText}</h1><p class="ht-description">${won?(isFinal?"Seu trio conquistou o torneio. A taça é sua.":"Uma vitória coloca seu clube na próxima fase."):"Seu clube foi eliminado desta campanha. Você pode iniciar uma nova campanha."}</p>${rewardBox}<div class="ht-match-card"><div class="ht-match-meta">${tournament.user.name} <span class="ht-captain-tag">★ ${tournament.user.players.find(p=>p.id===tournament.user.captainId)?.name||"CAPITÃO"}</span> × ${opponent.name}</div><div class="ht-match-score">${scoreUser} <span style="color:#77796f">—</span> ${scoreOpp}</div><div class="ht-match-meta">${won?"CLASSIFICADO":"ELIMINADO"} · MÉDIA GERAL ${Math.round(average(tournament.user))} × ${Math.round(average(opponent))} · QUÍMICA ${chemistry(tournament.user)}% × ${chemistry(opponent)}%</div>${renderField(tournament.user,opponent)}<ul class="ht-event-list">${events}</ul></div><div class="ht-panel"><h3>Outros resultados</h3><div style="overflow-x:auto"><table class="ht-table"><thead><tr><th>EQUIPE</th><th>PLACAR</th><th>EQUIPE</th></tr></thead><tbody>${otherResults}</tbody></table></div></div><div class="ht-panel"><h3>Artilharia do torneio</h3><table class="ht-table"><thead><tr><th>#</th><th>JOGADOR</th><th>GOLS</th></tr></thead><tbody>${scorers}</tbody></table></div><div class="ht-action-row">${won&&!isFinal?'<button class="ht-btn" id="ht-next-round">Próxima fase →</button>':""}${campaignFinished?'<button class="ht-btn secondary" id="ht-new-campaign">Nova campanha</button><button class="ht-btn secondary" id="ht-back-home">Voltar ao site</button>':'<span class="ht-lock-notice">🔒 Nova campanha disponível somente após o fim da competição.</span>'}</div><p class="ht-small-note" style="margin-top:15px">As partidas da campanha são simuladas neste navegador. O multiplayer em tempo real requer conexão com servidor.</p>`;
+    panel.innerHTML=`<div class="ht-kicker">${roundNames[tournament.round]}</div><h1 class="ht-title">${stateText}</h1><p class="ht-description">${won?(isFinal?"Seu trio conquistou o torneio. A taça é sua.":"Uma vitória coloca seu clube na próxima fase."):"Seu clube foi eliminado desta campanha. Você pode iniciar uma nova campanha."}</p>${rewardBox}${newTrophies.length?`<div class="ht-panel ht-new-trophies"><h3>Nova(s) conquista(s) desbloqueada(s)!</h3><p>${newTrophies.map(id=>achievementDefs.find(t=>t[0]===id)?.[1]).join(" · ")}</p></div>`:""}<div class="ht-match-card"><div class="ht-match-meta">${tournament.user.name} <span class="ht-captain-tag">★ ${tournament.user.players.find(p=>p.id===tournament.user.captainId)?.name||"CAPITÃO"}</span> × ${opponent.name}</div><div class="ht-match-score">${scoreUser} <span style="color:#77796f">—</span> ${scoreOpp}</div><div class="ht-match-meta">${won?"CLASSIFICADO":"ELIMINADO"} · MÉDIA GERAL ${Math.round(average(tournament.user))} × ${Math.round(average(opponent))} · QUÍMICA ${chemistry(tournament.user)}% × ${chemistry(opponent)}%</div>${renderField(tournament.user,opponent)}<ul class="ht-event-list">${events}</ul></div><div class="ht-panel"><h3>Outros resultados</h3><div style="overflow-x:auto"><table class="ht-table"><thead><tr><th>EQUIPE</th><th>PLACAR</th><th>EQUIPE</th></tr></thead><tbody>${otherResults}</tbody></table></div></div><div class="ht-panel"><h3>Artilharia do torneio</h3><table class="ht-table"><thead><tr><th>#</th><th>JOGADOR</th><th>GOLS</th></tr></thead><tbody>${scorers}</tbody></table></div><div class="ht-action-row">${won&&!isFinal?'<button class="ht-btn" id="ht-next-round">Próxima fase →</button>':""}${campaignFinished?'<button class="ht-btn secondary" id="ht-new-campaign">Nova campanha</button><button class="ht-btn secondary" id="ht-back-home">Voltar ao site</button>':'<span class="ht-lock-notice">🔒 Nova campanha disponível somente após o fim da competição.</span>'}</div><p class="ht-small-note" style="margin-top:15px">As partidas da campanha são simuladas neste navegador. O multiplayer em tempo real requer conexão com servidor.</p>`;
     if(won&&isFinal){
       $("#ht-open-box",panel).addEventListener("click",()=>{
         const button=$("#ht-open-box",panel);if(button.disabled)return;button.disabled=true;button.textContent="Box aberta ✓";
-        const random=Math.random();let rarity=random<.015?"A HISTÓRIA":random<.10?"GOAT":random<.38?"LENDÁRIO":"ICÔNICO";
+        const random=Math.random();let rarity=random<.015?"A HISTÓRIA":random<.10?"GOAT":random<.22?"HERÓI BR":random<.60?"LENDÁRIO":"ICÔNICO";
         let candidates=pool.filter(p=>p.rarity===rarity);if(!candidates.length)candidates=pool.filter(p=>p.rarity==="LENDÁRIO");
         const card={...candidates[Math.floor(Math.random()*candidates.length)]};const key=`${card.name}|${card.year}|${card.rarity}`;
         let collection=[];try{collection=JSON.parse(localStorage.getItem("ht-collection")||"[]")}catch(e){}
-        const existing=collection.find(c=>`${c.name}|${c.year}|${c.rarity}`===key);if(existing)existing.count=(existing.count||1)+1;else collection.push({...card,count:1,achievement:card.rarity==="A HISTÓRIA"?"Ícone histórico":card.rarity==="ICÔNICO"?"Edição especial":"Bola de Ouro"});
+        const existing=collection.find(c=>`${c.name}|${c.year}|${c.rarity}`===key);if(existing)existing.count=(existing.count||1)+1;else collection.push({...card,count:1,achievement:card.achievement||(card.rarity==="A HISTÓRIA"?"Ícone histórico":card.rarity==="ICÔNICO"?"Edição especial":"Bola de Ouro")});
         localStorage.setItem("ht-collection",JSON.stringify(collection));$("#ht-box-reveal",panel).classList.add("opened");
-        $("#ht-reward-result",panel).innerHTML=`<div class="ht-reward-card" data-rarity="${card.rarity}"><div class="ht-reward-rating">${card.overall}</div><div class="ht-reward-year">${card.year}</div><h3>${card.name}</h3><p>${card.rarity}</p><small>${existing?"DUPLICATA! CÓPIAS ATUALIZADAS NA COLEÇÃO":"NOVA CARTA ADICIONADA À COLEÇÃO"}</small></div><p class="ht-small-note">Sua coleção foi salva neste navegador. Acesse a aba “Coleção” na página inicial para ver suas cartas.</p>`;
+        $("#ht-reward-result",panel).innerHTML=`<div class="ht-reward-card" data-rarity="${card.rarity}">${clubBadge(card)}<div class="ht-reward-rating">${card.overall}</div><div class="ht-reward-year">${card.year}</div><h3>${card.name}</h3><p>${card.rarity}</p><small>${existing?"DUPLICATA! CÓPIAS ATUALIZADAS NA COLEÇÃO":"NOVA CARTA ADICIONADA À COLEÇÃO"}</small></div><p class="ht-small-note">Sua coleção foi salva neste navegador. Acesse a aba “Coleção” na página inicial para ver suas cartas.</p>`;
         window.dispatchEvent(new CustomEvent("ht:collection-updated"));
       });
     }
