@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101111">
+  <title>HAT-TRICK d'OR — Perfil</title>
+  <meta name="description" content="Seu histórico, coleção e troféus no HAT-TRICK d'OR.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/main.js" defer></script>
+  <script src="js/tournament.js" defer></script>
+</head>
+<body class="profile-page">
+  <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
+  <header class="site-header">
+    <a class="brand" href="index.html" aria-label="HAT-TRICK d'OR início"><span class="brand-name">HAT-TRICK <b>d'OR</b></span></a>
+    <nav class="main-nav" aria-label="Navegação principal">
+      <a href="index.html">Início</a><a href="perfil.html" aria-current="page">Perfil</a>
+    </nav>
+  </header>
+  <main class="profile-main section-wrap">
+    <section class="profile-heading">
+      <div>
+        <div class="eyebrow left">CENTRAL DO JOGADOR</div>
+        <h1>PERFIL</h1>
+        <p class="profile-username" id="ht-profile-username">VISITANTE</p>
+      </div>
+      <p class="profile-guest-notice" id="ht-guest-notice">Seu progresso de visitante fica salvo neste navegador. Ele poderá ser perdido se os dados do navegador forem apagados ou se você trocar de dispositivo.</p>
+    </section>
+
+    <div class="profile-tabs" role="tablist" aria-label="Seções do perfil">
+      <button class="profile-tab active" id="tab-history" role="tab" aria-selected="true" aria-controls="panel-history" data-profile-tab="history">HISTÓRICO</button>
+      <button class="profile-tab" id="tab-collection" role="tab" aria-selected="false" aria-controls="panel-collection" data-profile-tab="collection">COLEÇÃO</button>
+      <button class="profile-tab" id="tab-trophies" role="tab" aria-selected="false" aria-controls="panel-trophies" data-profile-tab="trophies">TROFÉUS</button>
+    </div>
+
+    <section class="profile-panel active" id="panel-history" role="tabpanel" aria-labelledby="tab-history" data-profile-panel="history">
+      <div class="section-heading"><div><div class="eyebrow left">SUA TRAJETÓRIA</div><h2>HISTÓRICO</h2></div><p>Estatísticas e evolução das suas partidas.</p></div>
+      <div id="ht-career-stats" class="career-stats-grid"></div>
+      <div id="ht-favorite-trio" class="favorite-trio-panel"></div>
+    </section>
+
+    <section class="profile-panel" id="panel-collection" role="tabpanel" aria-labelledby="tab-collection" data-profile-panel="collection" hidden>
+      <div class="section-heading"><div><div class="eyebrow left">CARTAS DESBLOQUEADAS</div><h2>COLEÇÃO</h2></div><p>Seu acervo de cartas conquistadas.</p></div>
+      <div class="collection-toolbar"><span id="collection-count">Carregando coleção...</span></div>
+      <div class="collection-grid" id="collection-grid"><div class="collection-empty">Carregando sua coleção...</div></div>
+    </section>
+
+    <section class="profile-panel" id="panel-trophies" role="tabpanel" aria-labelledby="tab-trophies" data-profile-panel="trophies" hidden>
+      <div class="section-heading"><div><div class="eyebrow left">CONQUISTAS DA CARREIRA</div><h2>TROFÉUS</h2></div><p>Conquiste todos os desafios do HAT-TRICK d'OR.</p></div>
+      <div id="ht-achievements-grid" class="achievements-grid"></div>
+    </section>
+  </main>
+  <footer class="site-footer site-footer-rich">
+  <a class="brand" href="index.html"><span class="brand-name">HAT-TRICK <b>d'OR</b></span></a>
+  <p>Divirta-se com os melhores jogadores.</p>
+  <nav class="footer-links" aria-label="Links institucionais">
+    <a href="como-jogar.html">Como jogar</a><a href="sobre.html">Sobre</a><a href="termos.html">Termos</a><a href="privacidade.html">Privacidade</a><a href="contato.html">Contato</a><a href="apoie.html">Apoie o criador</a>
+  </nav>
+  <span>HAT-TRICK d'OR • 2026</span>
+</footer>
+</body>
+</html>

@@ -543,11 +543,44 @@
     grid.innerHTML=careerTrophies.map(([id,name,desc,path])=>{const yes=unlocked.has(id);return `<article class="achievement-card ${yes?"unlocked":"locked"}"><div class="achievement-art"><svg viewBox="0 0 100 100" role="img" aria-label="${name}"><path d="${path}" fill="${yes?"#c49a52":"#888"}" stroke="${yes?"#e0c37b":"#aaa"}" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/></svg></div><h3>${name}</h3><p>${desc}</p><span class="achievement-status">${yes?"CONQUISTADA":"INCOMPLETA"}</span></article>`}).join("");
     const favoriteRoot=document.querySelector("#ht-favorite-trio");
     if(favoriteRoot){let trio=[];try{trio=JSON.parse(localStorage.getItem("ht-favorite-trio-v1")||"[]");}catch(e){} if(!Array.isArray(trio))trio=[];
-      favoriteRoot.innerHTML=`<div class="favorite-trio-heading"><div><div class="eyebrow left">SEU TIME IDEAL</div><h2>TRIO PREFERIDO</h2></div>${trio.length===3?'<button class="button button-ghost" id="ht-delete-favorite-trio">EXCLUIR TRIO</button>':""}</div><div class="favorite-trio-slots">${[0,1,2].map(i=>{const p=trio[i];return `<article class="favorite-trio-slot ${p?"filled":"empty"}" ${p?`data-rarity="${p.rarity||"ICÔNICO"}"`:""}>${p?`<strong>${p.overall||"—"}</strong><b>${p.name}</b><span>${p.rarity||"JOGADOR"}</span><small>${p.year||p.awardYear||""}</small>`:`<span class="favorite-slot-number">${i+1}</span><b>VAGA VAZIA</b><small>JOGADOR NÃO SALVO</small>`}</article>`}).join("")}</div>`;
+      favoriteRoot.innerHTML=`<div class="favorite-trio-heading"><div><div class="eyebrow left">SEU TIME IDEAL</div><h2>TRIO PREFERIDO</h2></div>${trio.length===3?'<div class="favorite-trio-actions"><button class="button button-ghost" id="ht-replace-favorite-trio">SUBSTITUIR TRIO</button><button class="button button-ghost" id="ht-delete-favorite-trio">EXCLUIR TRIO</button></div>':""}</div><div class="favorite-trio-slots">${[0,1,2].map(i=>{const p=trio[i];return `<article class="favorite-trio-slot ${p?"filled":"empty"}" ${p?`data-rarity="${p.rarity||"ICÔNICO"}"`:""}>${p?`<strong>${p.overall||"—"}</strong><b>${p.name}</b><span>${p.rarity||"JOGADOR"}</span><small>${p.year||p.awardYear||""}</small>`:`<span class="favorite-slot-number">${i+1}</span><b>VAGA VAZIA</b><small>JOGADOR NÃO SALVO</small>`}</article>`}).join("")}</div>`;
       const del=document.querySelector("#ht-delete-favorite-trio");if(del)del.addEventListener("click",()=>{localStorage.removeItem("ht-favorite-trio-v1");renderCareer();});
     }
   }
   renderCareer();window.addEventListener("ht:achievements-updated",renderCareer);
+
+
+  // Perfil: reorganiza o acesso sem alterar as chaves nem as regras de persistência existentes.
+  const profileTabs=$$("[data-profile-tab]");
+  const profilePanels=$$("[data-profile-panel]");
+  if(profileTabs.length && profilePanels.length){
+    const activateProfileTab=(name)=>{
+      profileTabs.forEach(tab=>{
+        const active=tab.dataset.profileTab===name;
+        tab.classList.toggle("active",active);
+        tab.setAttribute("aria-selected",String(active));
+        tab.tabIndex=active?0:-1;
+      });
+      profilePanels.forEach(panel=>{
+        const active=panel.dataset.profilePanel===name;
+        panel.hidden=!active;
+        panel.classList.toggle("active",active);
+      });
+    };
+    profileTabs.forEach(tab=>tab.addEventListener("click",()=>activateProfileTab(tab.dataset.profileTab)));
+    const requested=(location.hash||"").toLowerCase();
+    activateProfileTab(requested.includes("collection")||requested.includes("colecao")?"collection":
+      requested.includes("troph")||requested.includes("conquista")?"trophies":"history");
+  }
+
+  const profileUsername=$("#ht-profile-username");
+  if(profileUsername){
+    // Preparado para o futuro cadastro: a conta conectada poderá preencher ht-username.
+    const username=localStorage.getItem("ht-username");
+    profileUsername.textContent=username ? (username.startsWith("@")?username:"@"+username) : "VISITANTE";
+  }
+  const replaceFavorite=$("#ht-replace-favorite-trio");
+  if(replaceFavorite)replaceFavorite.addEventListener("click",()=>openGame());
 
   $$("[data-mode]").forEach(button=>button.addEventListener("click",()=>{
     const mode=button.dataset.mode;
