@@ -25,14 +25,15 @@
     ["nacional","Taça Nacional","Vença com três jogadores da mesma nacionalidade","🏳"],
     ["equilibrio","Taça Equilíbrio","Vença com química de pelo menos 90%","⚖"],
     ["improvavel","Taça Improvável","Vença com OVR total abaixo de 270","◇"],
-    ["rumo-gloria","Taça Rumo à Glória","Vença com três jogadores Icônicos","✧"]
+    ["rumo-gloria","Taça Rumo à Glória","Vença com três jogadores Icônicos","✧"],
+    ["trofeu-jovem","Troféu Jovem","Vença com três jogadores Golden Boy","★"]
   ];
   function readCareer(){try{const v=JSON.parse(localStorage.getItem(ACH_KEY)||"{}");return {stats:{matches:0,goals:0,conceded:0,wins:0,losses:0,...v.stats},unlocked:v.unlocked||[]};}catch(e){return {stats:{matches:0,goals:0,conceded:0,wins:0,losses:0},unlocked:[]};}}
   function saveCareer(data){localStorage.setItem(ACH_KEY,JSON.stringify(data));window.dispatchEvent(new CustomEvent("ht:achievements-updated"));}
   function normalize(v){return String(v||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toUpperCase().trim();}
   function recordUserMatch(match){if(match._careerRecorded)return;match._careerRecorded=true;const userA=match.a.isUser;const gf=userA?match.ga:match.gb,gc=userA?match.gb:match.ga;const data=readCareer();data.stats.matches++;data.stats.goals+=gf;data.stats.conceded+=gc;if(match.winner?.isUser)data.stats.wins++;else data.stats.losses++;saveCareer(data);}
   function checkTrophies(){const team=tournament.user,players=team.players,rarities=players.map(p=>normalize(p.rarity)),continents=players.map(p=>normalize(p.continent)),countries=players.map(p=>normalize(p.nationality));const total=players.reduce((n,p)=>n+(Number(p.overall)||0),0);const scorerGoal=Object.entries(tournament.scorers).some(([name,g])=>g>=5&&players.some(p=>p.name===name));const conditions={
-    brasileirao:rarities.every(r=>r==="HEROI BR"||r==="HEROI BRASILEIRO"),lendas:rarities.every(r=>r==="LENDARIO"),americas:continents.every(c=>c==="AMERICA DO SUL"),mundial:new Set(continents).size===3,"bola-ouro":rarities.every(r=>r==="GOAT"),artilheiro:scorerGoal,nacional:new Set(countries).size===1,equilibrio:chemistry(team)>=90,improvavel:total<270,"rumo-gloria":rarities.every(r=>r==="ICONICO")};
+    brasileirao:rarities.every(r=>r==="HEROI BR"||r==="HEROI BRASILEIRO"),lendas:rarities.every(r=>r==="LENDARIO"),americas:continents.every(c=>c==="AMERICA DO SUL"),mundial:new Set(continents).size===3,"bola-ouro":rarities.every(r=>r==="GOAT"),artilheiro:scorerGoal,nacional:new Set(countries).size===1,equilibrio:chemistry(team)>=90,improvavel:total<270,"rumo-gloria":rarities.every(r=>r==="ICONICO"),"trofeu-jovem":rarities.every(r=>r==="GOLDEN BOY")};
     const data=readCareer();const newly=[];Object.entries(conditions).forEach(([id,ok])=>{if(ok&&!data.unlocked.includes(id)){data.unlocked.push(id);newly.push(id);}});if(newly.length)saveCareer(data);return newly;
   }
   const roundNames=["OITAVAS DE FINAL","QUARTAS DE FINAL","SEMIFINAL","GRANDE FINAL"];
@@ -45,8 +46,8 @@
     const twoSameContinent=players.length===3&&continents.some((c,i)=>continents.some((other,j)=>i!==j&&c===other));
     if(maxCountry===3)return 70;if(maxCountry===2&&sameContinent)return 65;if(maxCountry===2)return 45;if(sameContinent)return 55;if(twoSameContinent)return 35;return 25;
   }
-  function captainBonus(rarity){return ({"HERÓI BR":30,"HERÓI BRASILEIRO":30,"ICÔNICO":20,"LENDÁRIO":15,"GOAT":10,"A HISTÓRIA":5})[String(rarity||"").toUpperCase()]||0;}
-  function chemistry(team){const captain=team.players.find(p=>p.id===team.captainId);return Math.min(100,baseChemistry(team)+captainBonus(captain?.rarity));}
+  function captainBonus(rarity){return ({"HERÓI BR":30,"HERÓI BRASILEIRO":30,"ICÔNICO":20,"LENDÁRIO":15,"GOAT":10,"A HISTÓRIA":5,"GOLDEN BOY":10})[String(rarity||"").toUpperCase()]||0;}
+  function chemistry(team){if(team.exclusiveChemistry!==undefined)return team.exclusiveChemistry;const captain=team.players.find(p=>p.id===team.captainId);return Math.min(100,baseChemistry(team)+captainBonus(captain?.rarity));}
   function chemistryLabel(value){return `Química efetiva ${value}%` ;}
   function effectiveAttributes(player,team,minute=0){
     const a=player.attributes||{finalizacao:70,drible:70,passe:70,defesa:50};
@@ -110,6 +111,13 @@
     for(let i=0;i<teams.length;i+=2)matches.push({a:teams[i],b:teams[i+1],winner:null,ga:0,gb:0,events:[]});
     tournament={teams,round:0,user,scorers:{},history:[],finished:false,matches,userMatch:matches.find(m=>m.a.isUser||m.b.isUser),matchStarted:false,minute:0,goals:[],penaltyRound:0,usedUserShooters:[],usedCpuShooters:[]};
   }
+  function createDailyChallenge(detail){
+    const user={name:detail.clubName||"Meu Trio",players:detail.players.map(enrichPlayer),captainId:detail.captainId,isUser:true,tactic:"balanced"};
+    const historic=["pele","beckenbauer","yashin"].map(id=>{const source=pool.find(p=>p.baseId===id||p.id===id||p.id.startsWith(id+"-"));return source?{...enrichPlayer(source),id:"daily-cpu-"+id}:null;}).filter(Boolean);
+    const opponent={name:"Trio Histórico",players:historic,captainId:historic[0]?.id,isUser:false,tactic:"balanced",exclusiveChemistry:100};
+    const match={a:user,b:opponent,winner:null,ga:0,gb:0,events:[]};
+    tournament={teams:[user,opponent],round:3,user,scorers:{},history:[],finished:false,matches:[match],userMatch:match,matchStarted:false,minute:0,goals:[],penaltyRound:0,usedUserShooters:[],usedCpuShooters:[],dailyChallenge:true};
+  }
   function addScorer(name){tournament.scorers[name]=(tournament.scorers[name]||0)+1;}
   function goalChance(attacking,defending,minute){
     const atk=teamProfile(attacking,minute),def=teamProfile(defending,minute);
@@ -152,19 +160,20 @@
     return `<img class="ht-field-crest" src="${player.clubCrest}" alt="Escudo do ${player.club}" title="${player.club}" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'ht-field-crest-fallback',textContent:'${initials}'}))">`;
   }
   function renderField(teamA,teamB){
-    const cards=(team,side)=>`<div class="ht-field-team ${side}"><div class="ht-field-team-name">${team.name}</div><div class="ht-field-cards">${team.players.map(p=>{const a=effectiveAttributes(p,team,tournament?.minute||0);return `<div class="ht-field-card" data-rarity="${p.rarity||"ICÔNICO"}">${clubBadge(p)}<strong>${p.overall}</strong><span>${p.countryCode==="gb-eng"?'<svg class="ht-field-flag ht-england-flag" viewBox="0 0 60 36" role="img" aria-label="Bandeira da Inglaterra"><rect width="60" height="36" fill="#fff"/><path d="M24 0h12v12h24v12H36v12H24V24H0V12h24z" fill="#c8102e"/></svg>':(p.flag||"🌐")}</span><b>${p.name}</b><small>${p.position||"MEIA"} · FIN ${Math.round(a.finalizacao)} DRB ${Math.round(a.drible)} PAS ${Math.round(a.passe)} DEF ${Math.round(a.defesa)} · RES ${Math.round(p.stamina||80)}</small></div>`;}).join("")}</div><div class="ht-field-chemistry">QUÍMICA ${chemistry(team)}%</div></div>`;
+    const cards=(team,side)=>`<div class="ht-field-team ${side}"><div class="ht-field-team-name">${team.name}</div><div class="ht-field-cards">${team.players.map(p=>{const a=effectiveAttributes(p,team,tournament?.minute||0);return `<div class="ht-field-card ${p.id===team.captainId?"is-captain-card":""}" data-rarity="${p.rarity||"ICÔNICO"}">${p.id===team.captainId?'<span class="ht-captain-mark" title="Capitão">C</span>':""}${clubBadge(p)}<strong>${p.overall}</strong><span>${p.countryCode==="gb-eng"?'<svg class="ht-field-flag ht-england-flag" viewBox="0 0 60 36" role="img" aria-label="Bandeira da Inglaterra"><rect width="60" height="36" fill="#fff"/><path d="M24 0h12v12h24v12H36v12H24V24H0V12h24z" fill="#c8102e"/></svg>':(p.flag||"🌐")}</span><b>${p.name}</b><small>${p.position||"MEIA"} · FIN ${Math.round(a.finalizacao)} DRB ${Math.round(a.drible)} PAS ${Math.round(a.passe)} DEF ${Math.round(a.defesa)} · RES ${Math.round(p.stamina||80)}</small></div>`;}).join("")}</div></div>`;
     return `<div class="ht-pitch">${cards(teamA,"home")}${cards(teamB,"away")}</div>`;
   }
   function renderStart(panel){
     const match=tournament.userMatch, userIsA=match.a.isUser, user=userIsA?match.a:match.b, opponent=userIsA?match.b:match.a;
     const userChem=chemistry(user),oppChem=chemistry(opponent),userProfile=teamProfile(user),oppProfile=teamProfile(opponent);
-    panel.innerHTML=`<div class="ht-kicker">${roundNames[tournament.round]}</div><h1 class="ht-title">Seu próximo confronto.</h1><p class="ht-description">Confira as equipes e suas químicas. A partida só começa quando você clicar em INICIAR PARTIDA.</p>${renderField(user,opponent)}<div class="ht-chemistry-panel"><div><strong>${user.name}</strong><span>${userChem}% · ${chemistryLabel(userChem)}</span><div class="ht-chemistry-bar"><span style="width:${userChem}%"></span></div></div><div><strong>${opponent.name}</strong><span>${oppChem}% · ${chemistryLabel(oppChem)}</span><div class="ht-chemistry-bar"><span style="width:${oppChem}%"></span></div></div></div><div class="ht-panel"><div class="ht-match-meta">MÉDIA GERAL ${Math.round(average(user))} × ${Math.round(average(opponent))} · FORÇA COM QUÍMICA ${Math.round(effectiveStrength(user))} × ${Math.round(effectiveStrength(opponent))} · ATAQUE/DEFESA ${Math.round(userProfile.attack)}/${Math.round(userProfile.defense)} × ${Math.round(oppProfile.attack)}/${Math.round(oppProfile.defense)}</div><label class="ht-kicker" for="ht-tactic">ESTRATÉGIA DA PARTIDA</label><select id="ht-tactic" class="ht-input"><option value="balanced">Equilibrada — sem penalidades</option><option value="attack">Ofensiva — mais ataque, defesa exposta</option><option value="defense">Defensiva — mais proteção, menos ataque</option><option value="press">Pressão alta — intensidade maior, desgaste acelerado</option></select><p class="ht-small-note">A estratégia altera o comportamento do trio e o desgaste durante os 90 minutos.</p><div class="ht-action-row"><button class="ht-btn" id="ht-start-match">INICIAR PARTIDA →</button></div></div>`;
+    panel.innerHTML=`<div class="ht-kicker">${tournament.dailyChallenge?"DESAFIO DIÁRIO":roundNames[tournament.round]}</div><h1 class="ht-title">Seu próximo confronto.</h1><p class="ht-description">Confira as equipes. A partida só começa quando você clicar em INICIAR PARTIDA.</p>${renderField(user,opponent)}<div class="ht-chemistry-panel"><div><strong>${user.name}</strong><span>Química: ${userChem}%</span></div><div><strong>${opponent.name}</strong><span>Química: ${oppChem}%</span></div></div><div class="ht-panel"><div class="ht-match-meta">ATAQUE/DEFESA ${Math.round(userProfile.attack)}/${Math.round(userProfile.defense)} × ${Math.round(oppProfile.attack)}/${Math.round(oppProfile.defense)}</div><label class="ht-kicker" for="ht-tactic">ESTRATÉGIA DA PARTIDA</label><select id="ht-tactic" class="ht-input"><option value="balanced">Equilibrada</option><option value="attack">Ofensiva</option><option value="defense">Defensiva</option><option value="press">Pressão alta</option></select><div class="ht-action-row"><button class="ht-btn" id="ht-start-match">INICIAR PARTIDA →</button></div></div>`;
     $("#ht-tactic",panel).value=user.tactic||"balanced";
     $("#ht-tactic",panel).addEventListener("change",e=>{user.tactic=e.target.value;});
     $("#ht-start-match",panel).addEventListener("click",()=>startLiveMatch(panel));
   }
   function startLiveMatch(panel){
     if(!tournament||tournament.matchStarted)return;
+    if(tournament.dailyChallenge){const d=new Date();localStorage.setItem("ht-daily-challenge-played",`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`);}
     tournament.matchStarted=true;tournament.minute=0;tournament.goals=[];
     const match=tournament.userMatch;
     match.ga=0;match.gb=0;match.events=[];
@@ -190,11 +199,6 @@
     match.winner=match.ga>match.gb?match.a:match.b;
     finishUserMatch(panel);
   }
-  function availableShooters(team,used){
-    let remaining=team.players.filter(p=>!used.includes(p.id));
-    if(!remaining.length){used.splice(0,used.length);remaining=[...team.players];}
-    return remaining;
-  }
   function penaltyProbability(player,opponent){
     const rating=Number(player.penaltyRating)||Math.round((player.attributes?.finalizacao||70)*.7+(player.attributes?.passe||70)*.3);
     const keeper=keeperRating(opponent);
@@ -202,21 +206,17 @@
   }
   function renderPenaltyChoice(panel,feedback=""){
     const match=tournament.userMatch,userIsA=match.a.isUser,user=userIsA?match.a:match.b,opponent=userIsA?match.b:match.a;
-    const used=tournament.usedUserShooters;
-    const shooters=availableShooters(user,used);
     const userScore=userIsA?match.penA||0:match.penB||0,oppScore=userIsA?match.penB||0:match.penA||0;
-    panel.innerHTML=`<div class="ht-kicker">DISPUTA DE PÊNALTIS</div><h1 class="ht-title">Escolha o batedor.</h1><p class="ht-description">O placar terminou empatado. Cada equipe cobra um pênalti por rodada. A qualidade do goleiro de cada trio influencia a chance de defesa. Você escolhe o batedor em cada rodada; após cinco cobranças por equipe, começa a morte súbita.</p>${renderField(user,opponent)}<div class="ht-live-score"><span>${user.name}</span><strong>${userScore} <i>—</i> ${oppScore}</strong><span>${opponent.name}</span><div class="ht-live-minute">RODADA ${tournament.penaltyRound+1} · GOLEIRO ${keeperRating(opponent)} OVR</div></div>${feedback?`<div class="ht-penalty-feedback">${feedback}</div>`:""}<div class="ht-panel"><label class="ht-kicker" for="ht-penalty-shooter">ESCOLHA QUEM VAI BATER</label><select id="ht-penalty-shooter" class="ht-input">${shooters.map(p=>`<option value="${p.id}">${p.name} · PÊNALTIS ${p.penaltyRating||90}</option>`).join("")}</select><div class="ht-action-row"><button class="ht-btn" id="ht-take-penalty">COBRAR PÊNALTI →</button></div></div>`;
-    $("#ht-take-penalty",panel).addEventListener("click",()=>takePenalty(panel,$("#ht-penalty-shooter",panel).value));
+    panel.innerHTML=`<div class="ht-kicker">DISPUTA DE PÊNALTIS</div><h1 class="ht-title">Decisão nas penalidades.</h1><p class="ht-description">Cada jogador cobra uma vez, em ordem aleatória. São três cobranças por equipe. Se o empate continuar, as equipes seguem nas cobranças alternadas até o desempate. A qualidade do goleiro influencia a chance de defesa.</p>${renderField(user,opponent)}<div class="ht-live-score"><span>${user.name}</span><strong>${userScore} <i>—</i> ${oppScore}</strong><span>${opponent.name}</span><div class="ht-live-minute">${tournament.penaltyRound<3?`RODADA ${tournament.penaltyRound+1} DE 3`:`MORTE SÚBITA · RODADA ${tournament.penaltyRound-2}`}</div></div>${feedback?`<div class="ht-penalty-feedback">${feedback}</div>`:""}<div class="ht-panel"><p class="ht-small-note">A ordem dos batedores já foi sorteada. Você não precisa escolher os jogadores.</p><div class="ht-action-row"><button class="ht-btn" id="ht-take-penalty">COBRAR PÊNALTIS →</button></div></div>`;
+    $("#ht-take-penalty",panel).addEventListener("click",()=>takePenalty(panel));
   }
-  function takePenalty(panel,shooterId){
+  function takePenalty(panel){
     const match=tournament.userMatch,userIsA=match.a.isUser,user=userIsA?match.a:match.b,opponent=userIsA?match.b:match.a;
-    const shooter=availableShooters(user,tournament.usedUserShooters).find(p=>p.id===shooterId);
-    if(!shooter)return;
-    tournament.usedUserShooters.push(shooter.id);
+    if(!match.userPenaltyOrder){match.userPenaltyOrder=shuffle([...user.players]);match.cpuPenaltyOrder=shuffle([...opponent.players]);}
+    const index=tournament.penaltyRound%3;
+    const shooter=match.userPenaltyOrder[index];
+    const cpuShooter=match.cpuPenaltyOrder[index];
     const userScored=Math.random()<penaltyProbability(shooter,opponent);
-    const cpuShooters=availableShooters(opponent,tournament.usedCpuShooters);
-    const cpuShooter=cpuShooters.sort((a,b)=>(b.penaltyRating||90)-(a.penaltyRating||90))[0];
-    tournament.usedCpuShooters.push(cpuShooter.id);
     const cpuScored=Math.random()<penaltyProbability(cpuShooter,user);
     if(match.penA===undefined){match.penA=0;match.penB=0;}
     if(userIsA){if(userScored)match.penA++;if(cpuScored)match.penB++;}
@@ -224,16 +224,15 @@
     const feedback=`${shooter.name}: ${userScored?"GOL":`DEFENDIDO (GOLEIRO ${keeperRating(opponent)})`}. ${cpuShooter.name}: ${cpuScored?"GOL":`DEFENDIDO (GOLEIRO ${keeperRating(user)})`}.`;
     tournament.penaltyRound++;
     const userPen=userIsA?match.penA:match.penB,oppPen=userIsA?match.penB:match.penA;
-    const regularComplete=tournament.penaltyRound>=5;
-    const suddenDeath=tournament.penaltyRound>5;
-    if((regularComplete&&!suddenDeath&&userPen!==oppPen)||(suddenDeath&&userScored!==cpuScored)){
-      match.winner=userScored===cpuScored?(userPen>oppPen?user:opponent):(userScored?user:opponent);
+    if(tournament.penaltyRound>=3&&userPen!==oppPen){
+      match.winner=userPen>oppPen?user:opponent;
       match.penaltyEvents=(match.penaltyEvents||[]).concat(feedback);
       finishUserMatch(panel,feedback);
       return;
     }
     match.penaltyEvents=(match.penaltyEvents||[]).concat(feedback);
-    renderPenaltyChoice(panel,feedback+" Empate na rodada: escolha os batedores novamente.");
+    const status=tournament.penaltyRound<3?"":(userPen===oppPen?" Empate após as três cobranças. Começa a morte súbita.":" Empate na rodada alternada. As cobranças continuam.");
+    renderPenaltyChoice(panel,feedback+status);
   }
   function finishUserMatch(panel,penaltyFeedback=""){
     const match=tournament.userMatch;
@@ -259,23 +258,28 @@
     const opponent=userIsA?userMatch.b:userMatch.a;
     const campaignFinished=!won||isFinal;
     if(campaignFinished)tournament.finished=true;
-    const newTrophies=won&&isFinal?checkTrophies():[];
-    const stateText=won?(isFinal?"VOCÊ É CAMPEÃO!":"VOCÊ AVANÇOU!"):"FIM DE CAMPANHA";
-    const otherResults=matches.filter(m=>!m.a.isUser&&!m.b.isUser).map(m=>`<tr><td>${m.a.name}</td><td>${m.ga} – ${m.gb}${m.ga===m.gb?" (PÊNALTIS)":""}</td><td>${m.b.name}</td></tr>`).join("");
+    const newTrophies=won&&isFinal&&!tournament.dailyChallenge?checkTrophies():[];
+    const stateText=tournament.dailyChallenge?(won?"DESAFIO CONCLUÍDO!":"DESAFIO PERDIDO"):(won?(isFinal?"VOCÊ É CAMPEÃO!":"VOCÊ AVANÇOU!"):"FIM DE CAMPANHA");
     const events=[...userMatch.events,...(userMatch.penaltyEvents||[])].map(e=>`<li>${e}</li>`).join("")||"<li>Partida sem gols.</li>";
     const scorers=Object.entries(tournament.scorers).sort((a,b)=>b[1]-a[1]).slice(0,8).map(([n,g],i)=>`<tr><td>${i+1}</td><td>${n}</td><td>${g}</td></tr>`).join("")||'<tr><td colspan="3">Nenhum gol registrado ainda.</td></tr>';
-    const rewardBox=won&&isFinal?`<div class="ht-panel ht-reward-panel"><div class="ht-kicker">RECOMPENSA DE CAMPEÃO</div><h3>Uma box exclusiva espera por você.</h3><p class="ht-small-note">Abra sua box para sortear uma carta e adicioná-la à coleção. Cartas raras têm chances menores de aparecer.</p><div id="ht-box-reveal" class="ht-box-closed"><span>✦</span><strong>HAT-TRICK BOX</strong><small>CAMPEÃO DO TORNEIO</small></div><div class="ht-action-row"><button class="ht-btn" id="ht-open-box">Abrir minha box →</button></div><div id="ht-reward-result"></div></div>`:"";
-    panel.innerHTML=`<div class="ht-kicker">${roundNames[tournament.round]}</div><h1 class="ht-title">${stateText}</h1><p class="ht-description">${won?(isFinal?"Seu trio conquistou o torneio. A taça é sua.":"Uma vitória coloca seu clube na próxima fase."):"Seu clube foi eliminado desta campanha. Você pode iniciar uma nova campanha."}</p>${rewardBox}${newTrophies.length?`<div class="ht-panel ht-new-trophies"><h3>Nova(s) conquista(s) desbloqueada(s)!</h3><p>${newTrophies.map(id=>achievementDefs.find(t=>t[0]===id)?.[1]).join(" · ")}</p></div>`:""}<div class="ht-match-card"><div class="ht-match-meta">${tournament.user.name} <span class="ht-captain-tag">★ ${tournament.user.players.find(p=>p.id===tournament.user.captainId)?.name||"CAPITÃO"}</span> × ${opponent.name}</div><div class="ht-match-score">${scoreUser} <span style="color:#77796f">—</span> ${scoreOpp}</div><div class="ht-match-meta">${won?"CLASSIFICADO":"ELIMINADO"} · MÉDIA GERAL ${Math.round(average(tournament.user))} × ${Math.round(average(opponent))} · QUÍMICA ${chemistry(tournament.user)}% × ${chemistry(opponent)}%</div>${renderField(tournament.user,opponent)}<ul class="ht-event-list">${events}</ul></div><div class="ht-panel"><h3>Outros resultados</h3><div style="overflow-x:auto"><table class="ht-table"><thead><tr><th>EQUIPE</th><th>PLACAR</th><th>EQUIPE</th></tr></thead><tbody>${otherResults}</tbody></table></div></div><div class="ht-panel"><h3>Artilharia do torneio</h3><table class="ht-table"><thead><tr><th>#</th><th>JOGADOR</th><th>GOLS</th></tr></thead><tbody>${scorers}</tbody></table></div><div class="ht-action-row">${won&&!isFinal?'<button class="ht-btn" id="ht-next-round">Próxima fase →</button>':""}${campaignFinished?'<button class="ht-btn secondary" id="ht-new-campaign">Nova campanha</button><button class="ht-btn secondary" id="ht-back-home">Voltar ao site</button>':'<span class="ht-lock-notice">🔒 Nova campanha disponível somente após o fim da competição.</span>'}</div><p class="ht-small-note" style="margin-top:15px">As partidas da campanha são simuladas neste navegador. O multiplayer em tempo real requer conexão com servidor.</p>`;
+    const rewardBox=won&&(isFinal||tournament.dailyChallenge)?`<div class="ht-panel ht-reward-panel"><div class="ht-kicker">${tournament.dailyChallenge?"RECOMPENSA DO DESAFIO":"RECOMPENSA DE CAMPEÃO"}</div><h3>${tournament.dailyChallenge?"Você venceu! Sua box está disponível.":"Uma box exclusiva espera por você."}</h3><p class="ht-small-note">Abra sua box para sortear uma carta e adicioná-la à coleção. Cartas raras têm chances menores de aparecer.</p><div id="ht-box-reveal" class="ht-box-closed"><span>✦</span><strong>HAT-TRICK BOX</strong><small>${tournament.dailyChallenge?"DESAFIO DIÁRIO":"CAMPEÃO DO TORNEIO"}</small></div><div class="ht-action-row"><button class="ht-btn" id="ht-open-box">Abrir minha box →</button></div><div id="ht-reward-result"></div></div>`:"";
+    panel.innerHTML=`<div class="ht-kicker">${tournament.dailyChallenge?"DESAFIO DIÁRIO":roundNames[tournament.round]}</div><h1 class="ht-title">${stateText}</h1><p class="ht-description">${tournament.dailyChallenge?(won?"Você venceu o trio histórico! Abra sua box para resgatar uma carta.":"Você perdeu o desafio e não receberá premiação."):(won?(isFinal?"Seu trio conquistou o torneio. A taça é sua.":"Uma vitória coloca seu clube na próxima fase."):"Seu clube foi eliminado desta campanha. Você pode iniciar uma nova campanha.")}</p>${rewardBox}${newTrophies.length?`<div class="ht-panel ht-new-trophies"><h3>Nova(s) conquista(s) desbloqueada(s)!</h3><p>${newTrophies.map(id=>achievementDefs.find(t=>t[0]===id)?.[1]).join(" · ")}</p></div>`:""}<div class="ht-match-card"><div class="ht-match-meta">${tournament.user.name} × ${opponent.name}</div><div class="ht-match-score">${scoreUser} <span style="color:#77796f">—</span> ${scoreOpp}</div><div class="ht-match-meta">${won?"CLASSIFICADO":"ELIMINADO"} · MÉDIA GERAL ${Math.round(average(tournament.user))} × ${Math.round(average(opponent))} · QUÍMICA ${chemistry(tournament.user)}% × ${chemistry(opponent)}%</div>${renderField(tournament.user,opponent)}<ul class="ht-event-list">${events}</ul></div><div class="ht-panel"><h3>Artilharia do torneio</h3><table class="ht-table"><thead><tr><th>#</th><th>JOGADOR</th><th>GOLS</th></tr></thead><tbody>${scorers}</tbody></table></div><div class="ht-action-row">${won&&!isFinal?'<button class="ht-btn" id="ht-next-round">Próxima fase →</button>':""}${campaignFinished&&!tournament.dailyChallenge?'<button class="ht-btn" id="ht-save-favorite-trio">SALVAR TRIO</button>':""}${campaignFinished?'<button class="ht-btn secondary" id="ht-new-campaign">Nova campanha</button><button class="ht-btn secondary" id="ht-back-home">Voltar ao site</button>':'<span class="ht-lock-notice">🔒 Nova campanha disponível somente após o fim da competição.</span>'}</div><p class="ht-small-note" style="margin-top:15px">As partidas da campanha são simuladas neste navegador. O multiplayer em tempo real requer conexão com servidor.</p>`;
+    const saveTrioButton=$("#ht-save-favorite-trio",panel);
+    if(saveTrioButton)saveTrioButton.addEventListener("click",()=>{
+      const favorite=tournament.user.players.map(p=>({id:p.id,name:p.name,overall:p.overall,rarity:p.rarity,year:p.year,awardYear:p.awardYear,awardAge:p.awardAge,position:p.position,nationality:p.nationality,continent:p.continent,attributes:p.attributes}));
+      try{localStorage.setItem("ht-favorite-trio-v1",JSON.stringify(favorite));saveTrioButton.textContent="TRIO SALVO ✓";saveTrioButton.disabled=true;}catch(e){alert("Não foi possível salvar o trio neste navegador.");}
+    });
     if(won&&isFinal){
       $("#ht-open-box",panel).addEventListener("click",()=>{
         const button=$("#ht-open-box",panel);if(button.disabled)return;button.disabled=true;button.textContent="Box aberta ✓";
-        const random=Math.random();let rarity=random<.015?"A HISTÓRIA":random<.10?"GOAT":random<.22?"HERÓI BR":random<.60?"LENDÁRIO":"ICÔNICO";
+        const random=Math.random();let rarity=random<.015?"A HISTÓRIA":random<.10?"GOAT":random<.22?"HERÓI BR":random<.34?"GOLDEN BOY":random<.60?"LENDÁRIO":"ICÔNICO";
         let candidates=pool.filter(p=>p.rarity===rarity);if(!candidates.length)candidates=pool.filter(p=>p.rarity==="LENDÁRIO");
         const card={...candidates[Math.floor(Math.random()*candidates.length)]};const key=`${card.name}|${card.year}|${card.rarity}`;
         let collection=[];try{collection=JSON.parse(localStorage.getItem("ht-collection")||"[]")}catch(e){}
         const existing=collection.find(c=>`${c.name}|${c.year}|${c.rarity}`===key);if(existing)existing.count=(existing.count||1)+1;else collection.push({...card,count:1,achievement:card.achievement||(card.rarity==="A HISTÓRIA"?"Ícone histórico":card.rarity==="ICÔNICO"?"Edição especial":"Bola de Ouro")});
         localStorage.setItem("ht-collection",JSON.stringify(collection));$("#ht-box-reveal",panel).classList.add("opened");
-        $("#ht-reward-result",panel).innerHTML=`<div class="ht-reward-card" data-rarity="${card.rarity}">${clubBadge(card)}<div class="ht-reward-rating">${card.overall}</div><div class="ht-reward-year">${card.year}</div><h3>${card.name}</h3><p>${card.rarity}</p><small>${existing?"DUPLICATA! CÓPIAS ATUALIZADAS NA COLEÇÃO":"NOVA CARTA ADICIONADA À COLEÇÃO"}</small></div><p class="ht-small-note">Sua coleção foi salva neste navegador. Acesse a aba “Coleção” na página inicial para ver suas cartas.</p>`;
+        const goldenInfo=card.rarity==="GOLDEN BOY"?`<div class="ht-golden-reward-info">${card.nationality} · ${card.continent}<br>FIN ${card.attributes.finalizacao} · DRB ${card.attributes.drible} · PAS ${card.attributes.passe} · DEF ${card.attributes.defesa}</div>`:"";
+        $("#ht-reward-result",panel).innerHTML=`<div class="ht-reward-card" data-rarity="${card.rarity}">${clubBadge(card)}<div class="ht-reward-rating">${card.overall}</div><div class="ht-reward-year">${card.rarity==="GOLDEN BOY"?`idade:${card.awardAge} · premio:${card.awardYear}`:card.year}</div><h3>${card.name}</h3><p>${card.rarity}</p>${goldenInfo}<small>${existing?"DUPLICATA! CÓPIAS ATUALIZADAS NA COLEÇÃO":"NOVA CARTA ADICIONADA À COLEÇÃO"}</small></div><p class="ht-small-note">Sua coleção foi salva neste navegador. Acesse a aba “Coleção” na página inicial para ver suas cartas.</p>`;
         window.dispatchEvent(new CustomEvent("ht:collection-updated"));
       });
     }
@@ -285,5 +289,6 @@
   }
   window.canExitHatTrickTournament=function(){return !tournament||tournament.finished===true;};
   window.startHatTrickTournament=function(detail){const panel=$("#ht-game-content");if(!panel)return;createTournament(detail);renderStart(panel);};
+  window.startHatTrickDailyChallenge=function(detail){const panel=$("#ht-game-content");if(!panel)return;createDailyChallenge(detail);renderStart(panel);};
   window.addEventListener("ht:restart-campaign",()=>{const button=$("[data-mode='campaign']");if(button)button.click();});
 })();
