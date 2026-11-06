@@ -9,11 +9,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="style.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/cloud.js" defer></script>
-  <script src="js/main.js" defer></script>
-  <script src="js/tournament.js" defer></script>
+  <script src="cloud.js" defer></script>
+  <script src="main.js" defer></script>
+  <script src="tournament.js" defer></script>
 </head>
 <body class="profile-page">
   <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
@@ -51,10 +51,10 @@
       <p id="ht-auth-status" role="status" aria-live="polite" style="margin-top:14px;color:#d8c18e"></p>
     </section>
 
-    <section class="profile-panel" id="identidade-clube" style="margin:24px 0;padding:22px;border:1px solid rgba(196,154,82,.35);border-radius:16px;background:rgba(20,21,19,.82)"><div class="eyebrow left">IDENTIDADE DO CLUBE</div><h2 style="margin:8px 0 12px">Nome do seu clube</h2><p style="color:#b8b4a8">Escolha o nome que aparecerá nas partidas. Outros jogadores podem usar o mesmo nome. O @usuário permanece exclusivo.</p><form id="ht-club-form" style="display:flex;gap:10px;flex-wrap:wrap"><input id="ht-club-input" maxlength="40" required placeholder="Ex.: Galácticos FC" aria-label="Nome do clube" style="flex:1;min-width:180px;padding:12px;border:1px solid #777;border-radius:8px;background:#111;color:#fff"><button class="button button-gold" type="submit">SALVAR CLUBE</button></form><p id="ht-club-feedback" role="status" style="color:#d8c18e"></p></section><script defer src="js/club-profile.js"></script>
+    <section class="profile-panel" id="identidade-clube" style="margin:24px 0;padding:22px;border:1px solid rgba(196,154,82,.35);border-radius:16px;background:rgba(20,21,19,.82)"><div class="eyebrow left">IDENTIDADE DO CLUBE</div><h2 style="margin:8px 0 12px">Nome do seu clube</h2><p style="color:#b8b4a8">Escolha o nome que aparecerá nas partidas. Outros jogadores podem usar o mesmo nome. O @usuário permanece exclusivo.</p><form id="ht-club-form" style="display:flex;gap:10px;flex-wrap:wrap"><input id="ht-club-input" maxlength="40" required placeholder="Ex.: Galácticos FC" aria-label="Nome do clube" style="flex:1;min-width:180px;padding:12px;border:1px solid #777;border-radius:8px;background:#111;color:#fff"><button class="button button-gold" type="submit">SALVAR CLUBE</button></form><p id="ht-club-feedback" role="status" style="color:#d8c18e"></p></section><script defer src="club-profile.js"></script>
     <section id="carteira" class="profile-panel" style="margin:24px 0;padding:22px;border:1px solid rgba(196,154,82,.35);border-radius:16px;background:rgba(20,21,19,.82)">
       <div class="eyebrow left">ECONOMIA DO JOGO</div><h2 style="margin:8px 0 12px">Suas fichas de jogo</h2>
-      <div style="display:flex;align-items:center;gap:12px"><img src="assets/ficha-de-jogo.png" alt="Ficha de jogo" width="54" height="54"><strong id="ht-wallet-balance" style="font-size:2rem;color:#f0cf7b">—</strong><span style="color:#b8b4a8">fichas</span></div>
+      <div style="display:flex;align-items:center;gap:12px"><img src="ficha-de-jogo.png" alt="Ficha de jogo" width="54" height="54"><strong id="ht-wallet-balance" style="font-size:2rem;color:#f0cf7b">—</strong><span style="color:#b8b4a8">fichas</span></div>
       <p style="color:#aaa99f;margin-top:12px">A carteira será ativada junto com o sistema de recompensas e os torneios online. O saldo ficará vinculado à sua conta.</p>
     </section>
 

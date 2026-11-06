@@ -1,0 +1,18 @@
+HAT-TRICK d'OR — FASE 2 (TESTE DE ESCALAÇÃO E PRONTIDÃO)
+
+1. Faça backup dos arquivos atuais.
+2. No Supabase SQL Editor, execute SUPABASE-FASE2-PRONTIDAO.sql uma vez.
+3. Abra a pasta do site com Live Server (ou ambiente de teste) e entre com duas contas.
+4. Conta A: crie sala X1, escolha 3 cartas, capitão e estratégia, SALVAR TRIO, ESTOU PRONTO.
+5. Conta B: entre com código, faça o mesmo.
+6. Em cada janela clique ATUALIZAR PARTICIPANTES. Esperado: 2/2 prontos e status ready.
+7. Teste CANCELAR PRONTIDÃO e nova escalação.
+
+O QUE NÃO FOI FEITO:
+- Não há partida multiplayer real, placar, resultados ou premiações.
+- Os IDs enviados são checados quanto a quantidade/unicidade, mas NÃO são validados contra catálogo canônico no servidor. Antes de liberar partida real, essa validação é obrigatória.
+- Ainda não há sincronização automática: use ATUALIZAR PARTICIPANTES.
+- Não foi testado contra Supabase real. O SQL e JS precisam ser testados no ambiente de desenvolvimento.
+- Torneio casual e competitivo permanecem sem partida funcional.
+
+ATENÇÃO: a Fase 2 não altera carteiras nem concede fichas. NÃO publique como multiplayer pronto.

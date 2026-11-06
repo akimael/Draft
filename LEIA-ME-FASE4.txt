@@ -1,0 +1,11 @@
+FASE 4 — Integração experimental X1 casual
+
+Arquivos alterados: js/online-lobby.js e online.html.
+
+IMPORTANTE: usar somente após aplicar as RPCs SQL da fase 4 no Supabase.
+O sorteio agora usa ht_get_casual_offer e ht_choose_casual_card do servidor, não Math.random no navegador.
+A sala pronta dispara ht_play_casual_match e exibe ht_get_casual_result.
+A atualização de estado ocorre a cada 4 segundos.
+Ainda requer testes com duas contas reais, inclusive reconexão, expiração e erros.
+Não altera estilos CSS, motor offline, perfil, fichas ou torneios.
+Atenção: uma sala expirada não poderá iniciar partida. Crie outra sala se necessário.
