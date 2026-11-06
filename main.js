@@ -445,11 +445,10 @@
   function renderCaptain(){
     const root=$("#ht-game-content");
     if(!selected.some(p=>p.id===captainId)) captainId=selected[0]?.id;
-    root.innerHTML=`<div class="ht-kicker">IDENTIDADE DO CLUBE</div><h1 class="ht-title">O trio está formado.</h1><p class="ht-description">${dailyChallengeMode?"Escolha o capitão do seu trio para enfrentar Pelé, Beckenbauer e Yashin.":"Escolha o capitão que vai liderar sua equipe e dê um nome ao seu clube antes do início do mata-mata."}</p><div class="ht-result-grid captain-selection">${selected.map(p=>`<button class="ht-result-player captain-option ${p.id===captainId?"is-captain":""}" data-captain="${p.id}" type="button" aria-pressed="${p.id===captainId}" style="text-align:left;color:inherit;cursor:pointer">${clubBadge(p)}<span>${p.overall} OVR · ${p.rarity}</span><strong>${p.name}</strong><span>${p.year} · ${p.achievement||"Edição histórica"}</span><span>${flagImage(p.countryCode,p.nationality)} ${p.nationality||"Nacionalidade não informada"} · ${p.continent||"Europa"}</span><span>${p.position}</span><span class="ht-captain-stats">FIN ${p.attributes.finalizacao} · DRB ${p.attributes.drible} · PAS ${p.attributes.passe} · DEF ${p.attributes.defesa}</span><span class="captain-choice">${p.id===captainId?"★ CAPITÃO ESCOLHIDO":"ESCOLHER COMO CAPITÃO"}</span></button>`).join("")}</div><div class="ht-panel"><div class="ht-chemistry-preview"><strong>QUÍMICA FINAL</strong><b>${teamChemistry(selected,captainId)}%</b></div><label for="ht-club-name" class="ht-kicker">NOME DO CLUBE</label><input id="ht-club-name" class="ht-input" maxlength="28" placeholder="Ex.: Galácticos FC" autocomplete="off"><p class="ht-small-note">${dailyChallengeMode?"Você terá uma única tentativa no Desafio Diário.":"O torneio terá 16 equipes: oitavas, quartas, semifinal e final."}</p><div class="ht-action-row"><button class="ht-btn" id="ht-confirm-team">Confirmar trio</button></div></div>`;
+    root.innerHTML=`<div class="ht-kicker">IDENTIDADE DO CLUBE</div><h1 class="ht-title">O trio está formado.</h1><p class="ht-description">${dailyChallengeMode?"Escolha o capitão do seu trio para enfrentar Pelé, Beckenbauer e Yashin.":"Escolha o capitão que vai liderar sua equipe. O nome do clube é definido no perfil."}</p><div class="ht-result-grid captain-selection">${selected.map(p=>`<button class="ht-result-player captain-option ${p.id===captainId?"is-captain":""}" data-captain="${p.id}" type="button" aria-pressed="${p.id===captainId}" style="text-align:left;color:inherit;cursor:pointer">${clubBadge(p)}<span>${p.overall} OVR · ${p.rarity}</span><strong>${p.name}</strong><span>${p.year} · ${p.achievement||"Edição histórica"}</span><span>${flagImage(p.countryCode,p.nationality)} ${p.nationality||"Nacionalidade não informada"} · ${p.continent||"Europa"}</span><span>${p.position}</span><span class="ht-captain-stats">FIN ${p.attributes.finalizacao} · DRB ${p.attributes.drible} · PAS ${p.attributes.passe} · DEF ${p.attributes.defesa}</span><span class="captain-choice">${p.id===captainId?"★ CAPITÃO ESCOLHIDO":"ESCOLHER COMO CAPITÃO"}</span></button>`).join("")}</div><div class="ht-panel"><div class="ht-chemistry-preview"><strong>QUÍMICA FINAL</strong><b>${teamChemistry(selected,captainId)}%</b></div><p class="ht-small-note">Clube: <strong>${(localStorage.getItem("ht-club-name-v1")||"Meu Clube").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}</strong> · Altere em Perfil.</p><p class="ht-small-note">${dailyChallengeMode?"Você terá uma única tentativa no Desafio Diário.":"O torneio terá 16 equipes: oitavas, quartas, semifinal e final."}</p><div class="ht-action-row"><button class="ht-btn" id="ht-confirm-team">Confirmar trio</button></div></div>`;
     $$("[data-captain]",root).forEach(btn=>btn.addEventListener("click",()=>{captainId=btn.dataset.captain;renderCaptain();}));
     $("#ht-confirm-team",root).addEventListener("click",()=>{
-      const clubName=$("#ht-club-name",root).value.trim()||(dailyChallengeMode?"Meu Trio":"");
-      if(!clubName){$("#ht-club-name",root).focus();$("#ht-club-name",root).placeholder="Digite o nome do seu clube primeiro";return;}
+      const clubName=(localStorage.getItem("ht-club-name-v1")||"Meu Clube").trim();
       const detail={clubName,players:selected,captainId};
       if(dailyChallengeMode){
         const today=localDateKey();
@@ -532,15 +531,24 @@
     ["equilibrio","Taça Equilíbrio","Química de 90% ou mais","M 50 12 V 50 L 77 70 M 50 12 A 38 38 0 1 0 50 88 A 38 38 0 1 0 50 12"],
     ["improvavel","Taça Improvável","Trio com OVR total abaixo de 270","M 50 10 L 90 82 H 10 Z M 50 35 V 57 M 50 68 V 70"],
     ["rumo-gloria","Taça Rumo à Glória","Trio formado por Icônicos","M 50 12 L 60 38 L 88 40 L 67 58 L 74 86 L 50 70 L 26 86 L 33 58 L 12 40 L 40 38 Z M 50 20 V 61"],
-    ["trofeu-jovem","Troféu Jovem","Trio formado por três jogadores Golden Boy","M 50 10 L 61 36 L 89 38 L 68 57 L 75 86 L 50 71 L 25 86 L 32 57 L 11 38 L 39 36 Z"]
+    ["trofeu-jovem","Troféu Jovem","Trio formado por três jogadores Golden Boy","M 50 10 L 61 36 L 89 38 L 68 57 L 75 86 L 50 71 L 25 86 L 32 57 L 11 38 L 39 36 Z"],
+    ["campeao-de-tudo","Campeão de Tudo","Conquiste o torneio competitivo online. Cada título aumenta o contador.",""]
   ];
+  let competitiveTitles=0;
+  async function refreshCompetitiveTitles(){
+    const client=window.HT_SUPABASE;if(!client)return;
+    try{const {data:{user}}=await client.auth.getUser();if(!user){competitiveTitles=0;renderCareer();return;}
+      const {data,error}=await client.from("player_wallet").select("champion_titles").eq("user_id",user.id).maybeSingle();
+      if(error)throw error;competitiveTitles=Math.max(0,Number(data?.champion_titles)||0);renderCareer();
+    }catch(e){console.warn("Não foi possível consultar os títulos competitivos:",e);}
+  }
   function renderCareer(){
     const statsRoot=document.querySelector("#ht-career-stats"),grid=document.querySelector("#ht-achievements-grid");if(!statsRoot||!grid)return;
     let saved={stats:{},unlocked:[]};try{saved=JSON.parse(localStorage.getItem(careerKey)||"{}")}catch(e){}
     const st={matches:0,goals:0,conceded:0,wins:0,losses:0,...(saved.stats||{})};
     statsRoot.innerHTML=[["matches","Partidas jogadas"],["goals","Gols marcados"],["conceded","Gols sofridos"],["wins","Vitórias"],["losses","Derrotas"]].map(([k,label])=>`<article class="career-stat"><strong>${Number(st[k])||0}</strong><span>${label}</span></article>`).join("");
     const unlocked=new Set(saved.unlocked||[]);
-    grid.innerHTML=careerTrophies.map(([id,name,desc,path])=>{const yes=unlocked.has(id);return `<article class="achievement-card ${yes?"unlocked":"locked"}"><div class="achievement-art"><svg viewBox="0 0 100 100" role="img" aria-label="${name}"><path d="${path}" fill="${yes?"#c49a52":"#888"}" stroke="${yes?"#e0c37b":"#aaa"}" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/></svg></div><h3>${name}</h3><p>${desc}</p><span class="achievement-status">${yes?"CONQUISTADA":"INCOMPLETA"}</span></article>`}).join("");
+    grid.innerHTML=careerTrophies.map(([id,name,desc,path])=>{const yes=id==="campeao-de-tudo"?competitiveTitles>0:unlocked.has(id);const art=id==="campeao-de-tudo"?"trofeu-campeao-de-tudo.png":id==="lendas"?"trofeu-lendas.png":id==="bola-ouro"?"trofeu-bola-de-ouro.png":"trofeu-padrao.png";return `<article class="achievement-card ${yes?"unlocked":"locked"}"><div class="achievement-art"><img src="assets/${art}" alt="${name}" loading="lazy" style="width:100%;height:100%;max-height:120px;object-fit:contain;${yes?"":"filter:grayscale(1);opacity:.4;"}"></div><h3>${name}</h3><p>${desc}</p><span class="achievement-status">${id==="campeao-de-tudo"?(yes?`${competitiveTitles} × CAMPEÃO`:"NÃO CONQUISTADO"):yes?"CONQUISTADA":"INCOMPLETA"}</span></article>`}).join("");
     const favoriteRoot=document.querySelector("#ht-favorite-trio");
     if(favoriteRoot){let trio=[];try{trio=JSON.parse(localStorage.getItem("ht-favorite-trio-v1")||"[]");}catch(e){} if(!Array.isArray(trio))trio=[];
       favoriteRoot.innerHTML=`<div class="favorite-trio-heading"><div><div class="eyebrow left">SEU TIME IDEAL</div><h2>TRIO PREFERIDO</h2></div>${trio.length===3?'<div class="favorite-trio-actions"><button class="button button-ghost" id="ht-replace-favorite-trio">SUBSTITUIR TRIO</button><button class="button button-ghost" id="ht-delete-favorite-trio">EXCLUIR TRIO</button></div>':""}</div><div class="favorite-trio-slots">${[0,1,2].map(i=>{const p=trio[i];return `<article class="favorite-trio-slot ${p?"filled":"empty"}" ${p?`data-rarity="${p.rarity||"ICÔNICO"}"`:""}>${p?`<strong>${p.overall||"—"}</strong><b>${p.name}</b><span>${p.rarity||"JOGADOR"}</span><small>${p.year||p.awardYear||""}</small>`:`<span class="favorite-slot-number">${i+1}</span><b>VAGA VAZIA</b><small>JOGADOR NÃO SALVO</small>`}</article>`}).join("")}</div>`;
@@ -548,6 +556,8 @@
     }
   }
   renderCareer();window.addEventListener("ht:achievements-updated",renderCareer);
+  window.addEventListener("ht:wallet-updated",refreshCompetitiveTitles);
+  if(window.HT_CLOUD_READY)Promise.resolve(window.HT_CLOUD_READY).then(refreshCompetitiveTitles);
 
 
   // Perfil: reorganiza o acesso sem alterar as chaves nem as regras de persistência existentes.
@@ -586,9 +596,7 @@
     const mode=button.dataset.mode;
     if(mode==="campaign"){openGame();return;}
     if(mode==="daily"){openDailyChallenge();return;}
-    modalTitle.textContent="Desafiar um amigo";
-    modalDescription.textContent="O modo online com salas e convites por link precisa de um servidor para conectar duas pessoas em tempo real. Esta versão já tem a campanha jogável; o multiplayer ainda não está conectado.";
-    if(typeof modal.showModal==="function")modal.showModal();else alert(modalDescription.textContent);
+    window.location.href="online.html";
   }));
   const modalClose=$("#modal-close");
   const modalConfirm=$("#modal-confirm");

@@ -9,16 +9,18 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
-  <script src="main.js" defer></script>
-  <script src="tournament.js" defer></script>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/cloud.js" defer></script>
+  <script src="js/main.js" defer></script>
+  <script src="js/tournament.js" defer></script>
 </head>
 <body>
   <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
   <header class="site-header">
     <a class="brand" href="#inicio" aria-label="HAT-TRICK d'OR início"><span class="brand-name">HAT-TRICK <b>d'OR</b></span></a>
     <nav class="main-nav" aria-label="Navegação principal">
-      <a href="#inicio">Início</a><a href="#categorias">Cartas</a><a href="#desafio-diario">Desafio Diário</a><a href="perfil.html">Perfil</a><a href="#como-jogar">Como jogar</a>
+      <a class="ht-wallet-nav" href="perfil.html#carteira" aria-label="Saldo de fichas"><img src="assets/ficha-de-jogo.png" alt=""><strong id="ht-wallet-balance">—</strong><span>Fichas</span></a><a href="#inicio">Início</a><a href="#categorias">Cartas</a><a href="#desafio-diario">Desafio Diário</a><a href="perfil.html">Perfil</a><a href="#como-jogar">Como jogar</a><a href="online.html">Torneios online</a>
     </nav>
   </header>
 
@@ -66,6 +68,14 @@
 
     
 
+    <section class="section-wrap ht-online-promo" id="torneios-online">
+      <div class="eyebrow left">NOVAS EXPERIÊNCIAS</div><h2>TORNEIOS <em>ONLINE</em>.</h2>
+      <p>Prepare seu trio para desafiar amigos ou disputar campeonatos. Conheça os formatos X1 casual, torneio casual com até 16 equipes e torneio competitivo com fichas e premiações.</p>
+      <div class="ht-online-promo-grid"><article><b>X1 CASUAL</b><span>Convide alguém por código ou link privado.</span></article><article><b>TORNEIO CASUAL</b><span>Monte uma chave de até 16 equipes, com CPU nas vagas restantes.</span></article><article><b>COMPETITIVO</b><span>Fila de jogadores, entrada de fichas e premiação ao campeão.</span></article></div>
+      <a class="button button-gold" href="online.html">CONHECER OS MODOS ONLINE →</a>
+      <p class="ht-online-note">Os modos multiplayer estão em preparação técnica e serão liberados após a ativação e os testes do servidor.</p>
+    </section>
+
     <section class="daily-section section-wrap" id="desafio-diario">
       <div class="daily-card daily-challenge-promo">
         <div class="daily-emblem">✦</div>
@@ -86,7 +96,7 @@
   <a class="brand" href="index.html"><span class="brand-name">HAT-TRICK <b>d'OR</b></span></a>
   <p>Divirta-se com os melhores jogadores.</p>
   <nav class="footer-links" aria-label="Links institucionais">
-    <a href="como-jogar.html">Como jogar</a><a href="sobre.html">Sobre</a><a href="termos.html">Termos</a><a href="privacidade.html">Privacidade</a><a href="contato.html">Contato</a><a href="apoie.html">Apoie o criador</a>
+    <a href="como-jogar.html">Como jogar</a><a href="online.html">Torneios online</a><a href="sobre.html">Sobre</a><a href="termos.html">Termos</a><a href="privacidade.html">Privacidade</a><a href="contato.html">Contato</a><a href="apoie.html">Apoie o criador</a>
   </nav>
   <span>HAT-TRICK d'OR • 2026</span>
 </footer>

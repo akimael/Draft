@@ -9,9 +9,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
-  <script src="main.js" defer></script>
-  <script src="tournament.js" defer></script>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/cloud.js" defer></script>
+  <script src="js/main.js" defer></script>
+  <script src="js/tournament.js" defer></script>
 </head>
 <body class="profile-page">
   <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
@@ -29,6 +31,31 @@
         <p class="profile-username" id="ht-profile-username">VISITANTE</p>
       </div>
       <p class="profile-guest-notice" id="ht-guest-notice">Seu progresso de visitante fica salvo neste navegador. Ele poderá ser perdido se os dados do navegador forem apagados ou se você trocar de dispositivo.</p>
+    </section>
+
+    <section class="profile-panel active" aria-label="Conta e sincronização" style="margin:24px 0;padding:24px;border:1px solid rgba(196,154,82,.35);border-radius:16px;background:rgba(20,21,19,.82)">
+      <div class="eyebrow left">CONTA HAT-TRICK</div>
+      <h2 style="margin:8px 0 12px">Entre ou crie sua conta.</h2>
+      <p style="color:#b8b4a8;max-width:720px">Com uma conta, seu progresso fica salvo na nuvem e pode ser acessado em outros dispositivos. O cadastro começa com uma carreira nova; o progresso de visitante não é transferido.</p>
+      <form id="ht-auth-form" style="display:grid;gap:12px;max-width:520px;margin-top:18px">
+        <input type="hidden" id="ht-auth-mode" value="login">
+        <label style="display:grid;gap:6px;color:#d8c18e" id="ht-auth-username-wrap" hidden>Nome público (3 a 20 caracteres)<input id="ht-auth-username" type="text" minlength="3" maxlength="20" pattern="[a-zA-Z0-9_]{3,20}" autocomplete="username" placeholder="ex: craque_10" style="padding:13px;border-radius:8px;border:1px solid #555;background:#111;color:#fff"></label>
+        <label style="display:grid;gap:6px;color:#d8c18e">E-mail<input id="ht-auth-email" type="email" required autocomplete="email" placeholder="voce@email.com" style="padding:13px;border-radius:8px;border:1px solid #555;background:#111;color:#fff"></label>
+        <label style="display:grid;gap:6px;color:#d8c18e">Senha<input id="ht-auth-password" type="password" required minlength="8" autocomplete="current-password" placeholder="Mínimo de 8 caracteres" style="padding:13px;border-radius:8px;border:1px solid #555;background:#111;color:#fff"></label>
+        <button class="button button-gold" id="ht-auth-submit" type="submit">ENTRAR</button>
+        <button class="button button-ghost" id="ht-auth-toggle" type="button">Ainda não tenho conta — cadastrar</button>
+        <button class="button button-ghost" id="ht-auth-recovery" type="button">Esqueci minha senha</button>
+        <div id="ht-auth-new-password" hidden style="display:grid;gap:10px"><label style="color:#d8c18e">Nova senha<input id="ht-auth-new-password-value" type="password" minlength="8" autocomplete="new-password" style="display:block;width:100%;margin-top:6px;padding:13px;border-radius:8px;border:1px solid #555;background:#111;color:#fff"></label><button class="button button-gold" id="ht-auth-update-password" type="button">ATUALIZAR SENHA</button></div>
+      </form>
+      <div id="ht-account-info" hidden style="margin-top:18px"><p>Conta conectada: <strong id="ht-account-email"></strong></p><button class="button button-ghost" id="ht-auth-signout" type="button">SAIR DA CONTA</button></div>
+      <p id="ht-auth-status" role="status" aria-live="polite" style="margin-top:14px;color:#d8c18e"></p>
+    </section>
+
+    <section class="profile-panel" id="identidade-clube" style="margin:24px 0;padding:22px;border:1px solid rgba(196,154,82,.35);border-radius:16px;background:rgba(20,21,19,.82)"><div class="eyebrow left">IDENTIDADE DO CLUBE</div><h2 style="margin:8px 0 12px">Nome do seu clube</h2><p style="color:#b8b4a8">Escolha o nome que aparecerá nas partidas. Outros jogadores podem usar o mesmo nome. O @usuário permanece exclusivo.</p><form id="ht-club-form" style="display:flex;gap:10px;flex-wrap:wrap"><input id="ht-club-input" maxlength="40" required placeholder="Ex.: Galácticos FC" aria-label="Nome do clube" style="flex:1;min-width:180px;padding:12px;border:1px solid #777;border-radius:8px;background:#111;color:#fff"><button class="button button-gold" type="submit">SALVAR CLUBE</button></form><p id="ht-club-feedback" role="status" style="color:#d8c18e"></p></section><script defer src="js/club-profile.js"></script>
+    <section id="carteira" class="profile-panel" style="margin:24px 0;padding:22px;border:1px solid rgba(196,154,82,.35);border-radius:16px;background:rgba(20,21,19,.82)">
+      <div class="eyebrow left">ECONOMIA DO JOGO</div><h2 style="margin:8px 0 12px">Suas fichas de jogo</h2>
+      <div style="display:flex;align-items:center;gap:12px"><img src="assets/ficha-de-jogo.png" alt="Ficha de jogo" width="54" height="54"><strong id="ht-wallet-balance" style="font-size:2rem;color:#f0cf7b">—</strong><span style="color:#b8b4a8">fichas</span></div>
+      <p style="color:#aaa99f;margin-top:12px">A carteira será ativada junto com o sistema de recompensas e os torneios online. O saldo ficará vinculado à sua conta.</p>
     </section>
 
     <div class="profile-tabs" role="tablist" aria-label="Seções do perfil">
@@ -58,7 +85,7 @@
   <a class="brand" href="index.html"><span class="brand-name">HAT-TRICK <b>d'OR</b></span></a>
   <p>Divirta-se com os melhores jogadores.</p>
   <nav class="footer-links" aria-label="Links institucionais">
-    <a href="como-jogar.html">Como jogar</a><a href="sobre.html">Sobre</a><a href="termos.html">Termos</a><a href="privacidade.html">Privacidade</a><a href="contato.html">Contato</a><a href="apoie.html">Apoie o criador</a>
+    <a href="como-jogar.html">Como jogar</a><a href="online.html">Torneios online</a><a href="sobre.html">Sobre</a><a href="termos.html">Termos</a><a href="privacidade.html">Privacidade</a><a href="contato.html">Contato</a><a href="apoie.html">Apoie o criador</a>
   </nav>
   <span>HAT-TRICK d'OR • 2026</span>
 </footer>
