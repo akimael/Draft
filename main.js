@@ -406,6 +406,641 @@ window.HT_CARD_VIEW = (() => {
   function playerCard(p, index){
     return `<button class="ht-player-card ht-unified-button" data-player-id="${String(p.id).replace(/&/g,'&amp;').replace(/"/g,'&quot;')}" data-rarity="${p.rarity}" aria-label="Escolher jogador">${window.HT_CARD_VIEW.card(p)}</button>`;
   }
+
+  // PASSO 1011 — Estado da campanha oficial
+  // Não interfere no Desafio Diário nem nos modos online.
+
+  let offlineCampaignId = null;
+  let offlineCampaignOfficial = false;
+  let offlineCampaignBusy = false;
+
+  function offlineApi() {
+    const api = window.HT_OFFLINE_CAMPAIGN_API;
+
+    if (!api) {
+      throw new Error(
+        "Integração offline não carregada. " +
+        "Verifique offline-campaign-api.js."
+      );
+    }
+
+    return api;
+  }
+
+  async function offlineRpcStart() {
+    const api = offlineApi();
+
+    const authenticated = await api.authenticated();
+
+    if (!authenticated) {
+      return {
+        official: false,
+        campaignId: null
+      };
+    }
+
+    const campaignId = await api.start();
+
+    if (
+      typeof campaignId !== "string" ||
+      !campaignId.trim()
+    ) {
+      throw new Error(
+        "O Supabase não retornou uma campanha válida."
+      );
+    }
+
+    return {
+      official: true,
+      campaignId
+    };
+  }
+
+  function offlineFindCards(ids) {
+    if (!Array.isArray(ids)) {
+      throw new Error(
+        "O Supabase não retornou uma lista de cartas."
+      );
+    }
+
+    const cards = ids.map(id =>
+      players.find(p => p.id === id)
+    );
+
+    if (cards.some(card => !card)) {
+      throw new Error(
+        "Uma carta oficial não foi encontrada " +
+        "no catálogo do jogo."
+      );
+    }
+
+    return cards;
+  }
+
+  async function offlineGetOffer(stageNumber) {
+    if (!offlineCampaignOfficial) {
+      throw new Error(
+        "Esta campanha não está vinculada ao Supabase."
+      );
+    }
+
+    const api = offlineApi();
+
+    const response = stageNumber === 3
+      ? await api.thirdOffer(offlineCampaignId)
+      : await api.offer(
+          offlineCampaignId,
+          stageNumber
+        );
+
+    if (!response || !Array.isArray(response.offered_ids)) {
+      throw new Error(
+        "Oferta de cartas inválida."
+      );
+    }
+
+    return {
+      stage: response.stage,
+      cards: offlineFindCards(response.offered_ids),
+      chosenId: response.chosen_id ?? null
+    };
+  }
+
+  async function offlineChooseCard(stageNumber, playerId) {
+    if (!offlineCampaignOfficial) {
+      throw new Error(
+        "Campanha oficial indisponível."
+      );
+    }
+
+    if (offlineCampaignBusy) {
+      return null;
+    }
+
+    offlineCampaignBusy = true;
+
+    try {
+      const api = offlineApi();
+
+      const response = stageNumber === 3
+        ? await api.thirdChoose(
+            offlineCampaignId,
+            playerId
+          )
+        : await api.choose(
+            offlineCampaignId,
+            stageNumber,
+            playerId
+          );
+
+      if (response?.chosen_id !== playerId) {
+        throw new Error(
+          "O servidor não confirmou a carta escolhida."
+        );
+      }
+
+      return response;
+    } finally {
+      offlineCampaignBusy = false;
+    }
+  }
+
+  // PASSO 1012 — Teste da primeira oferta oficial.
+  // Não altera o fluxo visual do jogo.
+
+  async function testOfflineCampaignOffer() {
+    try {
+      const api = offlineApi();
+
+      const authenticated = await api.authenticated();
+
+      if (!authenticated) {
+        console.log(
+          "[Campanha Offline] Visitante: " +
+          "modo local preservado."
+        );
+
+        return {
+          authenticated: false
+        };
+      }
+
+      const result = await offlineRpcStart();
+
+      offlineCampaignId = result.campaignId;
+      offlineCampaignOfficial = result.official;
+
+      const offer = await offlineGetOffer(1);
+
+      console.log(
+        "[Campanha Offline] ID:",
+        offlineCampaignId
+      );
+
+      console.log(
+        "[Campanha Offline] Primeira oferta:",
+        offer.cards.map(card => ({
+          id: card.id,
+          name: card.name,
+          rarity: card.rarity,
+          overall: card.overall
+        }))
+      );
+
+      return {
+        authenticated: true,
+        campaignId: offlineCampaignId,
+        offer
+      };
+
+    } catch (error) {
+      console.error(
+        "[Campanha Offline] Falha no teste:",
+        error
+      );
+
+      throw error;
+    }
+  }
+
+  // Permite executar o teste pelo console do navegador.
+  window.HT_TEST_OFFLINE_CAMPAIGN =
+    testOfflineCampaignOffer;
+
+
+  // PASSO 1014 — Inicialização visual da campanha oficial
+
+ 
+  // PASSO 1015 — Escolhas oficiais da campanha
+
+  function renderOfficialOffer(offer, stageNumber) {
+    const root = $("#ht-game-content");
+
+    const titles = {
+      1: "Escolha sua primeira carta",
+      2: "Escolha sua segunda carta",
+      3: "Escolha sua terceira carta"
+    };
+
+    currentOffers = offer.cards;
+    stage = stageNumber - 1;
+
+    root.innerHTML = `
+      <div class="ht-kicker">
+        ETAPA ${stageNumber} DE 3
+      </div>
+
+      <h1 class="ht-title">
+        ${titles[stageNumber]}
+      </h1>
+
+      <div class="ht-progress">
+        <span class="done"></span>
+        <span class="${stageNumber >= 2 ? "done" : ""}"></span>
+        <span class="${stageNumber >= 3 ? "done" : ""}"></span>
+      </div>
+
+      <div class="ht-trio-row">
+        ${
+          selected.length
+            ? selected.map(p => `
+                <span class="ht-chip">
+                  ${p.overall} · ${p.name}
+                </span>
+              `).join("")
+            : '<span class="ht-small-note">Seu trio ainda está vazio.</span>'
+        }
+      </div>
+
+      <div class="ht-player-grid">
+        ${currentOffers.map(playerCard).join("")}
+      </div>
+
+      <p class="ht-small-note" id="ht-official-status"></p>
+    `;
+
+    $$(".ht-player-card", root).forEach(button => {
+      button.addEventListener("click", async () => {
+        if (offlineCampaignBusy) return;
+
+        const playerId = button.dataset.playerId;
+        const player = currentOffers.find(p => p.id === playerId);
+
+        if (!player || selected.some(p => p.id === playerId)) {
+          return;
+        }
+
+        const buttons = $$(".ht-player-card", root);
+        const status = $("#ht-official-status", root);
+
+        buttons.forEach(btn => btn.disabled = true);
+        status.textContent = "Confirmando sua escolha...";
+
+        try {
+          await offlineChooseCard(stageNumber, playerId);
+
+          selected.push(player);
+
+          if (stageNumber === 1) {
+            const nextOffer = await offlineGetOffer(2);
+            renderOfficialOffer(nextOffer, 2);
+            return;
+          }
+
+          if (stageNumber === 2) {
+            renderOfficialQuizPending();
+            return;
+          }
+
+          if (stageNumber === 3) {
+            renderOfficialThirdConfirmed();
+            return;
+          }
+
+
+        } catch (error) {
+          console.error("[Campanha Oficial]", error);
+
+          status.textContent =
+            error.message || "Não foi possível confirmar a carta.";
+
+          // Recupera o estado real do Supabase.
+          try {
+            await loadOfficialCampaignChoices();
+          } catch (reloadError) {
+            console.error("[Campanha Oficial]", reloadError);
+            status.textContent =
+              "Não foi possível recuperar as escolhas. Atualize a página.";
+          }
+        }
+      });
+    });
+  }
+
+  
+
+// PASSO 1018 — Quiz oficial com layout original restaurado
+
+async function renderOfficialQuizPending() {
+  const root = $("#ht-game-content");
+
+  let selectedAnswer = null;
+  let submitting = false;
+
+  root.innerHTML = `
+    <div class="ht-kicker">
+      ETAPA 3 DE 3 • DESAFIO DE CONHECIMENTO
+    </div>
+
+    <h1 class="ht-title">
+      O futebol também se decide na mente.
+    </h1>
+
+    <p class="ht-description">
+      Acerte a pergunta para desbloquear uma seleção especial,
+      com chances maiores de cartas Lendárias e raras.
+      Se errar, você ainda poderá montar seu trio.
+    </p>
+
+    <div class="ht-progress">
+      <span class="done"></span>
+      <span class="done"></span>
+      <span></span>
+    </div>
+
+    <div class="ht-panel">
+      <h3 id="ht-official-question">
+        Carregando pergunta...
+      </h3>
+
+      <div class="ht-answers" id="ht-official-answers"></div>
+
+      <p class="ht-small-note"
+         id="ht-quiz-feedback"
+         style="margin-top:14px">
+      </p>
+
+      <div class="ht-action-row">
+        <button class="ht-btn"
+                id="ht-official-quiz-next"
+                disabled>
+          CONTINUAR PARA ÚLTIMA CARTA →
+        </button>
+      </div>
+    </div>
+  `;
+
+  try {
+    const quiz = await offlineApi().quiz(offlineCampaignId);
+
+    if (quiz.answered) {
+      await showOfficialThirdOffer();
+      return;
+    }
+
+    if (!Array.isArray(quiz.answers) || quiz.answers.length !== 4) {
+      throw new Error("Pergunta recebida em formato inválido.");
+    }
+
+    $("#ht-official-question", root).textContent = quiz.question;
+
+    const answersRoot = $("#ht-official-answers", root);
+
+    answersRoot.innerHTML = quiz.answers.map((answer, index) => `
+      <button class="ht-answer"
+              type="button"
+              data-answer="${index}">
+        ${answer}
+      </button>
+    `).join("");
+
+    const answerButtons = $$(".ht-answer", root);
+    const nextButton = $("#ht-official-quiz-next", root);
+    const feedback = $("#ht-quiz-feedback", root);
+
+    answerButtons.forEach(button => {
+      button.addEventListener("click", () => {
+        if (selectedAnswer !== null || submitting) return;
+
+        selectedAnswer = Number(button.dataset.answer);
+
+        button.classList.add("selected");
+        button.setAttribute("aria-pressed", "true");
+
+        answerButtons.forEach(answer => {
+          answer.disabled = true;
+        });
+
+        feedback.textContent = "Resposta selecionada.";
+        nextButton.disabled = false;
+      });
+    });
+
+    nextButton.addEventListener("click", async () => {
+      if (selectedAnswer === null || submitting) return;
+
+      submitting = true;
+      nextButton.disabled = true;
+
+      feedback.textContent = "Confirmando sua resposta...";
+
+      try {
+        const result = await offlineApi().answer(
+          offlineCampaignId,
+          selectedAnswer
+        );
+
+        feedback.textContent = result.is_correct
+          ? "Resposta correta!"
+          : "Não foi dessa vez!";
+
+        await showOfficialThirdOffer();
+
+      } catch (error) {
+        console.error("[Quiz Oficial]", error);
+
+        submitting = false;
+        feedback.textContent = error.message ||
+          "Não foi possível confirmar sua resposta.";
+
+        nextButton.disabled = false;
+      }
+    });
+
+  } catch (error) {
+    console.error("[Quiz Oficial]", error);
+
+    root.innerHTML = `
+      <div class="ht-panel">
+        <h3>Não foi possível carregar o quiz.</h3>
+        <p id="ht-quiz-error"></p>
+        <button class="ht-btn" id="ht-quiz-retry">
+          TENTAR NOVAMENTE
+        </button>
+      </div>
+    `;
+
+    $("#ht-quiz-error", root).textContent = error.message;
+
+    $("#ht-quiz-retry", root).onclick =
+      renderOfficialQuizPending;
+  }
+}
+
+
+  async function showOfficialThirdOffer() {
+    const offer = await offlineGetOffer(3);
+
+    if (offer.chosenId) {
+      renderOfficialThirdConfirmed();
+      return;
+    }
+
+    renderOfficialOffer(offer, 3);
+  }
+
+  
+  // PASSO 1019 — Reutilizar a escalação original
+
+  function renderOfficialThirdConfirmed() {
+    if (!offlineCampaignOfficial) return;
+
+    // Recupera a terceira carta confirmada no Supabase.
+    offlineGetOffer(3)
+      .then(offer => {
+        const thirdPlayer = players.find(
+          p => p.id === offer.chosenId
+        );
+
+        if (!thirdPlayer) {
+          throw new Error(
+            "Terceira carta confirmada não encontrada."
+          );
+        }
+
+        if (!selected.some(p => p.id === thirdPlayer.id)) {
+          selected.push(thirdPlayer);
+        }
+
+        if (selected.length !== 3) {
+          throw new Error(
+            "O trio precisa conter exatamente três cartas."
+          );
+        }
+
+        // Exibe a tela ORIGINAL do jogo.
+        renderCaptain();
+      })
+      .catch(error => {
+        console.error("[Escalação Oficial]", error);
+
+        const root = $("#ht-game-content");
+
+        root.innerHTML = `
+          <div class="ht-panel">
+            <h3>Não foi possível recuperar a escalação.</h3>
+            <p id="ht-lineup-error"></p>
+            <button class="ht-btn" id="ht-lineup-retry">
+              TENTAR NOVAMENTE
+            </button>
+          </div>
+        `;
+
+        $("#ht-lineup-error").textContent = error.message;
+
+        $("#ht-lineup-retry").onclick =
+          renderOfficialThirdConfirmed;
+      });
+  }
+
+
+  async function loadOfficialCampaignChoices() {
+    selected = [];
+
+    const firstOffer = await offlineGetOffer(1);
+
+    if (firstOffer.chosenId) {
+      const firstPlayer = players.find(
+        p => p.id === firstOffer.chosenId
+      );
+
+      if (!firstPlayer) {
+        throw new Error("Primeira carta salva não encontrada.");
+      }
+
+      selected.push(firstPlayer);
+    } else {
+      renderOfficialOffer(firstOffer, 1);
+      return;
+    }
+
+    const secondOffer = await offlineGetOffer(2);
+
+    if (secondOffer.chosenId) {
+      const secondPlayer = players.find(
+        p => p.id === secondOffer.chosenId
+      );
+
+      if (!secondPlayer) {
+        throw new Error("Segunda carta salva não encontrada.");
+      }
+
+      
+      selected.push(secondPlayer);
+
+      const quiz = await offlineApi().quiz(offlineCampaignId);
+
+      if (quiz.answered) {
+        const thirdOffer = await offlineGetOffer(3);
+
+        if (thirdOffer.chosenId) {
+          const thirdPlayer = players.find(
+            p => p.id === thirdOffer.chosenId
+          );
+
+          if (!thirdPlayer) {
+            throw new Error("Terceira carta não encontrada.");
+          }
+
+          selected.push(thirdPlayer);
+          renderOfficialThirdConfirmed();
+        } else {
+          renderOfficialOffer(thirdOffer, 3);
+        }
+      } else {
+        renderOfficialQuizPending();
+      }
+
+    } else {
+      renderOfficialOffer(secondOffer, 2);
+    }
+  }
+
+  async function initializeOfflineCampaign() {
+    const root = $("#ht-game-content");
+
+    root.innerHTML = `
+      <div class="ht-panel">
+        <h3>PREPARANDO CAMPANHA...</h3>
+      </div>
+    `;
+
+    try {
+      const result = await offlineRpcStart();
+
+      offlineCampaignId = result.campaignId;
+      offlineCampaignOfficial = result.official;
+
+      if (!offlineCampaignOfficial) {
+        renderStage();
+        return;
+      }
+
+      await loadOfficialCampaignChoices();
+
+    } catch (error) {
+      console.error("[Campanha Oficial]", error);
+
+      root.innerHTML = `
+        <div class="ht-panel">
+          <h3>Não foi possível carregar a campanha.</h3>
+          <p class="ht-small-note" id="ht-offline-error"></p>
+          <button class="ht-btn" id="ht-offline-retry">
+            TENTAR NOVAMENTE
+          </button>
+        </div>
+      `;
+
+      $("#ht-offline-error").textContent =
+        error.message || "Erro desconhecido.";
+
+      $("#ht-offline-retry").addEventListener(
+        "click",
+        initializeOfflineCampaign
+      );
+    }
+  }
+
   function openGame(){
     dailyChallengeMode=false;
     previousScroll = window.scrollY;
@@ -424,8 +1059,18 @@ window.HT_CARD_VIEW = (() => {
       }
       closeGame();
     });
-    selected=[];stage=0;captainId=null;triviaCorrect=false;
-    renderStage();
+    
+    selected=[];
+    stage=0;
+    captainId=null;
+    triviaCorrect=false;
+
+    offlineCampaignId=null;
+    offlineCampaignOfficial=false;
+    offlineCampaignBusy=false;
+
+    initializeOfflineCampaign();
+
   }
   function closeGame(){ document.body.classList.remove("game-open"); $("#ht-game-root").innerHTML=""; window.scrollTo({top:previousScroll,behavior:"instant"}); }
   function renderStage(){
@@ -493,9 +1138,118 @@ window.HT_CARD_VIEW = (() => {
     if(!selected.some(p=>p.id===captainId)) captainId=selected[0]?.id;
     root.innerHTML=`<div class="ht-kicker">IDENTIDADE DO CLUBE</div><h1 class="ht-title">O trio está formado.</h1><p class="ht-description">${dailyChallengeMode?"Escolha o capitão do seu trio para enfrentar Pelé, Beckenbauer e Yashin.":"Escolha o capitão que vai liderar sua equipe. O nome do clube é definido no perfil."}</p><div class="ht-result-grid captain-selection">${selected.map(p=>`<button class="ht-result-player captain-option ${p.id===captainId?"is-captain":""}" data-captain="${p.id}" type="button" aria-pressed="${p.id===captainId}" style="text-align:left;color:inherit;cursor:pointer">${clubBadge(p)}<span>${p.overall} OVR · ${p.rarity}</span><strong>${p.name}</strong><span>${p.year} · ${p.achievement||"Edição histórica"}</span><span>${flagImage(p.countryCode,p.nationality)} ${p.nationality||"Nacionalidade não informada"} · ${p.continent||"Europa"}</span><span>${p.position}</span><span class="ht-captain-stats">FIN ${p.attributes.finalizacao} · DRB ${p.attributes.drible} · PAS ${p.attributes.passe} · DEF ${p.attributes.defesa}</span><span class="captain-choice">${p.id===captainId?"★ CAPITÃO ESCOLHIDO":"ESCOLHER COMO CAPITÃO"}</span></button>`).join("")}</div><div class="ht-panel"><div class="ht-chemistry-preview"><strong>QUÍMICA FINAL</strong><b>${teamChemistry(selected,captainId)}%</b></div><p class="ht-small-note">Clube: <strong>${(localStorage.getItem("ht-club-name-v1")||"Meu Clube").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}</strong> · Altere em Perfil.</p><p class="ht-small-note">${dailyChallengeMode?"Você terá uma única tentativa no Desafio Diário.":"O torneio terá 16 equipes: oitavas, quartas, semifinal e final."}</p><div class="ht-action-row"><button class="ht-btn" id="ht-confirm-team">Confirmar trio</button></div></div>`;
     $$("[data-captain]",root).forEach(btn=>btn.addEventListener("click",()=>{captainId=btn.dataset.captain;renderCaptain();}));
-    $("#ht-confirm-team",root).addEventListener("click",()=>{
+    $("#ht-confirm-team",root).addEventListener("click",async ()=>{
       const clubName=(localStorage.getItem("ht-club-name-v1")||"Meu Clube").trim();
       const detail={clubName,players:selected,captainId};
+
+      // Campanha oficial: não executar o simulador local.
+      
+      // PASSO 1020 — Salvar escalação oficial
+      // sem executar o simulador local.
+
+      if (offlineCampaignOfficial && !dailyChallengeMode) {
+        const button = $("#ht-confirm-team", root);
+
+        if (button.disabled) return;
+
+        button.disabled = true;
+        button.textContent = "CONFIRMANDO TRIO...";
+
+        try {
+          if (selected.length !== 3) {
+            throw new Error("O trio precisa ter três jogadores.");
+          }
+
+          if (!selected.some(p => p.id === captainId)) {
+            throw new Error("Escolha um capitão válido.");
+          }
+
+          const playerIds = selected.map(p => p.id);
+
+          const response = await offlineApi().saveLineup(
+            offlineCampaignId,
+            playerIds,
+            captainId,
+            "balanced",
+            clubName
+          );
+
+          if (response?.success === false) {
+            throw new Error(
+              response.message || "Escalação não confirmada."
+            );
+          }
+
+          console.log(
+            "[Campanha Oficial] Escalação salva:",
+            response
+          );
+
+          // PASSO 1022 — Preparação interna do confronto.
+          // Nenhuma tela de chaveamento será exibida.
+
+          const preparation = await offlineApi().prepare(
+            offlineCampaignId
+          );
+
+          if (preparation?.success === false) {
+            throw new Error(
+              preparation.message ||
+              "Não foi possível preparar o confronto."
+            );
+          }
+
+          const matchId = preparation?.human_match_id;
+
+          if (!matchId) {
+            throw new Error(
+              "O Supabase não retornou a partida do jogador."
+            );
+          }
+
+          const teams = await offlineApi().teams(
+            offlineCampaignId,
+            matchId
+          );
+
+          if (teams?.success === false) {
+            throw new Error(
+              teams.message ||
+              "Não foi possível carregar as equipes."
+            );
+          }
+
+          console.log(
+            "[Campanha Oficial] Próximo confronto:",
+            teams
+          );
+
+          
+
+          if (typeof window.startHatTrickOfficialConfronto !== "function") {
+            throw new Error("Módulo do confronto oficial não carregado.");
+          }
+          window.startHatTrickOfficialConfronto({
+            ...teams,
+            campaignId: offlineCampaignId
+          });
+
+        } catch (error) {
+          console.error("[Escalação Oficial]", error);
+
+          button.disabled = false;
+          button.textContent = "Confirmar trio";
+
+          alert(
+            error.message ||
+            "Não foi possível salvar a escalação."
+          );
+        }
+
+        return;
+      }
+
+
       if(dailyChallengeMode){
         const today=localDateKey();
         if(localStorage.getItem("ht-daily-challenge-played")===today){alert("Você já realizou o Desafio Diário de hoje. Volte amanhã!");return;}

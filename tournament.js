@@ -169,7 +169,9 @@
     panel.innerHTML=`<div class="ht-kicker">${tournament.dailyChallenge?"DESAFIO DIÁRIO":roundNames[tournament.round]}</div><h1 class="ht-title">Seu próximo confronto.</h1><p class="ht-description">Confira as equipes. A partida só começa quando você clicar em INICIAR PARTIDA.</p>${renderField(user,opponent)}<div class="ht-chemistry-panel"><div><strong>${user.name}</strong><span>Química: ${userChem}%</span></div><div><strong>${opponent.name}</strong><span>Química: ${oppChem}%</span></div></div><div class="ht-panel"><div class="ht-match-meta">ATAQUE/DEFESA ${Math.round(userProfile.attack)}/${Math.round(userProfile.defense)} × ${Math.round(oppProfile.attack)}/${Math.round(oppProfile.defense)}</div><label class="ht-kicker" for="ht-tactic">ESTRATÉGIA DA PARTIDA</label><select id="ht-tactic" class="ht-input"><option value="balanced">Equilibrada</option><option value="attack">Ofensiva</option><option value="defense">Defensiva</option><option value="press">Pressão alta</option></select><div class="ht-action-row"><button class="ht-btn" id="ht-start-match">INICIAR PARTIDA →</button></div></div>`;
     $("#ht-tactic",panel).value=user.tactic||"balanced";
     $("#ht-tactic",panel).addEventListener("change",e=>{user.tactic=e.target.value;});
-    $("#ht-start-match",panel).addEventListener("click",()=>startLiveMatch(panel));
+    // A campanha oficial permite alterar somente a tática antes do início
+    // de cada partida; trio, capitão e clube permanecem fixos.
+    $("#ht-start-match",panel).addEventListener("click",()=>tournament.officialCampaign?startOfficialMatch(panel):startLiveMatch(panel));
   }
   function startLiveMatch(panel){
     if(!tournament||tournament.matchStarted)return;
@@ -286,6 +288,255 @@
     if(won&&!isFinal)$("#ht-next-round",panel).addEventListener("click",()=>{tournament.round++;tournament.matchStarted=false;tournament.minute=0;tournament.usedUserShooters=[];tournament.usedCpuShooters=[];tournament.penaltyRound=0;tournament.matches=[];tournament.teams=shuffle(tournament.teams);for(let i=0;i<tournament.teams.length;i+=2)tournament.matches.push({a:tournament.teams[i],b:tournament.teams[i+1],winner:null,ga:0,gb:0,events:[]});tournament.userMatch=tournament.matches.find(m=>m.a.isUser||m.b.isUser);renderStart(panel);});
     const newCampaignButton=$("#ht-new-campaign",panel);if(newCampaignButton)newCampaignButton.addEventListener("click",()=>{if(!tournament||!tournament.finished)return;tournament=null;window.dispatchEvent(new CustomEvent("ht:restart-campaign"));});
     const backHomeButton=$("#ht-back-home",panel);if(backHomeButton)backHomeButton.addEventListener("click",()=>{if(!tournament||!tournament.finished)return;document.body.classList.remove("game-open");$("#ht-game-root").innerHTML="";});
+  }
+  // CAMPANHA OFICIAL: utiliza a interface original, sem simulação local.
+  function officialApi(){
+    if(!window.HT_OFFLINE_CAMPAIGN_API)throw new Error("API da campanha offline não carregada.");
+    return window.HT_OFFLINE_CAMPAIGN_API;
+  }
+  function officialError(panel,error){
+    console.error("[Arena oficial]",error);
+    const message=String(error?.message||"Não foi possível consultar a Arena.");
+    const notice=document.createElement("p");
+    notice.className="ht-small-note";
+    notice.textContent=message;
+    panel.appendChild(notice);
+  }
+  function officialTeam(raw){
+    const players=(raw.player_ids||[]).map(id=>{
+      const player=pool.find(p=>p.id===id);
+      if(!player)throw new Error("Carta não encontrada no catálogo: "+id);
+      return enrichPlayer(player);
+    });
+    if(players.length!==3)throw new Error("Escalação oficial incompleta.");
+    return {name:raw.club_name||"Clube",players,captainId:raw.captain_id,tactic:raw.tactic||"balanced",isUser:raw.is_human===true};
+  }
+  window.startHatTrickOfficialConfronto=function(data){
+    const panel=$("#ht-game-content");
+    if(!panel)throw new Error("Área da partida não encontrada.");
+    if(tournament?.timer)clearInterval(tournament.timer);
+    const a=officialTeam(data.team_a),b=officialTeam(data.team_b);
+    if(a.isUser===b.isUser)throw new Error("Confronto oficial inválido.");
+    const match={a,b,ga:0,gb:0,events:[],winner:null};
+    tournament={teams:[a,b],round:Number(data.round)-1,user:a.isUser?a:b,
+      scorers:data.previousScorers||{},history:[],finished:false,matches:[match],userMatch:match,
+      matchStarted:false,minute:0,goals:[],penaltyRound:0,
+      usedUserShooters:[],usedCpuShooters:[],officialCampaign:true,
+      campaignId:data.campaignId,matchId:data.match_id};
+    renderStart(panel);
+  };
+  function officialEscape(value){
+    return String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  }
+  function officialPlayerName(event,t){
+    if(!event||typeof event!=="object")return "";
+    const direct=event.player_name||event.scorer_name||event.shooter_name||event.playerName||event.scorerName;
+    if(direct)return String(direct);
+    const id=event.player_id||event.scorer_id||event.shooter_id||event.playerId||event.scorerId||event.player||event.scorer;
+    if(id&&typeof id==="object")return String(id.name||"");
+    const found=[t.userMatch.a,t.userMatch.b].flatMap(team=>team.players).find(p=>p.id===id);
+    return found?.name||"";
+  }
+  function formatOfficialEvent(event,t){
+    if(typeof event==="string")return event;
+    if(!event||typeof event!=="object")return "Lance da partida";
+    const minute=Number.isFinite(Number(event.minute))?`${event.minute}' — `:"";
+    const name=officialPlayerName(event,t);
+    const side=String(event.side||"").toUpperCase();
+    const team=side==="A"?t.userMatch.a:side==="B"?t.userMatch.b:null;
+    const type=String(event.type||"").toLowerCase();
+    const description=event.description||event.commentary||event.text||event.message;
+    if(description&&name&&!String(description).includes(name))return minute+name+" — "+String(description);
+    if(description&&String(description).toUpperCase()!=="GOL"&&String(description).toUpperCase()!=="SAVE")return minute+String(description);
+    if(type==="goal")return minute+"GOL"+(name?" de "+name:"")+(team?` (${team.name})`:"");
+    if(type==="save"||type==="saved"||type==="shot_saved")return minute+(name?`${name} finaliza, mas o goleiro defende.`:"Defesa do goleiro.");
+    return minute+(name?name+" — ":"")+(type?type.replace(/_/g," "):"Lance da partida");
+  }
+  function updateOfficialScorers(t,events){
+    if(!t.seenOfficialGoals)t.seenOfficialGoals=new Set();
+    events.forEach((event,index)=>{
+      if(!event||typeof event!=="object"||event.type!=="goal")return;
+      const side=String(event.side||"").toUpperCase();
+      const userSide=t.userMatch.a.isUser?"A":"B";
+      if(side!==userSide)return;
+      const name=officialPlayerName(event,t);
+      if(!name)return;
+      const key=String(event.id||event.event_id||`${t.matchId}:${index}:${event.minute}:${side}:${name}`);
+      if(t.seenOfficialGoals.has(key))return;
+      t.seenOfficialGoals.add(key);
+      t.scorers[name]=(t.scorers[name]||0)+1;
+    });
+  }
+  function officialScorersTable(t){
+    const rows=Object.entries(t.scorers).sort((a,b)=>b[1]-a[1]);
+    return `<div class="ht-panel"><h3>Artilharia do torneio</h3><table class="ht-table"><thead><tr><th>#</th><th>JOGADOR</th><th>GOLS</th></tr></thead><tbody>${rows.length?rows.map(([name,goals],i)=>`<tr><td>${i+1}</td><td>${officialEscape(name)}</td><td>${goals}</td></tr>`).join(""):'<tr><td colspan="3">Nenhum gol registrado ainda.</td></tr>'}</tbody></table></div>`;
+  }
+  function saveOfficialFavoriteTrio(t,button){
+    try{
+      const favorite=t.user.players.map(p=>({id:p.id,name:p.name,overall:p.overall,rarity:p.rarity,year:p.year,awardYear:p.awardYear,awardAge:p.awardAge,position:p.position,nationality:p.nationality,continent:p.continent,attributes:p.attributes}));
+      localStorage.setItem("ht-favorite-trio-v1",JSON.stringify(favorite));
+      window.dispatchEvent(new CustomEvent("ht:favorite-updated"));
+      button.textContent="TRIO SALVO ✓";button.disabled=true;
+    }catch(error){alert("Não foi possível salvar o trio.");}
+  }
+  async function startOfficialMatch(panel){
+    if(!tournament?.officialCampaign||tournament.matchStarted)return;
+    const button=$("#ht-start-match",panel);
+    if(button){button.disabled=true;button.textContent="INICIANDO PARTIDA...";}
+    try{
+      const t=tournament;
+      const user=t.user;
+      const selectedTactic=$("#ht-tactic",panel)?.value||user.tactic||"balanced";
+      if(!["balanced","attack","defense","press"].includes(selectedTactic)){
+        throw new Error("Tática inválida.");
+      }
+      // Persistir antes de iniciar a simulação oficial no Supabase.
+      // Não modificar trio, capitão nem nome do clube.
+      const saved=await officialApi().saveLineup(
+        t.campaignId,
+        user.players.map(p=>p.id),
+        user.captainId,
+        selectedTactic,
+        user.name
+      );
+      if(saved?.success===false||saved?.saved===false){
+        throw new Error(saved?.message||"Não foi possível salvar a tática.");
+      }
+      if(t!==tournament)return;
+      user.tactic=selectedTactic;
+      const started=await officialApi().startArena(t.campaignId,t.matchId);
+      if(started?.success===false)throw new Error(started.message||"Arena indisponível.");
+      if(t!==tournament)return;
+      t.matchStarted=true;t.minute=0;t.userMatch.ga=0;t.userMatch.gb=0;t.userMatch.events=[];
+      renderLiveMatch(panel);
+      await pollOfficialArena(panel,t);
+      if(t!==tournament||t.finished||t.penaltiesPending)return;
+      t.timer=setInterval(()=>{
+        if(t!==tournament||t.polling||t.finished){if(t!==tournament||t.finished)clearInterval(t.timer);return;}
+        pollOfficialArena(panel,t).catch(error=>{clearInterval(t.timer);officialError(panel,error);});
+      },350);
+    }catch(error){
+      officialError(panel,error);
+      if(button){button.disabled=false;button.textContent="INICIAR PARTIDA →";}
+    }
+  }
+  async function pollOfficialArena(panel,t){
+    if(t.polling||t!==tournament)return;
+    t.polling=true;
+    try{
+      const state=await officialApi().arenaState(t.campaignId,t.matchId);
+      if(state?.success===false)throw new Error(state.message||"Falha ao atualizar o placar.");
+      if(t!==tournament)return;
+      t.minute=Math.min(90,Math.max(0,Number(state.minute)||0));
+      t.userMatch.ga=Number(state.goals_a)||0;
+      t.userMatch.gb=Number(state.goals_b)||0;
+      const officialEvents=Array.isArray(state.events)?state.events:[];
+      updateOfficialScorers(t,officialEvents);
+      t.userMatch.events=officialEvents.map(event=>formatOfficialEvent(event,t));
+      renderLiveMatch(panel);
+      if(t.minute>=90){
+        clearInterval(t.timer);
+        if(state.requires_penalties){t.penaltiesPending=true;renderOfficialPenalties(panel,t,"Consultando cobranças...");await syncOfficialPenalties(panel,t);}
+        else await finishOfficialMatch(panel,t);
+      }
+    }finally{t.polling=false;}
+  }
+  function officialPenaltyFeedback(result){
+    const round=Number(result.round_revealed)||0;
+    return (Array.isArray(result.events)?result.events:[])
+      .filter(e=>Number(e.round)===round)
+      .map(e=>`${e.player_name||e.player||"Jogador"}: ${e.scored?"GOL":"DEFENDIDO"}`)
+      .join(" · ");
+  }
+  async function applyOfficialPenaltyState(panel,t,result,notice=""){
+    if(t!==tournament)return;
+    if(result?.success===false)throw new Error(result.message||"Estado dos pênaltis indisponível.");
+    t.penaltyRound=Number(result.round_revealed)||0;
+    t.penA=Number(result.penalties_a)||0;
+    t.penB=Number(result.penalties_b)||0;
+    if(result.finished){await finishOfficialMatch(panel,t);return;}
+    renderOfficialPenalties(panel,t,[notice,officialPenaltyFeedback(result)].filter(Boolean).join(" — "));
+  }
+  async function syncOfficialPenalties(panel,t){
+    if(t!==tournament||t.penaltySyncing)return;
+    t.penaltySyncing=true;
+    try{
+      const result=await officialApi().penaltyState(t.campaignId,t.matchId);
+      await applyOfficialPenaltyState(panel,t,result);
+    }catch(error){
+      if(t===tournament){renderOfficialPenalties(panel,t,"Não foi possível consultar as cobranças. Tente reconectar.");officialError(panel,error);}
+    }finally{t.penaltySyncing=false;}
+  }
+  function renderOfficialPenalties(panel,t,feedback=""){
+    if(t!==tournament)return;
+    const match=t.userMatch,user=match.a.isUser?match.a:match.b,opp=match.a.isUser?match.b:match.a;
+    const penA=Number(t.penA)||0,penB=Number(t.penB)||0;
+    const scoreUser=user===match.a?penA:penB,scoreOpp=user===match.a?penB:penA;
+    panel.innerHTML=`<div class="ht-kicker">DISPUTA DE PÊNALTIS</div><h1 class="ht-title">Decisão nas penalidades.</h1><p class="ht-description">As cobranças são reveladas uma rodada por vez. Se a conexão cair, o servidor recupera a última rodada confirmada.</p>${renderField(user,opp)}<div class="ht-live-score"><span>${user.name}</span><strong>${scoreUser} <i>—</i> ${scoreOpp}</strong><span>${opp.name}</span><div class="ht-live-minute">RODADA ${Number(t.penaltyRound)+1}</div></div>${feedback?`<div class="ht-penalty-feedback"></div>`:""}<div class="ht-panel"><div class="ht-action-row"><button class="ht-btn" id="ht-take-penalty">COBRAR PÊNALTIS →</button></div></div>`;
+    const feedbackNode=$(".ht-penalty-feedback",panel);if(feedbackNode)feedbackNode.textContent=feedback;
+    const button=$("#ht-take-penalty",panel);
+    button.addEventListener("click",async()=>{
+      if(t.penaltyRequestPending)return;
+      t.penaltyRequestPending=true;
+      button.disabled=true;
+      button.textContent="CONFIRMANDO COBRANÇA...";
+      try{
+        // Uma chamada segura só avança se o servidor estiver na rodada esperada.
+        const result=await officialApi().penalty(t.campaignId,t.matchId,Number(t.penaltyRound)||0);
+        await applyOfficialPenaltyState(panel,t,result);
+      }catch(error){
+        // Resposta perdida? Consulte o servidor antes de autorizar outra cobrança.
+        try{
+          const recovered=await officialApi().penaltyState(t.campaignId,t.matchId);
+          await applyOfficialPenaltyState(panel,t,recovered,"Conexão recuperada");
+        }catch(recoveryError){
+          if(t===tournament){
+            button.textContent="VERIFICAR CONEXÃO →";
+            button.disabled=false;
+            button.onclick=null;
+            // Não avançar: a próxima tentativa consulta o estado, sem nova cobrança.
+            button.replaceWith(button.cloneNode(true));
+            const retry=$("#ht-take-penalty",panel);
+            retry.addEventListener("click",()=>syncOfficialPenalties(panel,t),{once:true});
+            officialError(panel,recoveryError);
+          }
+        }
+      }finally{t.penaltyRequestPending=false;}
+    });
+  }
+  async function finishOfficialMatch(panel,t){
+    if(t!==tournament||t.finishing)return;
+    t.finishing=true;
+    try{
+      const result=await officialApi().finishArena(t.campaignId,t.matchId);
+      if(result?.success===false)throw new Error(result.message||"Falha ao finalizar partida.");
+      if(t!==tournament)return;
+      t.finished=true;
+      const won=result.human_won===true;
+      const isFinal=t.round===3;
+      const user=t.user,opponent=t.userMatch.a.isUser?t.userMatch.b:t.userMatch.a;
+      const scoreUser=t.userMatch.a.isUser?result.goals_a:result.goals_b;
+      const scoreOpp=t.userMatch.a.isUser?result.goals_b:result.goals_a;
+      const officialEvents=t.userMatch.events.map(event=>`<li>${officialEscape(event)}</li>`).join("")||"<li>Partida sem gols.</li>";
+      panel.innerHTML=`<div class="ht-kicker">${roundNames[t.round]}</div><h1 class="ht-title">${won?(isFinal?"VOCÊ É CAMPEÃO!":"VOCÊ AVANÇOU!"):"FIM DE CAMPANHA"}</h1><p class="ht-description">${won?"Vitória confirmada pelo Supabase.":"Seu clube foi eliminado desta campanha."}</p><div class="ht-match-card"><div class="ht-match-meta">${user.name} × ${opponent.name}</div><div class="ht-match-score">${scoreUser} <span style="color:#77796f">—</span> ${scoreOpp}</div>${renderField(user,opponent)}<ul class="ht-event-list">${officialEvents}</ul></div>${officialScorersTable(t)}<div class="ht-panel"><p>Fichas resgatadas: <strong>${Number(result.reward_coins)||0}</strong></p></div><div class="ht-action-row">${won&&!isFinal?'<button class="ht-btn" id="ht-next-round">Próxima fase →</button>':'<button class="ht-btn" id="ht-save-favorite-trio">SALVAR TRIO</button><button class="ht-btn secondary" id="ht-new-campaign">Nova campanha</button>'}<button class="ht-btn secondary" id="ht-back-home">Voltar ao site</button></div>`;
+      const next=$("#ht-next-round",panel);
+      if(next)next.addEventListener("click",async()=>{
+        next.disabled=true;
+        try{
+          const prepared=await officialApi().nextRound(t.campaignId);
+          if(prepared?.success===false||!prepared?.human_match_id)throw new Error(prepared?.message||"Próxima fase indisponível.");
+          const teams=await officialApi().teams(t.campaignId,prepared.human_match_id);
+          if(teams?.success===false)throw new Error(teams.message||"Adversário indisponível.");
+          window.startHatTrickOfficialConfronto({...teams,campaignId:t.campaignId,previousScorers:{...t.scorers}});
+        }catch(error){next.disabled=false;officialError(panel,error);}
+      });
+      const saveTrio=$("#ht-save-favorite-trio",panel);
+      if(saveTrio)saveTrio.addEventListener("click",()=>saveOfficialFavoriteTrio(t,saveTrio));
+      const restart=$("#ht-new-campaign",panel);
+      if(restart)restart.addEventListener("click",()=>{tournament=null;window.dispatchEvent(new CustomEvent("ht:restart-campaign"));});
+      const back=$("#ht-back-home",panel);
+      if(back)back.addEventListener("click",()=>{document.body.classList.remove("game-open");const root=$("#ht-game-root");if(root)root.innerHTML="";});
+    }catch(error){t.finishing=false;officialError(panel,error);}
   }
   window.canExitHatTrickTournament=function(){return !tournament||tournament.finished===true;};
   window.startHatTrickTournament=function(detail){const panel=$("#ht-game-content");if(!panel)return;createTournament(detail);renderStart(panel);};

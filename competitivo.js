@@ -47,7 +47,44 @@ function startLobbyPoll(id){if(lobbyPoll&&lobbyChannel?.topic==='realtime:cp-lob
 function getRounds(bracket){const b=object(bracket);if(Array.isArray(b.rounds)){const out=[];for(const r of b.rounds){if(Array.isArray(r))out.push(...r);else if(Array.isArray(r.matches))out.push(...r.matches)}return out}if(Array.isArray(b.matches))return b.matches;if(Array.isArray(b.bracket))return b.bracket;return []}
 function matchUser(m){return [m.player_a,m.player_b].includes(user.id)}
 function matchState(m){return m.status||m.match_status||'waiting'}
-function renderBracket(b){const data=object(b),matches=getRounds(data);const players=Array.isArray(data.players)?data.players:[];const name=id=>{if(!id)return 'A definir';const p=players.find(p=>p.user_id===id||p.id===id);return p?.username||p?.club_name||('Jogador '+String(id).slice(0,6))};const root=$('cp-rounds');root.replaceChildren();for(let r=1;r<=4;r++){const section=document.createElement('div');section.className='cp-round';const h=document.createElement('h3');h.textContent=['','OITAVAS','QUARTAS','SEMIFINAL','FINAL'][r];section.append(h);for(const m of matches.filter(m=>Number(m.round_number||m.round)===r).sort((a,b)=>(a.match_number||0)-(b.match_number||0))){const card=document.createElement('div');card.className='cp-match'+(matchUser(m)?' mine':'');const a=document.createElement('span'),bb=document.createElement('span'),status=document.createElement('small');a.textContent=name(m.player_a)+(m.score_a!=null?' · '+m.score_a:'');bb.textContent=name(m.player_b)+(m.score_b!=null?' · '+m.score_b:'');status.textContent=matchState(m).toUpperCase();card.append(a,bb,status);section.append(card)}root.append(section)}const active=matches.filter(matchUser).sort((a,b)=>Number(b.round_number)-Number(a.round_number)).find(m=>matchState(m)!=='finished');lastMatch=active||null;if($('cp-current-round'))$('cp-current-round').textContent=(['','OITAVAS DE FINAL','QUARTAS DE FINAL','SEMIFINAL','FINAL'][Number(active?.round_number||active?.round||1)]||'TORNEIO COMPETITIVO')+' · AO VIVO';matchId=active?.match_id||active?.id||null;$('cp-ready').hidden=!active||!hasLineup||!['waiting','ready'].includes(matchState(active))||(active.player_a===user.id?active.ready_a:active.ready_b);$('cp-watch').hidden=!active||!['in_progress','ready'].includes(matchState(active));if(active&&matchState(active)==='in_progress')void startArena();else view('bracket')}
+function renderBracket(b){
+ const data=object(b),matches=getRounds(data),players=Array.isArray(data.players)?data.players:[];
+ const name=id=>{if(!id)return 'A definir';const p=players.find(p=>p.user_id===id||p.id===id);return p?.username||p?.club_name||('Jogador '+String(id).slice(0,6))};
+ const root=$('cp-rounds');root.replaceChildren();root.classList.add('cp1054-tree');
+ const column=(label,round,from,to,side)=>{
+  const col=document.createElement('section');col.className='cp1054-column cp1054-'+side+' cp1054-r'+round;
+  const h=document.createElement('h3');h.textContent=label;col.append(h);
+  const list=document.createElement('div');list.className='cp1054-stack';
+  for(let number=from;number<=to;number++){
+   const m=matches.find(x=>Number(x.round_number??x.round)===round&&Number(x.match_number)===number);
+   const card=document.createElement('div');card.className='cp-match cp1054-match'+(m&&matchUser(m)?' mine':'');
+   for(const [id,score] of [[m?.player_a,m?.score_a],[m?.player_b,m?.score_b]]){
+    const row=document.createElement('span');row.textContent=name(id)+(score!=null?' · '+score:'');card.append(row);
+   }
+   const status=document.createElement('small');status.textContent=m?matchState(m).toUpperCase():'AGUARDANDO';card.append(status);list.append(card);
+  }
+  col.append(list);return col;
+ };
+ // Oitavas: jogos 1–4 à esquerda e 5–8 à direita.
+ // Quartas: 1–2 à esquerda e 3–4 à direita; semifinais 1 e 2.
+ root.append(column('OITAVAS',1,1,4,'left'),column('QUARTAS',2,1,2,'left'),column('SEMIFINAL',3,1,1,'left'));
+ const center=document.createElement('section');center.className='cp1054-column cp1054-final';
+ const heading=document.createElement('h3');heading.textContent='FINAL';center.append(heading);
+ const trophy=document.createElement('div');trophy.className='cp1054-trophy';trophy.textContent='TROFÉU CAMPEÃO DE TUDO';center.append(trophy);
+ const final=matches.find(m=>Number(m.round_number??m.round)===4&&Number(m.match_number)===1);
+ const finalCard=document.createElement('div');finalCard.className='cp-match cp1054-match'+(final&&matchUser(final)?' mine':'');
+ for(const [id,score] of [[final?.player_a,final?.score_a],[final?.player_b,final?.score_b]]){const row=document.createElement('span');row.textContent=name(id)+(score!=null?' · '+score:'');finalCard.append(row)}
+ const finalStatus=document.createElement('small');finalStatus.textContent=final?matchState(final).toUpperCase():'AGUARDANDO';finalCard.append(finalStatus);center.append(finalCard);root.append(center);
+ root.append(column('SEMIFINAL',3,2,2,'right'),column('QUARTAS',2,3,4,'right'),column('OITAVAS',1,5,8,'right'));
+ const active=matches.filter(matchUser).sort((a,b)=>Number(b.round_number??b.round)-Number(a.round_number??a.round)).find(m=>matchState(m)!=='finished');
+ lastMatch=active||null;
+ if($('cp-current-round'))$('cp-current-round').textContent=(['','OITAVAS DE FINAL','QUARTAS DE FINAL','SEMIFINAL','FINAL'][Number(active?.round_number??active?.round??1)]||'TORNEIO COMPETITIVO')+' · AO VIVO';
+ matchId=active?.match_id||active?.id||null;
+ $('cp-ready').hidden=!active||!hasLineup||!['waiting','ready'].includes(matchState(active))||(active.player_a===user.id?active.ready_a:active.ready_b);
+ $('cp-watch').hidden=!active||!['in_progress','ready'].includes(matchState(active));
+ if(active&&matchState(active)==='in_progress')void startArena();else view('bracket');
+}
+
 async function getBracket(){return await rpc('ht_get_competitive_bracket',{p_tournament_id:tournamentId})}
 async function refresh(){if(!user)return;await loadBalance();let current=await findTournament();if(!current){stopLobbyPoll();tournamentId=null;view('entry');notice('Selecione o modo competitivo para entrar na fila.');return}tournamentId=current.id;tournament=current;subscribe(tournamentId);if(current.status==='forming'){view('lobby');notice('');startLobbyPoll(tournamentId);await updateLobby();return}stopLobbyPoll();const b=object(await getBracket());const fixed=b.my_lineup||b.lineup||null;hasLineup=Boolean(fixed)||hasLineup;
 // A confirmação de escalação é consultada diretamente pela chave primária do usuário.
