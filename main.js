@@ -1,3 +1,30 @@
+
+/* PASSO 532 — Um único desenho de carta para todos os modos. */
+window.HT_CARD_VIEW = (() => {
+  const escape = v => String(v ?? '').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const codes = {'Brasil':'br','Argentina':'ar','Portugal':'pt','Itália':'it','França':'fr','Espanha':'es','Alemanha':'de','Inglaterra':'gb-eng','Uruguai':'uy','Países Baixos':'nl','Croácia':'hr','Hungria':'hu','Polônia':'pl','Noruega':'no','Bélgica':'be','Sérvia':'rs','Ucrânia':'ua','Camarões':'cm','Libéria':'lr','Senegal':'sn','Egito':'eg','Costa do Marfim':'ci','Bulgária':'bg','Coreia do Sul':'kr','Irã':'ir','Austrália':'au','República Tcheca':'cz','União Soviética':'ru'};
+  function card(p, mini=false) {
+    p = {...(p?.card_data||{}),...(p||{})};
+    const rarity=String(p.rarity||'ICÔNICO').toUpperCase();
+    const code=p.countryCode||codes[p.nationality]||'';
+    const flag=code==='gb-eng' ? '<svg class="ht-card-flag" viewBox="0 0 60 36" role="img" aria-label="Inglaterra"><rect width="60" height="36" fill="white"/><path d="M24 0h12v12h24v12H36v12H24v12H12V24H0V12h24z" fill="#c8102e"/></svg>' : code ? `<img class="ht-card-flag" src="https://flagcdn.com/w40/${escape(code)}.png" alt="${escape(p.nationality)}" loading="lazy">` : `<span class="ht-card-flag">${escape(p.flag||'🌐')}</span>`;
+    const crest=rarity==='HERÓI BR' && p.club ? (p.clubCrest ? `<img class="ht-card-club" src="${escape(p.clubCrest)}" alt="Escudo do ${escape(p.club)}" loading="lazy">` : `<span class="ht-card-club">${escape(p.clubShort||p.club.slice(0,3).toUpperCase())}</span>`) : '';
+    const symbols={'A HISTÓRIA':'♔','GOAT':'✦','LENDÁRIO':'♜','HERÓI BR':'⚽','GOLDEN BOY':'★','ICÔNICO':'✦'};
+    const a=p.attributes||{};
+    const stats=[['FIN','finalizacao'],['DRB','drible'],['PAS','passe'],['DEF','defesa']].map(([label,key])=>`<span>${label}<b>${escape(a[key]??'—')}</b></span>`).join('');
+    return `<div class="ht-unified-card${mini?' ht-unified-mini':''}" data-rarity="${escape(rarity)}"><div class="ht-unified-inner"><div class="ht-unified-top"><span>${escape(rarity)}</span><span>✦</span></div><div class="ht-unified-rating">${escape(p.overall||'—')}</div><div class="ht-unified-symbol">${symbols[rarity]||'✦'}</div><div class="ht-unified-bottom"><div class="ht-unified-name">${escape(p.name||'Jogador')}</div><div class="ht-unified-meta"><span>${escape(p.position||'JOGADOR')}</span>${flag}${crest}</div><div class="ht-unified-stats">${stats}</div></div></div></div>`;
+  }
+  function fieldCard(p) {
+    const rarity=String(p?.rarity||'ICÔNICO').toUpperCase();
+    const code=p?.countryCode||codes[p?.nationality]||'';
+    const flag=code==='gb-eng'?'<span class="ht-field-flag">🏴</span>':code?`<img class="ht-field-flag" src="https://flagcdn.com/w40/${escape(code)}.png" alt="${escape(p.nationality||'')}">`:escape(p?.flag||'🌐');
+    const captain = Boolean(p?.isCaptain);
+    return `<div class="ht-field-card" data-rarity="${escape(rarity)}" title="${escape(p?.name||'Jogador')}">${captain?'<span class="ht-field-captain" aria-label="Capitão">C</span>':''}<span class="ht-field-rarity">${escape(rarity)}</span><strong class="ht-field-ovr">${escape(p?.overall??'—')}</strong><span class="ht-field-position">${escape(p?.position||'JOGADOR')}</span>${flag}<span class="ht-field-name">${escape(p?.name||'Jogador')}</span></div>`;
+  }
+  return {card,fieldCard};
+})();
+
+
 (() => {
   "use strict";
   const $ = (selector, root = document) => root.querySelector(selector);
@@ -103,6 +130,7 @@
     ["Jean-Pierre Papin",1991,1,"LENDÁRIO",94,"ATACANTE"],["Lothar Matthäus",1991,2,"ICÔNICO",93,"VOLANTE"],
     ["Marco van Basten",1992,1,"GOAT",98,"ATACANTE"],["Hristo Stoichkov",1992,2,"ICÔNICO",94,"ATACANTE"],
     ["Roberto Baggio",1993,1,"LENDÁRIO",97,"MEIA"],["Dennis Bergkamp",1993,2,"ICÔNICO",93,"ATACANTE"],
+
     ["Hristo Stoichkov",1994,1,"LENDÁRIO",96,"ATACANTE"],["Roberto Baggio",1994,2,"ICÔNICO",94,"MEIA"],
     ["George Weah",1995,1,"LENDÁRIO",97,"ATACANTE"],["Jürgen Klinsmann",1995,2,"ICÔNICO",92,"ATACANTE"],
     ["Matthias Sammer",1996,1,"LENDÁRIO",95,"ZAGUEIRO"],["Ronaldo",1996,2,"ICÔNICO",94,"ATACANTE"],
@@ -172,7 +200,7 @@
     "Rafael van der Vaart":["Países Baixos","🇳🇱","Europa"],"Cesc Fàbregas":["Espanha","🇪🇸","Europa"],"Sergio Agüero":["Argentina","🇦🇷","América do Sul"],
     "Anderson":["Brasil","🇧🇷","América do Sul"],"Alexandre Pato":["Brasil","🇧🇷","América do Sul"],"Mario Balotelli":["Itália","🇮🇹","Europa"],
     "Mario Götze":["Alemanha","🇩🇪","Europa"],"Isco":["Espanha","🇪🇸","Europa"],"Paul Pogba":["França","🇫🇷","Europa"],
-    "Raheem Sterling":["Inglaterra","🏴","Europa"],"Anthony Martial":["França","🇫🇷","Europa"],"Renato Sanches":["Portugal","🇵🇹","Europa"],
+    "Raheem Sterling":["Inglaterra","🏴","Europa"],"Anthony Martial":["França","🏴","Europa"],"Renato Sanches":["Portugal","🇵🇹","Europa"],
     "Matthijs de Ligt":["Países Baixos","🇳🇱","Europa"],"João Félix":["Portugal","🇵🇹","Europa"],"Pedri":["Espanha","🇪🇸","Europa"],
     "Gavi":["Espanha","🇪🇸","Europa"],"Jude Bellingham":["Inglaterra","🏴","Europa"],"Désiré Doué":["França","🇫🇷","Europa"],
     "Andrés D'Alessandro":["Argentina","🇦🇷","América do Sul"],"Fernandão":["Brasil","🇧🇷","América do Sul"],"Luan":["Brasil","🇧🇷","América do Sul"],"Renato Gaúcho":["Brasil","🇧🇷","América do Sul"],"Gabigol":["Brasil","🇧🇷","América do Sul"],"Zico":["Brasil","🇧🇷","América do Sul"],"Carlos Tévez":["Argentina","🇦🇷","América do Sul"],"Sócrates":["Brasil","🇧🇷","América do Sul"],"Rogério Ceni":["Brasil","🇧🇷","América do Sul"],"Raí":["Brasil","🇧🇷","América do Sul"],"Endrick":["Brasil","🇧🇷","América do Sul"],"Dudu":["Brasil","🇧🇷","América do Sul"],"Germán Cano":["Argentina","🇦🇷","América do Sul"],"Darío Conca":["Argentina","🇦🇷","América do Sul"],"Alex":["Brasil","🇧🇷","América do Sul"],"Giorgian de Arrascaeta":["Uruguai","🇺🇾","América do Sul"],"Hulk":["Brasil","🇧🇷","América do Sul"],"Ronaldinho Gaúcho":["Brasil","🇧🇷","América do Sul"],"Neymar":["Brasil","🇧🇷","América do Sul"],"Roberto Dinamite":["Brasil","🇧🇷","América do Sul"],"Edmundo":["Brasil","🇧🇷","América do Sul"],"Garrincha":["Brasil","🇧🇷","América do Sul"],"Nilton Santos":["Brasil","🇧🇷","América do Sul"],"Bobô":["Brasil","🇧🇷","América do Sul"],"Rony":["Brasil","🇧🇷","América do Sul"],"Kléberson":["Brasil","🇧🇷","América do Sul"]
@@ -188,12 +216,13 @@
   function clubBadge(player, className="ht-club-crest"){
     if(!player?.club) return "";
     const initials=player.clubShort||player.club.slice(0,3).toUpperCase();
+
     const fallback=`<span class="${className} ht-club-crest-fallback" title="${player.club}">${initials}</span>`;
     if(!player.clubCrest) return fallback;
     return `<img class="${className}" src="${player.clubCrest}" alt="Escudo do ${player.club}" title="${player.club}" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'${className} ht-club-crest-fallback',textContent:'${initials}'}))">`;
   }
   function flagImage(countryCode, nationality){
-    if(countryCode==="gb-eng") return `<svg class="ht-player-flag ht-england-flag" viewBox="0 0 60 36" role="img" aria-label="Bandeira da Inglaterra" title="${nationality||"Inglaterra"}"><rect width="60" height="36" fill="#fff"/><path d="M24 0h12v12h24v12H36v12H24V24H0V12h24z" fill="#c8102e"/></svg>`;
+    if(countryCode==="gb-eng") return `<svg class="ht-player-flag ht-england-flag" viewBox="0 0 60 36" role="img" aria-label="Bandeira da Inglaterra" title="${nationality||"Inglaterra"}"><rect width="60" height="36" fill="#fff"/><path d="M24 0h12v12h24v12H36v12H24V12H0V12h24z" fill="#c8102e"/></svg>`;
     if(!countryCode) return `<span class="ht-player-flag-fallback" title="${nationality||"Nacionalidade não informada"}">🌐</span>`;
     return `<img class="ht-player-flag" src="https://flagcdn.com/w40/${countryCode}.png" srcset="https://flagcdn.com/w80/${countryCode}.png 2x" alt="" title="${nationality||""}" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'ht-player-flag-fallback',textContent:'🌐'}))">`;
   }
@@ -263,6 +292,7 @@
   const trivia = [
     {q:"Qual seleção venceu a Copa do Mundo de 2002?",answers:["Alemanha","Brasil","Itália","Argentina"],correct:1},
     {q:"Quem marcou o famoso gol conhecido como 'La Mano de Dios'?",answers:["Pelé","Johan Cruyff","Diego Maradona","Zinedine Zidane"],correct:2},
+
     {q:"Qual clube Lionel Messi defendeu por mais tempo na carreira?",answers:["Inter Miami","Barcelona","PSG","Manchester City"],correct:1},
     {q:"Qual país venceu a primeira Copa do Mundo, em 1930?",answers:["Brasil","Itália","Uruguai","Argentina"],correct:2}
 ,
@@ -338,6 +368,7 @@
       for(;index<weights.length-1;index++){ticket-=weights[index];if(ticket<0)break;}
       chosen.push(remaining.splice(index,1)[0]);
     }
+
     return chosen;
   }
   function pickWeightedPool(stageIndex){
@@ -350,16 +381,25 @@
     if(dailyChallengeMode) pool=pool.filter(p=>["GOLDEN BOY","ICÔNICO","LENDÁRIO"].includes(p.rarity));
     return weightedDraftSample(pool,5);
   }
+  // Atualiza apenas os atributos visuais das três cartas da capa com os dados do catálogo.
+  function refreshHeroCardStats(){
+    const hero = document.querySelector('.hero-art');
+    if (!hero) return;
+    for (const [selector, baseId] of [['.card-goat','ronaldo'],['.card-legendary','ronaldinho'],['.card-history','pele']]) {
+      const card = hero.querySelector(selector);
+      const player = players.find(p => p.baseId === baseId || String(p.id).split('-')[0] === baseId);
+      if (!card || !player?.attributes) continue;
+      const labels = [['FIN','finalizacao'],['DRB','drible'],['PAS','passe'],['DEF','defesa']];
+      card.querySelectorAll('.mini-stats span').forEach((span,i) => {
+        const [label,key] = labels[i] || [];
+        if (key) span.innerHTML = `${label} <b>${player.attributes[key] ?? '—'}</b>`;
+      });
+    }
+  }
+  refreshHeroCardStats();
   function rarityLabel(r){return r;}
   function playerCard(p, index){
-    const goldenBoy=p.rarity==="GOLDEN BOY";
-    const safeName=p.name||"Jogador";
-    const safeYear=p.year??p.awardYear??"Edição especial";
-    const safePosition=p.position||"MEIA";
-    const safeAchievement=p.achievement||"Edição especial";
-    return `<button class="ht-player-card" data-player-id="${p.id}" data-rarity="${p.rarity}" aria-label="Escolher ${safeName}">
-      <div class="ht-player-art">${clubBadge(p)}<span class="ht-player-rating">${p.overall}</span><span class="ht-rarity-gem" aria-label="Raridade ${p.rarity}" title="${p.rarity}"></span>${flagImage(p.countryCode,p.nationality)}<span class="ht-player-figure">${p.rarity==="A HISTÓRIA"?"♔":p.rarity==="GOAT"?"♛":p.rarity==="LENDÁRIO"?"♜":p.rarity==="HERÓI BR"?"⚽":goldenBoy?"★":"✦"}</span><span class="ht-player-position">${goldenBoy?"":safePosition}</span></div>
-      <div class="ht-player-info"><div class="ht-player-name">${safeName}</div><div class="ht-player-era">${goldenBoy?`idade:${p.awardAge??"—"} · prêmio:${p.awardYear??safeYear}`:safeYear==="Edição histórica"?"EDIÇÃO HISTÓRICA":safeYear+" • "+safeAchievement}</div>${goldenBoy?`<div class="ht-golden-nationality">${p.nationality}</div>`:""}<div class="ht-player-stats"><span>FIN <b>${p.attributes.finalizacao}</b></span><span>DRB <b>${p.attributes.drible}</b></span><span>PAS <b>${p.attributes.passe}</b></span><span>DEF <b>${p.attributes.defesa}</b></span></div><div class="ht-player-rarity">${rarityLabel(p.rarity)}</div><div class="ht-player-continent">${p.continent||"Europa"}</div></div></button>`;
+    return `<button class="ht-player-card ht-unified-button" data-player-id="${String(p.id).replace(/&/g,'&amp;').replace(/"/g,'&quot;')}" data-rarity="${p.rarity}" aria-label="Escolher jogador">${window.HT_CARD_VIEW.card(p)}</button>`;
   }
   function openGame(){
     dailyChallengeMode=false;
@@ -397,6 +437,7 @@
       root.innerHTML=`<div class="ht-kicker">ETAPA 3 DE 3 • DESAFIO DE CONHECIMENTO</div><h1 class="ht-title">O futebol também se decide na mente.</h1><p class="ht-description">${dailyChallengeMode?"Responda à pergunta e complete seu trio com cartas Icônicas, Lendárias ou Golden Boy.":"Acerte a pergunta para desbloquear uma seleção especial, com chances maiores de cartas Lendárias e raras. Se errar, você ainda poderá montar seu trio."}</p><div class="ht-progress"><span class="done"></span><span class="done"></span><span></span></div><div class="ht-panel"><h3>${q.q}</h3><div class="ht-answers">${q.answers.map((a,i)=>`<button class="ht-answer" data-answer="${i}">${a}</button>`).join("")}</div><p class="ht-small-note" id="ht-trivia-feedback" style="margin-top:14px"></p><div class="ht-action-row"><button class="ht-btn" id="ht-trivia-next" disabled>Continuar para última carta →</button></div></div>`;
       $$(".ht-answer",root).forEach(btn=>btn.addEventListener("click",()=>{
         if($$(".ht-answer",root).some(answer=>answer.disabled))return;
+
         btn.classList.add("selected");
         btn.setAttribute("aria-pressed","true");
         triviaCorrect=Number(btn.dataset.answer)===q.correct;
@@ -472,6 +513,7 @@
     }
     dailyChallengeMode=true;selected=[];stage=0;captainId=null;triviaCorrect=false;renderStage();
   }
+
   function getCollection(){try{return JSON.parse(localStorage.getItem("ht-collection")||"[]")}catch(e){return[]}}
   function renderCollection(){
     const grid=$("#collection-grid"), count=$("#collection-count");
@@ -506,10 +548,10 @@
       }
       const isGoldenBoy=rarity==="GOLDEN BOY";
       const cardData=owned||card;
-      const goldenStats=isGoldenBoy?`<div class="collection-golden-stats">FIN ${cardData.attributes.finalizacao} · DRB ${cardData.attributes.drible}<br>PAS ${cardData.attributes.passe} · DEF ${cardData.attributes.defesa}</div>`:"";
+      const goldenStats=`<div class="collection-golden-stats ht-collection-attributes"><span>FIN <b>${cardData.attributes?.finalizacao ?? '—'}</b></span><span>DRB <b>${cardData.attributes?.drible ?? '—'}</b></span><span>PAS <b>${cardData.attributes?.passe ?? '—'}</b></span><span>DEF <b>${cardData.attributes?.defesa ?? '—'}</b></span></div>`;
       return `<article class="collection-item" data-rarity="${rarity}"><span class="owned-count">×${owned.count||1}</span>
         <div class="collection-art">${clubBadge(owned.club?owned:card,"collection-club-crest")}<span class="collection-rating">${owned.overall??card.overall}</span><span class="ht-rarity-gem" aria-label="Raridade ${rarity}" title="${rarity}"></span>${flagImage(owned.countryCode||card.countryCode,owned.nationality||card.nationality)}<span class="collection-figure">${figure}</span><span class="collection-year">${isGoldenBoy?`idade:${cardData.awardAge} · premio:${cardData.awardYear}`:owned.year??card.year}</span></div>
-        <div class="collection-name">${owned.name}</div><div class="collection-meta">${isGoldenBoy?rarity:(rarity+" · "+(owned.achievement||card.achievement||"EDIÇÃO HISTÓRICA"))}</div>${isGoldenBoy?`<div class="collection-golden-nationality">${cardData.nationality}</div>`:""}${goldenStats}<div class="collection-continent">${owned.continent||card.continent||"Europa"}</div>
+        <div class="collection-name">${owned.name}</div><div class="ht-collection-position">${cardData.position||card.position||"—"} · ${cardData.nationality||card.nationality||"—"}</div><div class="collection-meta">${isGoldenBoy?rarity:(rarity+" · "+(owned.achievement||card.achievement||"EDIÇÃO HISTÓRICA"))}</div>${goldenStats}<div class="collection-continent">${owned.continent||card.continent||"Europa"}</div>
       </article>`;
     }).join("");
   }
@@ -526,7 +568,7 @@
     ["americas","Taça das Américas","Três jogadores sul-americanos","M 50 12 C 30 25 27 39 42 48 C 52 56 43 69 50 90 C 63 72 58 60 68 49 C 81 33 65 19 50 12 Z"],
     ["mundial","Taça Mundial","Um jogador de cada continente","M 50 12 A 38 38 0 1 0 50 88 A 38 38 0 1 0 50 12 M 12 50 H 88 M 50 12 C 30 35 30 65 50 88 M 50 12 C 70 35 70 65 50 88"],
     ["bola-ouro","Taça Bola de Ouro","Trio formado por GOATs","M 50 10 L 60 35 L 87 37 L 67 55 L 73 83 L 50 69 L 27 83 L 33 55 L 13 37 L 40 35 Z"],
-    ["artilheiro","Taça Artilheiro","Um jogador com 5 gols no torneio","M 50 10 L 59 39 L 88 39 L 65 57 L 74 86 L 50 68 L 26 86 L 35 57 L 12 39 L 41 39 Z M 50 25 V 48"],
+    ["artilheiro","Taça Artilheiro","Um jogador com 5 gols no torneio","M 50 10 L 59 39 L 88 39 L 65 57 L 74 86 L 50 68 L 26 86 L 35 57 L 12 39 L 41 39 Z"],
     ["nacional","Taça Nacional","Trio da mesma nacionalidade","M 18 25 H 82 V 72 H 18 Z M 18 40 H 82 M 18 56 H 82 M 50 25 V 72"],
     ["equilibrio","Taça Equilíbrio","Química de 90% ou mais","M 50 12 V 50 L 77 70 M 50 12 A 38 38 0 1 0 50 88 A 38 38 0 1 0 50 12"],
     ["improvavel","Taça Improvável","Trio com OVR total abaixo de 270","M 50 10 L 90 82 H 10 Z M 50 35 V 57 M 50 68 V 70"],
@@ -547,6 +589,7 @@
     let saved={stats:{},unlocked:[]};try{saved=JSON.parse(localStorage.getItem(careerKey)||"{}")}catch(e){}
     const st={matches:0,goals:0,conceded:0,wins:0,losses:0,...(saved.stats||{})};
     statsRoot.innerHTML=[["matches","Partidas jogadas"],["goals","Gols marcados"],["conceded","Gols sofridos"],["wins","Vitórias"],["losses","Derrotas"]].map(([k,label])=>`<article class="career-stat"><strong>${Number(st[k])||0}</strong><span>${label}</span></article>`).join("");
+
     const unlocked=new Set(saved.unlocked||[]);
     grid.innerHTML=careerTrophies.map(([id,name,desc,path])=>{const yes=id==="campeao-de-tudo"?competitiveTitles>0:unlocked.has(id);const art=id==="campeao-de-tudo"?"trofeu-campeao-de-tudo.png":id==="lendas"?"trofeu-lendas.png":id==="bola-ouro"?"trofeu-bola-de-ouro.png":"trofeu-padrao.png";return `<article class="achievement-card ${yes?"unlocked":"locked"}"><div class="achievement-art"><img src="${art}" alt="${name}" loading="lazy" style="width:100%;height:100%;max-height:120px;object-fit:contain;${yes?"":"filter:grayscale(1);opacity:.4;"}"></div><h3>${name}</h3><p>${desc}</p><span class="achievement-status">${id==="campeao-de-tudo"?(yes?`${competitiveTitles} × CAMPEÃO`:"NÃO CONQUISTADO"):yes?"CONQUISTADA":"INCOMPLETA"}</span></article>`}).join("");
     const favoriteRoot=document.querySelector("#ht-favorite-trio");

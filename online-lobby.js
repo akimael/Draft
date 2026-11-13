@@ -11,6 +11,7 @@
   let refreshing = false;
   let busyMatch = false;
   let currentRoomStatus = 'waiting';
+  document.querySelector('[data-mode-select="x1"]')?.addEventListener('click',()=>{ $('salas-casuais').hidden=false; });
   const message = (value, error = false) => { status.textContent = value; status.style.color = error ? '#f3a5a0' : '#e7cf92'; };
   const showRoom = data => {
     if(draftRoomId!==data.id){draftRoomId=data.id;selectedIds=[];offerIds=[];lineupSaved=false;myReady=false;finished=false;picker.replaceChildren();updateCaptain();$('ht-match-result').hidden=true;}
@@ -64,6 +65,7 @@
 
   const lineupPanel=$('ht-lineup-panel'), picker=$('ht-lineup-picker'), captain=$('ht-lineup-captain');
   let selectedIds=[], lineupSaved=false, myReady=false, offerIds=[], draftRoomId=null;
+  const selectedView=$('ht-lineup-selected');
   const lineupStatus=(txt)=>{$('ht-lineup-status').textContent=txt;};
   const allPlayers=()=>Array.isArray(window.HT_PLAYER_DATABASE)?window.HT_PLAYER_DATABASE:[];
   function updateCaptain(){
@@ -83,49 +85,41 @@
       updateCaptain();renderPicker();
     } catch(err){lineupStatus(err.message||'Não foi possível buscar as cartas.');}
   }
+  function createCard(p, clickable=false){
+    const card=document.createElement(clickable?'button':'div');
+    if(clickable)card.type='button';
+    card.className='ht-player-card';card.dataset.rarity=p.rarity;
+    const art=document.createElement('div');art.className='ht-player-art';
+    const rating=document.createElement('span');rating.className='ht-player-rating';rating.textContent=p.overall;
+    const gem=document.createElement('span');gem.className='ht-rarity-gem';
+    const figure=document.createElement('span');figure.className='ht-player-figure';figure.textContent=({'A HISTÓRIA':'♔','GOAT':'♛','LENDÁRIO':'♜','HERÓI BR':'⚽','GOLDEN BOY':'★'})[p.rarity]||'✦';
+    const pos=document.createElement('span');pos.className='ht-player-position';pos.textContent=p.position;
+    art.append(rating,gem,figure,pos);
+    const info=document.createElement('div');info.className='ht-player-info';
+    const name=document.createElement('div');name.className='ht-player-name';name.textContent=p.name;
+    const era=document.createElement('div');era.className='ht-player-era';era.textContent=p.year||p.era||'Edição especial';
+    const stats=document.createElement('div');stats.className='ht-player-stats';
+    for(const [key,label] of [['finalizacao','FIN'],['drible','DRB'],['passe','PAS'],['defesa','DEF']]){const s=document.createElement('span');s.textContent=`${label} ${p.attributes?.[key]??'—'}`;stats.append(s);}
+    const rarity=document.createElement('div');rarity.className='ht-player-rarity';rarity.textContent=p.rarity;
+    const continent=document.createElement('div');continent.className='ht-player-continent';continent.textContent=p.continent||'';
+    info.append(name,era,stats,rarity,continent);card.append(art,info);return card;
+  }
   function renderPicker(){
-    picker.replaceChildren();
+    picker.replaceChildren();selectedView.replaceChildren();
     const pool=allPlayers();
     if(!pool.length){lineupStatus('Banco de cartas indisponível. Atualize a página.');return;}
-    if(selectedIds.length===3){
-      const title=document.createElement('p');title.textContent='Trio formado! Escolha o capitão, a estratégia e salve.';picker.append(title);
-      for(const id of selectedIds){
-        const p=pool.find(x=>x.id===id);if(!p)continue;
-        const b=document.createElement('div');b.className='ht-player-card';b.style.cursor='default';
-        const name=document.createElement('strong');name.textContent=p.name;
-        const info=document.createElement('span');info.textContent=`${p.overall} OVR · ${p.rarity} · ${p.position}`;
-        b.append(name,info);picker.append(b);
-      }
-      return;
-    }
+    if(selectedIds.length){const title=document.createElement('h4');title.textContent='Seu trio';selectedView.append(title);for(const id of selectedIds){const p=pool.find(x=>x.id===id);if(p)selectedView.append(createCard(p));}}
+    if(selectedIds.length===3){const title=document.createElement('p');title.textContent='Trio formado! Escolha o capitão, a estratégia e salve.';picker.append(title);return;}
+    const heading=document.createElement('h3');heading.textContent=`ETAPA ${selectedIds.length+1} DE 3 — Escolha uma das cinco cartas`;picker.append(heading);
     if(!offerIds.length){const wait=document.createElement('p');wait.textContent='Carregando cartas sorteadas pelo servidor...';picker.append(wait);return;}
-    const heading=document.createElement('p');heading.textContent=`ETAPA ${selectedIds.length+1} DE 3 — Escolha uma das cinco cartas aleatórias`;picker.append(heading);
-    for(const id of offerIds){
-      const p=pool.find(x=>x.id===id);if(!p)continue;
-      const b=document.createElement('button');b.type='button';b.className='ht-player-card';
-      const art=document.createElement('div');art.className='ht-player-art';
-      const rating=document.createElement('span');rating.className='ht-player-rating';rating.textContent=p.overall;
-      const position=document.createElement('span');position.className='ht-player-position';position.textContent=p.position;
-      art.append(rating,position);
-      const info=document.createElement('div');info.className='ht-player-info';
-      const name=document.createElement('div');name.className='ht-player-name';name.textContent=p.name;
-      const rarity=document.createElement('div');rarity.className='ht-player-rarity';rarity.textContent=p.rarity;
-      const stats=document.createElement('div');stats.className='ht-player-stats';
-      for(const [key,label] of [['finalizacao','FIN'],['drible','DRB'],['passe','PAS'],['defesa','DEF']]){
-        const stat=document.createElement('span');stat.textContent=`${label} ${p.attributes?.[key]??'—'}`;stats.append(stat);
-      }
-      info.append(name,rarity,stats);b.append(art,info);
+    const grid=document.createElement('div');grid.className='ht-online-card-grid';picker.append(grid);
+    for(const id of offerIds){const p=pool.find(x=>x.id===id);if(!p)continue;const b=createCard(p,true);
       b.addEventListener('click',async()=>{
         if(myReady||selectedIds.length>=3||currentRoomStatus!=='waiting')return;
-        picker.querySelectorAll('button').forEach(x=>x.disabled=true);
-        try{
-          await execute('ht_choose_casual_card',{p_room_id:roomId,p_player_id:id});
-          selectedIds.push(id);offerIds=[];lineupSaved=false;
-          $('ht-lineup-ready').disabled=true;updateCaptain();renderPicker();
-          lineupStatus(selectedIds.length===3?'Trio completo. Escolha capitão e estratégia e salve.':`${selectedIds.length}/3 cartas escolhidas.`);
-          if(selectedIds.length<3)await loadOffer();
-        }catch(err){lineupStatus(err.message||'Falha ao escolher carta.');await loadOffer();}
-      });picker.append(b);
+        grid.querySelectorAll('button').forEach(x=>x.disabled=true);
+        try{await execute('ht_choose_casual_card',{p_room_id:roomId,p_player_id:id});selectedIds.push(id);offerIds=[];lineupSaved=false;$('ht-lineup-ready').disabled=true;updateCaptain();renderPicker();lineupStatus(selectedIds.length===3?'Trio completo. Escolha capitão e estratégia e salve.':`${selectedIds.length}/3 cartas escolhidas.`);if(selectedIds.length<3)await loadOffer();}
+        catch(err){lineupStatus(err.message||'Falha ao escolher carta.');await loadOffer();}
+      });grid.append(b);
     }
   }
   function renderLineupState(data){
@@ -163,26 +157,38 @@
     }catch(e){lineupStatus(e.message||'Falha ao confirmar prontidão.');btn.disabled=false;}
   });
 
+  let replayTimer=null,replayRoom=null;
   function renderMatch(data){
-    if(!data || !data.finished)return;
-    finished=true;currentRoomStatus='finished';
+    if(!data || !data.finished || replayRoom===roomId)return;
+    replayRoom=roomId;finished=true;currentRoomStatus='finished';
     const panel=$('ht-match-result');panel.hidden=false;
-    const a=data.match_data?.team_a?.club_name||'Equipe A';
-    const b=data.match_data?.team_b?.club_name||'Equipe B';
-    $('ht-match-score').textContent=`${a} ${data.goals_a} × ${data.goals_b} ${b}`;
-    const penalties=data.penalties_a!==null&&data.penalties_a!==undefined;
-    $('ht-match-penalties').textContent=penalties?`Pênaltis: ${data.penalties_a} × ${data.penalties_b}`:'';
-    const events=$('ht-match-events');events.replaceChildren();
-    for(const event of (data.match_data?.events||[])){
-      const item=document.createElement('li');
-      if(event.type==='goal')item.textContent=`${event.minute}' — GOL: ${event.player_name} (${event.side===1?a:b})`;
-      else if(event.type==='save')item.textContent=`${event.minute}' — Defesa em finalização de ${event.player_name}`;
-      else if(event.type==='penalty')item.textContent=`Pênaltis, rodada ${event.round}: ${event.goal_a?'gol':'erro'} / ${event.goal_b?'gol':'erro'}`;
-      else item.textContent='Desempate final nos pênaltis';
-      events.append(item);
+    const match=data.match_data||{},teamA=match.team_a||{},teamB=match.team_b||{};
+    const a=teamA.club_name||'Equipe A',b=teamB.club_name||'Equipe B';
+    $('ht-live-club-a').textContent=a;$('ht-live-club-b').textContent=b;
+    // Os usernames somente são exibidos quando retornados por uma RPC autorizada.
+    $('ht-live-user-a').textContent=teamA.username?('@'+String(teamA.username).replace(/^@/,'')):'Jogador A';
+    $('ht-live-user-b').textContent=teamB.username?('@'+String(teamB.username).replace(/^@/,'')):'Jogador B';
+    for(const [id,team] of [['ht-live-team-a',teamA],['ht-live-team-b',teamB]]){
+      const target=$(id);target.replaceChildren();const ids=team.player_ids||team.players||[];
+      for(const item of ids){const p=typeof item==='string'?allPlayers().find(x=>x.id===item):allPlayers().find(x=>x.id===item?.id);if(!p)continue;const tile=document.createElement('div');tile.className='ht-live-player';const n=document.createElement('strong');n.textContent=p.name;const o=document.createElement('span');o.textContent=p.overall+' · '+p.position;tile.append(n,o);target.append(tile);}
     }
-    $('ht-lineup-save').disabled=true;$('ht-lineup-ready').disabled=true;
-    message('Partida encerrada. Resultado registrado no Supabase.');
+    const events=Array.isArray(match.events)?match.events:[];
+    const list=$('ht-match-events');list.replaceChildren();
+    let index=0,ga=0,gb=0;const penalties=data.penalties_a!=null;
+    const score=()=>{$('ht-match-score').textContent=`${ga} × ${gb}`;};score();
+    const finish=()=>{clearInterval(replayTimer);replayTimer=null;ga=Number(data.goals_a)||0;gb=Number(data.goals_b)||0;score();$('ht-live-minute').textContent='FIM DE JOGO';$('ht-live-commentary').textContent='Partida encerrada. Resultado oficial registrado no Supabase.';$('ht-match-penalties').textContent=penalties?`Pênaltis: ${data.penalties_a} × ${data.penalties_b}`:'';$('ht-live-skip').hidden=true;message('Partida encerrada. Resultado registrado no Supabase.');};
+    const next=()=>{if(index>=events.length){finish();return;}const event=events[index++];let line='';
+      if(event.type==='goal'){if(Number(event.side)===1)ga++;else gb++;score();line=`${event.minute}' — GOL! ${event.player_name||'Jogador'} (${Number(event.side)===1?a:b})`;}
+      else if(event.type==='save')line=`${event.minute}' — Defesa em finalização de ${event.player_name||'jogador'}`;
+      else if(event.type==='penalty')line=`Pênaltis, rodada ${event.round}: ${event.goal_a?'gol':'erro'} / ${event.goal_b?'gol':'erro'}`;
+      else line='Desempate final nos pênaltis';
+      $('ht-live-minute').textContent=event.minute!=null?`${event.minute}'`:'PÊNALTIS';$('ht-live-commentary').textContent=line;
+      const li=document.createElement('li');li.textContent=line;list.append(li);
+    };
+    $('ht-lineup-panel').hidden=true;$('ht-live-skip').hidden=false;
+    $('ht-live-skip').onclick=finish;
+    if(!events.length){finish();return;}
+    next();replayTimer=setInterval(next,2200);
   }
   async function syncMatch(){
     if(!roomId||busyMatch||finished)return;

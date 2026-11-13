@@ -1,0 +1,13 @@
+HAT-TRICK d’OR — X1 visual experimental
+
+Substitua online.html, online-lobby.js e style.css pelos arquivos deste pacote, mantendo os demais arquivos publicados. Faça backup antes.
+
+IMPORTANTE: o nome @usuario do adversário depende de a RPC ht_get_casual_result retornar match_data.team_a.username e team_b.username. Se não retornar, aparece Jogador A/B. Não é seguro consultar diretamente perfis de terceiros sem política adequada.
+
+Os eventos do servidor são reproduzidos progressivamente em cada navegador, mas o início da animação ainda não é sincronizado por timestamp entre dispositivos. O placar final é oficial.
+
+O campo mostra cartas resumidas se o resultado retornar IDs em team_a/player_ids ou team_a/players. Caso contrário, não inventa jogadores.
+
+Teste com duas contas, recarregamento, sala expirada e resultado. Não libere como multiplayer definitivo antes de validar.
+
+O modo offline e SQL não foram alterados.

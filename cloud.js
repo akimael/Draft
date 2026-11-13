@@ -14,6 +14,72 @@
   const client = window.supabase?.createClient(SUPABASE_URL, SUPABASE_KEY);
   if (!client) { console.error("Supabase SDK não carregado."); return; }
   window.HT_SUPABASE = client;
+    // PASSO 602 — Leitura da coleção oficial do Supabase.
+  // Não modifica a campanha, o localStorage ou as cartas existentes.
+
+  async function getOfficialCollection() {
+    const { data: auth, error: authError } =
+      await client.auth.getUser();
+
+    if (authError) {
+      throw new Error(
+        "Não foi possível verificar a conta: " +
+        authError.message
+      );
+    }
+
+    const user = auth?.user;
+
+    if (!user) {
+      return [];
+    }
+
+    const items = [];
+    const pageSize = 500;
+
+    for (let offset = 0; ; offset += pageSize) {
+      const { data, error } = await client
+        .from("player_collection")
+        .select("card_key,card_data,quantity,acquired_at")
+        .eq("user_id", user.id)
+        .order("card_key", { ascending: true })
+        .range(offset, offset + pageSize - 1);
+
+      if (error) {
+        throw new Error(
+          "Falha ao carregar a coleção oficial: " +
+          error.message
+        );
+      }
+
+      const page = Array.isArray(data) ? data : [];
+
+      items.push(...page);
+
+      if (page.length < pageSize) {
+        break;
+      }
+    }
+
+    // Confirma que a conta não mudou durante a consulta.
+    const { data: latest, error: latestError } =
+      await client.auth.getUser();
+
+    if (
+      latestError ||
+      latest?.user?.id !== user.id
+    ) {
+      throw new Error(
+        "A conta mudou durante a consulta. " +
+        "Carregue a coleção novamente."
+      );
+    }
+
+    return items;
+  }
+
+  // Disponibiliza a coleção oficial para o futuro Competitivo.
+  window.HT_GET_OFFICIAL_COLLECTION = getOfficialCollection;
   let currentUser = null, ready = false, saveTimer = null, applyingRemote = false, lastLoadError = "";
   const $ = (s, r=document) => r.querySelector(s);
 

@@ -1,0 +1,36 @@
+/* PASSO 540 — somente Arena d'OR do X1. Não altera chaveamento nem cartas das escolhas. */
+.ht-x1-page .ht-live-pitch .ht-live-team {
+  display:flex; flex-direction:row; align-items:center; justify-content:space-evenly;
+  gap:clamp(3px,.7vw,10px); min-width:0; width:100%;
+}
+.ht-x1-page .ht-live-pitch .ht-live-player.ht-x1-field-tile {
+  position:relative; flex:0 1 76px; width:clamp(42px,5.6vw,76px);
+  height:clamp(54px,6.5vw,86px); min-width:0; max-width:76px;
+  padding:5px 3px 13px; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; gap:2px;
+  border-width:2px; border-style:solid; border-radius:8px;
+  background:linear-gradient(150deg,#343c3a,#111614);
+  box-shadow:0 5px 14px #000a;
+}
+.ht-x1-page .ht-live-pitch .ht-x1-field-tile .ht-mini-rating {font-size:clamp(13px,1.6vw,20px);line-height:1;font-weight:900;color:#fff}
+.ht-x1-page .ht-live-pitch .ht-x1-field-tile .ht-mini-icon {font-size:clamp(12px,1.6vw,19px);line-height:1;color:#f4d79d}
+.ht-x1-page .ht-live-pitch .ht-x1-field-tile strong {
+  position:absolute;top:calc(100% - 8px);left:50%;transform:translateX(-50%);
+  width:max-content;max-width:clamp(52px,7vw,105px);padding:3px 5px;
+  border-radius:4px;background:#070c0cf2;color:#fff;
+  font-size:clamp(8px,.85vw,11px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.ht-x1-page .ht-live-pitch .ht-x1-field-tile.is-captain-card {outline:2px solid #ffdf7a;outline-offset:2px}
+.ht-x1-page .ht-live-pitch .ht-x1-captain-ribbon {
+  position:absolute;z-index:3;top:-13px;left:50%;transform:translateX(-50%);
+  padding:3px 6px;border-radius:4px;background:#f6c45c;color:#251c0b;
+  border:1px solid #fff0b3;font:900 8px/1 Arial,sans-serif;letter-spacing:.35px;
+  white-space:nowrap;box-shadow:0 2px 7px #0009;
+}
+@media(max-width:650px){
+  .ht-x1-page .ht-live-pitch{padding:3% 3%;gap:5%}
+  .ht-x1-page .ht-live-pitch .ht-live-team{gap:2px}
+  .ht-x1-page .ht-live-pitch .ht-live-player.ht-x1-field-tile{width:clamp(30px,10vw,48px);height:clamp(42px,13vw,58px);padding:3px 2px 10px}
+  .ht-x1-page .ht-live-pitch .ht-x1-field-tile strong{max-width:56px;font-size:7px}
+  .ht-x1-page .ht-live-pitch .ht-x1-captain-ribbon{font-size:6px;padding:2px 3px;top:-10px}
+}

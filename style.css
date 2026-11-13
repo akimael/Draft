@@ -561,3 +561,150 @@ body { background-color: #171817 !important; }
 @media(max-width:760px){.ht-online-mode-grid{grid-template-columns:1fr}}
 
 .ht-lineup-picker{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;max-height:320px;overflow:auto;margin:12px 0}.ht-lineup-picker button{background:#24251f;color:#eee;border:1px solid #77623d;border-radius:8px;padding:10px;text-align:left}.ht-lineup-picker button[aria-pressed="true"]{border:2px solid #e4b857;background:#443820}.ht-lineup-picker button:focus-visible{outline:2px solid #fff}.ht-input{padding:10px;background:#20221e;color:#fff;border:1px solid #9a814d;border-radius:7px}#ht-lineup-panel{margin-top:22px;border-top:1px solid #7d6a44;padding-top:14px}#ht-lineup-panel label{display:inline-block;margin:8px}
+
+/* X1 casual: visual expandido, isolado dos demais modos */
+#salas-casuais[hidden],#ht-match-result[hidden],#ht-lineup-panel[hidden]{display:none!important}
+#ht-lineup-picker.ht-lineup-picker{display:block;max-height:none;overflow:visible;margin:22px 0}
+.ht-online-card-grid,.ht-lineup-selected{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:16px;margin:18px 0}
+.ht-online-card-grid .ht-player-card,.ht-lineup-selected .ht-player-card{width:100%;min-width:0;max-width:280px;margin:0 auto;display:block;text-align:left;padding:0;overflow:hidden;cursor:pointer}
+.ht-lineup-selected .ht-player-card{cursor:default;transform:none}
+.ht-online-card-grid .ht-player-card:hover{transform:translateY(-5px)}
+.ht-online-card-grid .ht-player-card:disabled{opacity:.65;cursor:wait}
+.ht-live-match{margin-top:24px}.ht-live-scoreboard{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;padding:18px;border:1px solid var(--line);border-radius:14px;background:#1a211d}
+.ht-team-identity{display:flex;flex-direction:column;gap:6px;min-width:0;overflow-wrap:anywhere}.ht-team-identity:last-child{text-align:right}.ht-team-identity strong{color:var(--gold2)}.ht-team-identity span{font-size:12px;color:var(--muted)}.ht-live-center{text-align:center;display:flex;flex-direction:column;gap:5px}.ht-live-center strong{font-size:clamp(24px,4vw,42px);white-space:nowrap}.ht-live-center span{font-size:11px;color:var(--gold2)}
+.ht-live-pitch{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:24px;min-height:230px;background:repeating-linear-gradient(90deg,#184b35 0,#184b35 16%,#205b40 16%,#205b40 32%);border:2px solid #b1cbb5;border-radius:10px;padding:24px 14px;margin:14px 0}.ht-live-midline{position:absolute;left:50%;top:0;bottom:0;border-left:1px solid #b1cbb5;opacity:.8}.ht-live-team{display:flex;flex-direction:column;justify-content:space-around;align-items:center;gap:10px}.ht-live-player{background:#20221e;border:1px solid #d2ae63;border-radius:8px;max-width:180px;width:100%;text-align:center;padding:8px 4px;display:flex;flex-direction:column;gap:4px}.ht-live-player strong{font-size:12px;color:#f2dca7}.ht-live-player span{font-size:10px;color:#eee}.ht-live-commentary{padding:15px;border-left:3px solid var(--gold);background:#24251f}
+@media(max-width:650px){.ht-online-card-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.ht-lineup-selected{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.ht-live-scoreboard{gap:5px;padding:9px}.ht-team-identity strong{font-size:12px}.ht-live-pitch{gap:8px;padding:12px 5px}.ht-live-player strong{font-size:10px}}
+
+/* X1 casual: página exclusiva de jogo */
+.ht-x1-main{padding-top:34px;padding-bottom:75px;max-width:1260px}
+.ht-x1-page .info-content{max-width:none}
+.ht-x1-back{display:inline-flex;color:var(--gold2);font-size:12px;letter-spacing:1px;margin-bottom:22px}
+.ht-x1-stage{padding:13px 17px;border:1px solid var(--line);border-radius:10px;color:var(--gold2);font-weight:700;letter-spacing:1.6px;font-size:12px;margin-bottom:22px;background:rgba(198,166,106,.07)}
+.ht-x1-page #x1-game{max-width:none}
+.ht-x1-page #ht-room-current{margin-top:26px}
+.ht-x1-page #ht-lineup-picker{margin-top:24px}
+.ht-x1-page .ht-online-card-grid{grid-template-columns:repeat(5,minmax(0,1fr));gap:15px}
+.ht-x1-page .ht-online-card-grid .ht-player-card{min-width:0;width:100%;height:auto;min-height:300px}
+.ht-x1-page .ht-lineup-selected{margin:22px 0}
+.ht-x1-page .ht-live-match{scroll-margin-top:20px}
+@media(max-width:1050px){.ht-x1-page .ht-online-card-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:650px){.ht-x1-main{width:94%;padding-top:18px}.ht-x1-page .ht-online-card-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.ht-x1-page .ht-online-card-grid .ht-player-card{min-height:240px}.ht-x1-page .ht-live-scoreboard{gap:8px}}
+
+/* X1: cada etapa ocupa a tela; nenhum painel fica empilhado */
+.ht-x1-page [data-x1-screen][hidden]{display:none!important}
+.ht-x1-page .ht-x1-main{max-width:1250px;min-height:calc(100vh - 150px)}
+.ht-x1-page #x1-game{min-height:72vh}
+.ht-x1-page .ht-x1-screen{animation:ht-screen-in .28s ease-out;min-height:360px}
+.ht-x1-page .ht-x1-screen.ht-panel{padding:clamp(20px,4vw,48px)}
+@keyframes ht-screen-in{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.ht-x1-progress{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 28px}
+.ht-x1-progress-step{padding:8px 12px;border:1px solid rgba(217,184,112,.22);border-radius:30px;font-size:11px;letter-spacing:.06em;color:#a4a4a4}
+.ht-x1-progress-step.is-active{background:rgba(215,171,72,.16);color:#f5d994;border-color:#c49d52}
+.ht-x1-progress-step.is-complete{color:#d6c59d}
+.ht-x1-page .ht-online-card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(180px,100%),1fr));gap:16px;align-items:stretch}
+.ht-x1-page .ht-lineup-selected{display:flex;gap:15px;flex-wrap:wrap;margin:20px 0}
+.ht-x1-page .ht-x1-entry{padding:30px;border:1px solid rgba(214,176,90,.25);border-radius:20px;background:linear-gradient(135deg,rgba(133,100,35,.12),rgba(10,12,13,.8))}
+/* Seleção de modos: cards com arte substituível 1200 x 675 */
+.ht-online-mode-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;margin:26px 0 32px}
+.ht-champ-mode,.info-content a.ht-champ-mode{display:block;overflow:hidden;border:1px solid rgba(216,176,89,.32);border-radius:18px;background:linear-gradient(160deg,#25221c,#101316);color:#f4ead7;text-decoration:none!important;box-shadow:0 15px 40px rgba(0,0,0,.24);transition:transform .2s,border-color .2s,box-shadow .2s}
+.ht-champ-mode:hover{transform:translateY(-6px);border-color:#d8b55f;box-shadow:0 24px 48px rgba(0,0,0,.35)}
+.ht-champ-mode *{text-decoration:none!important}
+.ht-champ-art{position:relative;aspect-ratio:16/9;background:radial-gradient(circle at 50% 100%,#685228,#161b20 72%);overflow:hidden}
+.ht-champ-casual .ht-champ-art{background:radial-gradient(circle at 50% 95%,#43584c,#111b1b 70%)}
+.ht-champ-competitive .ht-champ-art{background:radial-gradient(circle at 50% 95%,#775b24,#201b13 70%)}
+.ht-champ-art img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1}
+.ht-champ-placeholder{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:20px;font-size:12px;letter-spacing:.12em;color:rgba(255,235,184,.55);border:1px dashed rgba(255,230,164,.2);margin:12px;border-radius:10px}
+.ht-champ-body{padding:23px 22px 26px;min-height:228px;display:flex;flex-direction:column;gap:10px}
+.ht-champ-kicker{font-size:11px;font-weight:700;letter-spacing:.17em;color:#d8b969}
+.ht-champ-title{font-size:clamp(19px,2vw,26px);font-weight:800;line-height:1.1;color:#fff;margin:0}
+.ht-champ-desc{font-size:14px;line-height:1.55;color:#d5d1c9;margin:0;flex:1}
+.ht-champ-status{font-size:11px;font-weight:800;letter-spacing:.08em;color:#e8c982}
+.ht-champ-competitive{border-color:rgba(219,173,65,.55)}
+@media(max-width:850px){.ht-online-mode-grid{grid-template-columns:1fr}.ht-champ-body{min-height:unset}.ht-x1-progress-step{font-size:10px;padding:6px 9px}}
+
+/* X1 casual — navegação persistente e responsividade */
+.ht-x1-room-nav{display:flex;gap:10px;flex-wrap:wrap;margin:-8px 0 22px}
+.ht-x1-room-nav[hidden],.ht-x1-room-nav button[hidden]{display:none!important}
+.ht-x1-room-nav .ht-btn{font-size:11px;padding:12px 16px}
+.ht-x1-page .ht-online-card-grid{grid-template-columns:repeat(5,minmax(0,1fr));gap:14px}
+.ht-x1-page .ht-online-card-grid .ht-player-card{min-width:0;max-width:none;overflow-wrap:anywhere}
+.ht-x1-page .ht-lineup-selected .ht-player-card{width:min(220px,100%)}
+@media(max-width:1100px){.ht-x1-page .ht-online-card-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:650px){.ht-x1-page .ht-online-card-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.ht-x1-room-nav .ht-btn{flex:1 1 145px}.ht-x1-page .ht-lineup-selected .ht-player-card{width:calc(50% - 8px)}}
+
+
+/* ARENA D'OR — X1 online; escopo isolado para não alterar outras páginas */
+.ht-x1-page .ht-arena-shell{position:relative;max-width:1100px;margin:auto;padding:clamp(12px,2.5vw,26px);background:linear-gradient(145deg,#121a19,#080d0e);border:1px solid #3e4c44;border-radius:22px;box-shadow:0 20px 70px #0009;overflow:hidden}
+.ht-x1-page .ht-arena-kicker{display:flex;align-items:center;gap:9px;font-size:11px;letter-spacing:.18em;color:#d5dfda;font-weight:800;margin:0 0 14px}
+.ht-x1-page .ht-arena-live{margin-left:auto;color:#e8e8e8;font-size:10px;letter-spacing:.08em}
+.ht-x1-page .ht-live-dot{width:8px;height:8px;background:#f3494b;border-radius:50%;box-shadow:0 0 12px #e64244;animation:ht-live-pulse 1.6s infinite}
+.ht-x1-page .ht-arena-scoreboard{display:grid;grid-template-columns:minmax(0,1fr) minmax(135px,220px) minmax(0,1fr);align-items:center;gap:8px;min-height:155px;padding:14px clamp(12px,3vw,34px);border-radius:15px;background:linear-gradient(#050505c9,#050505d9),url('placar.png') center/100% 100% no-repeat;border:1px solid #58605a}
+.ht-x1-page .ht-arena-club{display:flex;flex-direction:column;gap:7px;min-width:0;text-align:center}.ht-x1-page .ht-arena-club strong{font-size:clamp(13px,2.3vw,24px);line-height:1.2;color:#fff;overflow-wrap:anywhere;text-shadow:0 2px 6px #000}.ht-x1-page .ht-arena-club small{font-size:12px;color:#e7e7e7}
+.ht-x1-page .ht-arena-center{text-align:center}.ht-x1-page .ht-arena-score{font-size:clamp(34px,5.5vw,64px);font-weight:900;color:#ffec28;white-space:nowrap;font-variant-numeric:tabular-nums;line-height:1.1;text-shadow:0 3px 9px #000}.ht-x1-page .ht-arena-clock{font-size:clamp(19px,3vw,30px);font-weight:900;color:#fff;font-variant-numeric:tabular-nums}.ht-x1-page .ht-arena-period{font-size:10px;color:#ffec28;font-weight:900;letter-spacing:.1em}
+.ht-x1-page .ht-arena-stadium{position:relative;margin-top:14px;padding:clamp(14px,3vw,36px);background:radial-gradient(ellipse at center,#384941 0,#14201b 65%,#070a09 100%);border:1px solid #485b4d;border-radius:16px;box-shadow:inset 0 0 45px #000c}
+.ht-x1-page .ht-arena-stands{position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(165deg,transparent 0 8px,#d9e9d40b 9px 10px);opacity:.65}
+.ht-x1-page .ht-live-pitch{position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;gap:10%;align-items:stretch;min-height:clamp(210px,40vw,500px);margin:0;padding:4% 9%;background:#063a13 url('campo-escuro.png') center/100% 100% no-repeat;border:0;border-radius:5px;box-shadow:0 12px 35px #000b;aspect-ratio:2048/1171}
+.ht-x1-page .ht-live-team{display:flex;flex-direction:column;justify-content:space-around;align-items:center;gap:2px;min-width:0}
+.ht-x1-page .ht-live-player{position:relative;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:1px;width:clamp(52px,7vw,86px);height:clamp(52px,7vw,86px);min-width:0;max-width:none;padding:3px 3px 7px;background:linear-gradient(150deg,#343c3a,#111614);border:2px solid #b5b5a7;border-radius:8px;box-shadow:0 5px 14px #000a;text-align:center;transform:translateZ(0)}
+/* Miniaturas: borda segue a raridade original da carta, nunca a equipe. */
+.ht-x1-page .ht-live-player[data-rarity="GOAT"]{border-color:#9271b4;box-shadow:0 0 12px #9271b480,0 5px 14px #000a}
+.ht-x1-page .ht-live-player[data-rarity="GOLDEN BOY"]{border-color:#ff6cab;box-shadow:0 0 10px #ff6cab66,0 5px 14px #000a}
+.ht-x1-page .ht-live-player[data-rarity="HERÓI BR"]{border-color:#65a77b;box-shadow:0 0 10px #65a77b66,0 5px 14px #000a}
+.ht-x1-page .ht-live-player[data-rarity="LENDÁRIO"]{border-color:#d1ad5e;box-shadow:0 0 10px #d1ad5e66,0 5px 14px #000a}
+.ht-x1-page .ht-live-player[data-rarity="ICÔNICO"]{border-color:#ad8262;box-shadow:0 0 10px #ad826266,0 5px 14px #000a}
+.ht-x1-page .ht-live-player[data-rarity="A HISTÓRIA"]{border-color:#c8b486;box-shadow:0 0 12px #c8b48680,0 5px 14px #000a}
+.ht-x1-page .ht-live-player .ht-mini-rating{font-size:clamp(12px,1.7vw,20px);font-weight:900;color:#fff}.ht-x1-page .ht-live-player .ht-mini-icon{font-size:clamp(10px,1.4vw,16px);line-height:1}.ht-x1-page .ht-live-player strong{position:absolute;top:calc(100% - 4px);left:50%;transform:translateX(-50%);width:max-content;max-width:110px;padding:3px 6px;border-radius:4px;background:#070c0ce8;color:#fff;font-size:clamp(8px,1.1vw,11px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ht-x1-page .ht-goal-overlay{position:absolute;z-index:5;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#050505b0;pointer-events:none}.ht-x1-page .ht-goal-overlay[hidden]{display:none!important}.ht-x1-page .ht-goal-overlay img{width:min(65%,500px);max-height:55%;object-fit:contain;filter:drop-shadow(0 7px 16px #000)}.ht-x1-page .ht-goal-overlay strong{margin-top:10px;font-size:clamp(15px,2.5vw,28px);color:#fff;text-shadow:0 3px 8px #000}.ht-x1-page .ht-goal-active img{animation:ht-goal-impact .7s cubic-bezier(.15,1.5,.4,1) both}.ht-x1-page .ht-goal-active strong{animation:ht-goal-appear .7s .15s both}
+.ht-x1-page .ht-arena-timeline{height:7px;margin:13px 2px;background:#3d4845;border-radius:99px;overflow:hidden}.ht-x1-page #ht-arena-progress{height:100%;width:0;background:linear-gradient(90deg,#e5e5e5,#efb936);transition:width .1s linear}
+.ht-x1-page .ht-arena-commentary{position:relative;min-height:110px;padding:19px clamp(20px,3vw,40px);background:#151515 url('comentario.png') center/100% 100% no-repeat;display:flex;flex-direction:column;justify-content:center}.ht-x1-page .ht-arena-commentary-label{font-size:10px;letter-spacing:.14em;color:#151515;font-weight:900}.ht-x1-page .ht-arena-commentary p{margin:12px 0 0;color:#fff;font-weight:800;text-shadow:0 1px 4px #000;font-size:clamp(13px,2vw,19px)}
+.ht-x1-page .ht-arena-events{margin-top:16px;color:#ddd}.ht-x1-page .ht-arena-events summary{cursor:pointer;font-size:13px;font-weight:700}.ht-x1-page .ht-arena-events li{margin:7px 0;font-size:13px}.ht-x1-page .ht-arena-penalties{font-weight:900;text-align:center;color:#fff}
+@keyframes ht-goal-impact{0%{opacity:0;transform:scale(.25) rotate(-7deg)}65%{opacity:1;transform:scale(1.15) rotate(2deg)}100%{transform:scale(1) rotate(0)}}@keyframes ht-goal-appear{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}@keyframes ht-live-pulse{50%{opacity:.45;box-shadow:0 0 3px #f3494b}}
+@media(max-width:650px){.ht-x1-page .ht-arena-scoreboard{grid-template-columns:minmax(0,1fr) 100px minmax(0,1fr);padding:10px 6px;min-height:115px}.ht-x1-page .ht-arena-club small{font-size:9px}.ht-x1-page .ht-arena-kicker{font-size:9px;letter-spacing:.05em}.ht-x1-page .ht-arena-live{font-size:8px}.ht-x1-page .ht-arena-stadium{padding:8px}.ht-x1-page .ht-live-pitch{min-height:190px;padding:3% 7%;gap:8%}.ht-x1-page .ht-live-player{width:45px;height:45px}.ht-x1-page .ht-live-player strong{max-width:76px;font-size:8px}.ht-x1-page .ht-arena-commentary{min-height:94px;padding:15px 17px}.ht-x1-page .ht-arena-commentary-label{font-size:8px}}
+@media(prefers-reduced-motion:reduce){.ht-x1-page .ht-goal-active img,.ht-x1-page .ht-goal-active strong,.ht-x1-page .ht-live-dot{animation:none}}
+
+
+/* ARENA D'OR — CAMPO DESENHADO EM CSS, SEM DEPENDER DE PNG */
+.ht-bracket-page .ht-live-pitch {
+  position:relative; isolation:isolate; overflow:visible;
+  background:repeating-linear-gradient(90deg,#104d2b 0 12.5%,#155a33 12.5% 25%)!important;
+  border:3px solid rgba(236,255,237,.85)!important;
+  border-radius:3px;
+}
+.dor-pitch-markings{position:absolute;inset:0;pointer-events:none;z-index:0;color:rgba(241,255,243,.83)}
+.dor-pitch-markings span{position:absolute;display:block;box-sizing:border-box}
+.dor-pitch-center-line{top:0;bottom:0;left:50%;border-left:2px solid currentColor}
+.dor-pitch-center-circle{width:19%;aspect-ratio:1;border:2px solid currentColor;border-radius:50%;left:50%;top:50%;transform:translate(-50%,-50%)}
+.dor-pitch-area{top:20%;height:60%;width:16%;border:2px solid currentColor}
+.dor-pitch-area-left{left:0;border-left:0}.dor-pitch-area-right{right:0;border-right:0}
+.dor-pitch-six{top:35%;height:30%;width:6%;border:2px solid currentColor}
+.dor-pitch-six-left{left:0;border-left:0}.dor-pitch-six-right{right:0;border-right:0}
+.dor-pitch-goal{top:41%;height:18%;width:3%;border:3px solid #f4fff1;background:repeating-linear-gradient(0deg,transparent 0 7px,#e9ffef5c 8px 9px),repeating-linear-gradient(90deg,transparent 0 7px,#e9ffef5c 8px 9px)}
+.dor-pitch-goal-left{left:-3%;border-right:0}.dor-pitch-goal-right{right:-3%;border-left:0}
+.dor-pitch-spot{top:50%;width:6px;height:6px;background:#f3fff0;border-radius:50%;transform:translateY(-50%)}
+.dor-pitch-spot-left{left:11%}.dor-pitch-spot-right{right:11%}
+.ht-x1-page .ht-live-team,.ht-bracket-page .ht-live-team{position:relative;z-index:1}
+.ht-x1-page .ht-goal-overlay,.ht-bracket-page .ht-goal-overlay{z-index:8;overflow:hidden}
+.dor-goal-word{display:flex;align-items:center;justify-content:center;white-space:nowrap;font:1000 clamp(28px,7.4vw,100px)/1 Impact,'Arial Black',sans-serif;letter-spacing:-.045em;color:#fff6d4;filter:drop-shadow(0 6px 1px #3c250e) drop-shadow(0 0 18px #ffb82d)}
+.dor-goal-word span{display:inline-block}
+.ht-goal-active .dor-goal-word span{animation:dor-goal-letter 850ms cubic-bezier(.18,1.5,.35,1) both}
+.dor-goal-word span:nth-child(2){animation-delay:55ms}.dor-goal-word span:nth-child(3){animation-delay:110ms}.dor-goal-word span:nth-child(4){animation-delay:165ms}.dor-goal-word span:nth-child(5){animation-delay:220ms}.dor-goal-word span:nth-child(6){animation-delay:275ms}.dor-goal-word span:nth-child(7){animation-delay:330ms}.dor-goal-word span:nth-child(8){animation-delay:385ms}.dor-goal-word span:nth-child(9){animation-delay:440ms}
+.ht-goal-active .dor-goal-word{animation:dor-goal-flash 1.2s ease-out both}
+@keyframes dor-goal-letter{0%{opacity:0;transform:translateY(-90px) rotate(-15deg) scale(.2)}65%{opacity:1;transform:translateY(10px) rotate(5deg) scale(1.18)}100%{opacity:1;transform:translateY(0) rotate(0) scale(1)}}
+@keyframes dor-goal-flash{0%{filter:brightness(3)}40%{filter:brightness(1.4)}100%{filter:brightness(1)}}
+@media(max-width:650px){.dor-goal-word{font-size:clamp(24px,7vw,52px)}.dor-pitch-area{border-width:1.5px}.dor-pitch-six{border-width:1.5px}.dor-pitch-center-circle{border-width:1.5px}}
+@media(prefers-reduced-motion:reduce){.dor-goal-word span,.ht-goal-active .dor-goal-word{animation:none!important}}
+
+/* PASSO 530 — somente identidade visual das cartas e dos cards online */
+.hero-art .mini-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 9px}
+.hero-art .mini-stats span{display:flex;justify-content:space-between;gap:5px}
+.ht-player-card .ht-player-position{display:block!important}
+.ht-player-card .ht-player-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px}
+.ht-player-card .ht-player-stats span{min-width:0}
+.ht-player-card .ht-card-country{position:absolute;right:10px;top:12px;z-index:4;font-size:10px;max-width:90px;text-align:right;color:#f0dfbd;text-shadow:0 1px 3px #000}
+.ht-collection-position{font-size:10px;font-weight:800;letter-spacing:.08em;color:#d8bb82;margin-top:5px}
+.collection-item[data-rarity="A HISTÓRIA"] .ht-collection-position{color:#6b5535}
+.ht-collection-attributes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 9px;margin-top:10px;font-size:10px;line-height:1.5}
+.ht-collection-attributes span{display:flex;justify-content:space-between;gap:5px}
+.ht-collection-attributes b{color:inherit}
+/* Arte existente deve aparecer sozinha, sem indicação de espaço reservado */
+.ht-champ-placeholder{display:none!important}

@@ -1,0 +1,36 @@
+
+/* PASSO 532 — identidade visual única, inspirada diretamente nas cartas da capa. */
+.ht-unified-button{display:block!important;padding:0!important;background:transparent!important;border:0!important;min-height:0!important;min-width:0!important;overflow:visible!important;color:inherit;cursor:pointer}
+.ht-unified-card{--accent:#b48b64;--paper:#29251f;--ink:#f5e5cc;position:relative;box-sizing:border-box;width:100%;aspect-ratio:190/300;background:var(--paper);color:var(--ink);border:2px solid var(--accent);border-radius:12px 5px 12px 5px;box-shadow:0 12px 28px #0008;overflow:hidden;text-align:left;font-family:var(--serif,'Playfair Display',Georgia,serif);font-weight:normal}
+.ht-unified-card[data-rarity="GOAT"]{--accent:#b58cdb;--paper:#292333;--ink:#f8eaff}
+.ht-unified-card[data-rarity="LENDÁRIO"]{--accent:#e4c476;--paper:#42361f;--ink:#fff1cd}
+.ht-unified-card[data-rarity="A HISTÓRIA"]{--accent:#fff0cc;--paper:#e9dcb8;--ink:#33291e}
+.ht-unified-card[data-rarity="HERÓI BR"]{--accent:#61c78a;--paper:#193c2a;--ink:#eaffed}
+.ht-unified-card[data-rarity="GOLDEN BOY"]{--accent:#f3a6d4;--paper:#43243b;--ink:#ffe8f6}
+.ht-unified-card[data-rarity="ICÔNICO"]{--accent:#b48b64;--paper:#332820;--ink:#f3ddc5}
+.ht-unified-inner{position:absolute;inset:7px;border:1px solid color-mix(in srgb,var(--accent) 55%,transparent);padding:8px;display:flex;flex-direction:column;min-width:0}
+.ht-unified-top{display:flex;justify-content:space-between;font:700 clamp(6px,.6vw,9px) Arial,sans-serif;letter-spacing:1.2px;color:var(--ink)}
+.ht-unified-rating{font-size:clamp(22px,2.7vw,37px);font-weight:700;line-height:1.3;margin-top:8px}
+.ht-unified-symbol{position:absolute;inset:19% 0 27%;display:grid;place-items:center;font-size:clamp(50px,8vw,115px);color:var(--accent);opacity:.2;pointer-events:none}
+.ht-unified-bottom{margin-top:auto;position:relative;z-index:1;min-width:0}
+.ht-unified-name{font-size:clamp(13px,1.5vw,22px);font-weight:700;line-height:1.1;overflow-wrap:anywhere;text-transform:uppercase}
+.ht-unified-meta{display:flex;align-items:center;gap:5px;margin-top:6px;font:700 9px Arial,sans-serif;letter-spacing:.08em;min-height:16px}
+.ht-card-flag{width:20px;height:13px;object-fit:cover;flex-shrink:0;display:inline-block}
+.ht-card-club{width:19px;height:19px;object-fit:contain;flex-shrink:0;font-size:7px}
+.ht-unified-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px 10px;border-top:1px solid var(--accent);margin-top:10px;padding-top:8px;font:700 8px Arial,sans-serif}
+.ht-unified-stats span{display:flex;justify-content:space-between;gap:3px}.ht-unified-stats b{font-size:11px}
+.ht-unified-button:hover:not(:disabled) .ht-unified-card{transform:translateY(-3px);box-shadow:0 17px 32px #000a}
+.ht-unified-button:focus-visible{outline:3px solid #f6d894;outline-offset:4px}
+.ht-unified-button:disabled{opacity:.5;cursor:wait}
+.ht-player-grid .ht-unified-button,.ht-online-card-grid .ht-unified-button,#br-pick-cards .ht-unified-button{width:100%!important;max-width:210px!important;justify-self:center}
+.ht-live-player.ht-unified-field{width:clamp(60px,7vw,98px)!important;height:auto!important;min-width:0!important;min-height:0!important;padding:0!important;border:0!important;background:none!important;box-shadow:none!important;display:block!important}
+.ht-unified-mini{width:100%;aspect-ratio:190/300;border-width:1px;border-radius:5px}
+.ht-unified-mini .ht-unified-inner{inset:3px;padding:3px}
+.ht-unified-mini .ht-unified-top{font-size:5px;letter-spacing:0}
+.ht-unified-mini .ht-unified-rating{font-size:16px;margin-top:2px}
+.ht-unified-mini .ht-unified-symbol{font-size:32px}
+.ht-unified-mini .ht-unified-name{font-size:9px;line-height:1.05}
+.ht-unified-mini .ht-unified-meta{font-size:5px;gap:2px;margin-top:2px;min-height:9px}
+.ht-unified-mini .ht-card-flag{width:11px;height:7px}.ht-unified-mini .ht-card-club{width:10px;height:10px}
+.ht-unified-mini .ht-unified-stats{gap:2px;margin-top:3px;padding-top:3px;font-size:5px}.ht-unified-mini .ht-unified-stats b{font-size:6px}
+@media(max-width:650px){.ht-unified-name{font-size:clamp(12px,3.4vw,18px)}.ht-unified-rating{font-size:clamp(21px,6vw,30px)}.ht-unified-symbol{font-size:clamp(55px,17vw,95px)}.ht-unified-top{font-size:7px}.ht-unified-stats{font-size:7px;gap:4px}.ht-unified-stats b{font-size:9px}.ht-live-player.ht-unified-field{width:clamp(55px,18vw,78px)!important}.ht-unified-mini .ht-unified-name{font-size:8px}.ht-unified-mini .ht-unified-rating{font-size:13px}}
