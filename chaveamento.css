@@ -523,3 +523,50 @@
 .ht-bracket-page .br-semi-side .br-team span{font-size:12px}
 .ht-bracket-page .br-final-match{max-width:205px}
 @media(max-width:960px){.ht-bracket-page .br-heading,.ht-bracket-page .br-sides{min-width:1190px}}
+
+/* PASSO 829 — correções de responsividade e escalação */
+.ht-bracket-page .br-countdown strong{font-size:clamp(38px,11vw,105px);max-width:100%;overflow-wrap:normal;white-space:nowrap;letter-spacing:-.045em}
+@media(max-width:650px){.ht-bracket-page .br-countdown{padding:20px 8px;gap:14px;min-height:min(540px,calc(100dvh - 130px))}.ht-bracket-page .br-countdown strong{font-size:clamp(34px,10.4vw,65px)}.ht-bracket-page .br-countdown span,.ht-bracket-page .br-countdown p{letter-spacing:.1em;font-size:clamp(10px,2.6vw,14px)}}
+/* O botão precisa ter altura: a carta interna usa aspect-ratio e 100% da largura. */
+.ht-bracket-page #br-pick-cards .br-offer-card.ht-unified-button{display:block!important;position:relative;width:100%!important;max-width:210px!important;min-width:0!important;min-height:0!important;height:auto!important;aspect-ratio:190/300!important;padding:0!important;align-self:start;justify-self:center}
+.ht-bracket-page #br-pick-cards .br-offer-card .ht-unified-card{display:block;width:100%;height:100%;aspect-ratio:190/300}
+@media(max-width:650px){.ht-bracket-page #br-pick-cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.ht-bracket-page #br-pick-cards .br-offer-card.ht-unified-button{max-width:100%!important}}
+.ht-bracket-page #br-selected{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;align-items:start}
+.ht-bracket-page #br-selected .ht829-captain-card{padding:0;border:0;background:transparent;cursor:pointer;min-width:0;outline:none}
+.ht-bracket-page .ht829-captain-card .ht-unified-card{width:100%;max-width:220px;margin:auto}
+.ht-bracket-page .ht829-captain-label{display:block;margin:9px auto;padding:8px 5px;border-radius:24px;background:#35362d;color:#e9dfc7;font:800 clamp(8px,1.2vw,12px)/1.2 Arial,sans-serif;text-align:center}
+.ht-bracket-page .ht829-captain-card.is-captain .ht-unified-card{outline:3px solid #ffcc68;outline-offset:2px}
+.ht-bracket-page .ht829-captain-card.is-captain .ht829-captain-label{background:#ffcc68;color:#231a09}
+.ht-bracket-page .ht829-captain-card:focus-visible .ht-unified-card{outline:3px solid #fff}
+.ht-bracket-page .ht-arena-events{display:block;border:1px solid #555a4e;border-radius:10px;padding:12px;margin-top:14px;background:#151b17}
+.ht-bracket-page .ht-arena-events summary{font-size:clamp(15px,2vw,22px);padding:8px}
+.ht-bracket-page .ht-arena-scoreboard{grid-template-columns:minmax(0,1fr) minmax(90px,145px) minmax(0,1fr);min-height:105px;gap:6px;padding:12px}
+.ht-bracket-page .ht-arena-club strong{overflow-wrap:normal;word-break:normal;hyphens:none;font-size:clamp(11px,2.2vw,17px)}
+.ht-bracket-page .ht-arena-club small{font-size:clamp(9px,1.6vw,12px);overflow:hidden;text-overflow:ellipsis}
+.ht-bracket-page .ht-arena-score{font-size:clamp(27px,5vw,44px)}
+.ht-bracket-page .ht-arena-comparison .ht-team-metrics{gap:3px;padding:4px;min-width:0}
+.ht-bracket-page .ht-arena-comparison .ht-team-metrics>span{padding:6px 1px;min-width:0}
+.ht-bracket-page .ht-arena-comparison .ht-team-metrics small{font-size:clamp(8px,1.4vw,10px);letter-spacing:0}
+.ht-bracket-page .ht-arena-comparison .ht-team-metrics strong{font-size:clamp(12px,2.2vw,19px)}
+@media(max-width:650px){
+.ht-bracket-page .ht-arena-shell{padding:10px;border-radius:12px}
+.ht-bracket-page .ht-arena-kicker{font-size:9px;letter-spacing:.06em;line-height:1.4;flex-wrap:wrap}
+.ht-bracket-page .ht-arena-scoreboard{grid-template-columns:minmax(0,1fr) minmax(85px,100px) minmax(0,1fr);padding:10px 6px;gap:5px;min-height:100px}
+.ht-bracket-page .ht-arena-club strong{font-size:clamp(10px,2.8vw,13px);line-height:1.25}
+.ht-bracket-page .ht-arena-score{font-size:clamp(25px,7vw,34px)}
+.ht-bracket-page .ht-arena-clock{font-size:16px}
+.ht-bracket-page .ht-arena-comparison{gap:6px}
+.ht-bracket-page .ht-arena-comparison .ht-team-metrics{gap:2px;padding:3px;border-radius:7px}
+.ht-bracket-page .ht-arena-comparison .ht-team-metrics>span{gap:3px;padding:5px 1px}
+.ht-bracket-page .ht-arena-comparison .ht-team-metrics small{font-size:8px}
+.ht-bracket-page .ht-arena-comparison .ht-team-metrics strong{font-size:12px}
+.ht-bracket-page .ht-arena-stadium{padding:7px}
+.ht-bracket-page .ht-live-pitch{grid-template-columns:repeat(2,minmax(0,1fr));gap:2%;padding:3% 2%;min-height:150px}
+.ht-bracket-page .ht-live-team{grid-template-columns:repeat(3,minmax(0,1fr));gap:2px}
+.ht-bracket-page .ht-live-player.ht-unified-field{width:100%!important;max-width:100%!important;min-width:0!important}
+.ht-bracket-page .ht-field-card{min-width:0;width:100%;overflow:hidden}
+.ht-bracket-page .ht-field-name{font-size:clamp(6px,1.55vw,9px);overflow-wrap:normal;word-break:normal;line-height:1.15}
+.ht-bracket-page .ht-field-position{font-size:clamp(6px,1.4vw,8px)}
+.ht-bracket-page #br-selected{gap:6px}
+.ht-bracket-page .ht829-captain-label{font-size:8px;letter-spacing:0;padding:7px 2px}
+}

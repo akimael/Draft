@@ -322,7 +322,7 @@ function serverNow() {
   function displayMetrics(id,team,captainId) {
     const el=$(id);if(!el)return;
     const m=teamMetrics(team,captainId);el.replaceChildren();
-    for(const [label,value] of [['QUÍMICA',m?.chemistry==null?'—':m.chemistry+'%'],['ATAQUE',m?.attack??'—'],['DEFESA',m?.defense??'—']]){
+    for(const [label,value] of [['QUI',m?.chemistry==null?'—':m.chemistry+'%'],['ATA',m?.attack??'—'],['DEF',m?.defense??'—']]){
       const item=document.createElement('span'),small=document.createElement('small'),strong=document.createElement('strong');
       small.textContent=label;strong.textContent=String(value);item.append(small,strong);el.append(item);
     }
@@ -495,10 +495,18 @@ function serverNow() {
         const item = document.createElement('div');
         item.className = 'br-picked-card';
 
-        item.textContent = p
-          ? `${p.name} • ${p.overall} OVR`
-          : id;
-
+        item.className = 'br-picked-card ht829-captain-card' + (String(captain) === String(id) ? ' is-captain' : '');
+        item.setAttribute('role','button');
+        item.setAttribute('tabindex','0');
+        item.setAttribute('aria-pressed',String(captain) === String(id));
+        item.innerHTML = window.HT_CARD_VIEW?.card && p ? window.HT_CARD_VIEW.card(p) : '';
+        if (!item.innerHTML) item.textContent = p ? `${p.name} • ${p.overall} OVR` : id;
+        const mark=document.createElement('span');mark.className='ht829-captain-label';
+        mark.textContent=String(captain)===String(id)?'★ CAPITÃO ESCOLHIDO':'ESCOLHER COMO CAPITÃO';
+        item.append(mark);
+        const choose=()=>{if(saved||ready)return;captain=String(id);if($('br-captain'))$('br-captain').value=captain;updateForm();};
+        item.addEventListener('click',choose);
+        item.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();choose();}});
         cards.append(item);
       }
     }
@@ -1810,6 +1818,7 @@ const eliminated = Boolean(
           }
 
           activeRound = round;
+      if ($('br-current-round')) $('br-current-round').textContent = ['','OITAVAS DE FINAL','QUARTAS DE FINAL','SEMIFINAL','FINAL'][Number(round)] || 'TORNEIO CASUAL';
 
           // Não deixa uma Arena antiga
           // interferir na próxima rodada.
@@ -2427,7 +2436,7 @@ showScreen('lobby');
     }
 
     const club =
-      $('br-club')?.value.trim() || '';
+      (localStorage.getItem('ht-club-name-v1') || 'Meu Clube').trim().slice(0,40);
 
     if (
       club.length < 2 ||
@@ -2439,7 +2448,7 @@ showScreen('lobby');
     }
 
     captain =
-      $('br-captain')?.value || '';
+      captain || $('br-captain')?.value || '';
 
     tactic =
       $('br-tactic')?.value || 'balanced';

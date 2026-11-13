@@ -19,7 +19,12 @@ window.HT_CARD_VIEW = (() => {
     const code=p?.countryCode||codes[p?.nationality]||'';
     const flag=code==='gb-eng'?'<span class="ht-field-flag">🏴</span>':code?`<img class="ht-field-flag" src="https://flagcdn.com/w40/${escape(code)}.png" alt="${escape(p.nationality||'')}">`:escape(p?.flag||'🌐');
     const captain = Boolean(p?.isCaptain);
-    return `<div class="ht-field-card" data-rarity="${escape(rarity)}" title="${escape(p?.name||'Jogador')}">${captain?'<span class="ht-field-captain" aria-label="Capitão">C</span>':''}<span class="ht-field-rarity">${escape(rarity)}</span><strong class="ht-field-ovr">${escape(p?.overall??'—')}</strong><span class="ht-field-position">${escape(p?.position||'JOGADOR')}</span>${flag}<span class="ht-field-name">${escape(p?.name||'Jogador')}</span></div>`;
+    const pos=String(p?.position||'JOGADOR').toUpperCase();
+    const shortPosition=pos.includes('ZAG')?'ZAG':pos.includes('VOL')?'VOL':pos.includes('MEI')?'MEI':pos.includes('PONTA')?'PTA':pos.includes('ATAC')?'ATA':pos.includes('GOL')?'GOL':pos.slice(0,3);
+    const fullName=String(p?.name||'Jogador').trim();
+    const parts=fullName.split(/\s+/);
+    const shortName=parts.length>1&&fullName.length>13 ? parts[0][0]+'. '+parts.slice(1).join(' ') : fullName;
+    return `<div class="ht-field-card" data-rarity="${escape(rarity)}" title="${escape(p?.name||'Jogador')}">${captain?'<span class="ht-field-captain" aria-label="Capitão">C</span>':''}<span class="ht-field-rarity">${escape(rarity)}</span><strong class="ht-field-ovr">${escape(p?.overall??'—')}</strong><span class="ht-field-position">${escape(shortPosition)}</span>${flag}<span class="ht-field-name">${escape(shortName)}</span></div>`;
   }
   return {card,fieldCard};
 })();
