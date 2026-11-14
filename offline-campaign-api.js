@@ -1,6 +1,7 @@
 
-/* HAT-TRICK d'OR — PASSO 1010
+/* HAT-TRICK d'OR — PASSO 1017-O.10
  * Integração segura da campanha offline com Supabase.
+ * Inclui a Box oficial do Campeão.
  */
 
 (() => {
@@ -199,7 +200,13 @@
       ),
 
     penaltyState: (id, matchId) =>
-      rpc('ht_get_offline_penalty_state', { ...args(assertId(id)), p_match_id: matchId }),
+      rpc(
+        'ht_get_offline_penalty_state',
+        {
+          ...args(assertId(id)),
+          p_match_id: matchId
+        }
+      ),
 
     penalty: (id, matchId, expectedRound) =>
       rpc(
@@ -209,6 +216,15 @@
           p_match_id: matchId,
           p_expected_round: expectedRound
         }
+      ),
+
+    // Box oficial da campanha offline.
+    // O Supabase valida o campeão, sorteia a carta
+    // e impede resgates duplicados da mesma campanha.
+    claimChampionBox: id =>
+      rpc(
+        'ht_claim_offline_champion_box',
+        args(assertId(id))
       ),
 
     finishArena: (id, matchId) =>
