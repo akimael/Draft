@@ -996,6 +996,7 @@ async function renderOfficialQuizPending() {
     }
   }
 
+  
   async function initializeOfflineCampaign() {
     const root = $("#ht-game-content");
 
@@ -1016,6 +1017,87 @@ async function renderOfficialQuizPending() {
         return;
       }
 
+      // Verifica primeiro se há uma partida oficial em andamento.
+      // Não altera a campanha, as cartas nem o resultado.
+      const bracket = await offlineApi().bracket(offlineCampaignId);
+
+      if (bracket?.success === false) {
+        throw new Error(
+          bracket.message || "Não foi possível consultar a campanha."
+        );
+      }
+
+      const currentRound = Number(bracket.current_round);
+      const matches = Array.isArray(bracket.matches)
+        ? bracket.matches
+        : [];
+
+      const activeMatches = matches.filter(match =>
+        Number(match.round) === currentRound &&
+        match.status === "in_progress" &&
+        (
+          Number(match.side_a_seed) === 1 ||
+          Number(match.side_b_seed) === 1
+        )
+      );
+
+      if (activeMatches.length > 1) {
+        throw new Error(
+          "Foram encontradas várias partidas ativas para o jogador."
+        );
+      }
+
+      const activeMatch = activeMatches[0];
+
+      if (activeMatch) {
+        const teams = await offlineApi().teams(
+          offlineCampaignId,
+          activeMatch.match_id
+        );
+
+        if (teams?.success === false) {
+          throw new Error(
+            teams.message || "Não foi possível recuperar as equipes."
+          );
+        }
+
+        if (typeof window.startHatTrickOfficialConfronto !== "function") {
+          throw new Error(
+            "Módulo do confronto oficial não carregado."
+          );
+        }
+
+        window.startHatTrickOfficialConfronto({
+          ...teams,
+          campaignId: offlineCampaignId,
+          resumeInProgress: true
+        });
+
+        return;
+      }
+
+      // Rodadas 2-4 usam o trio já confirmado. Nunca reabrir as escolhas.
+      if (currentRound >= 2 && currentRound <= 4) {
+        const prepared = await offlineApi().nextRound(offlineCampaignId);
+        if (prepared?.success === false || !prepared?.human_match_id) {
+          throw new Error(prepared?.message || "Não foi possível localizar o confronto da rodada atual.");
+        }
+        const teams = await offlineApi().teams(offlineCampaignId, prepared.human_match_id);
+        if (teams?.success === false || !teams?.team_a || !teams?.team_b) {
+          throw new Error(teams?.message || "O confronto da próxima fase ainda não está disponível.");
+        }
+        if (typeof window.startHatTrickOfficialConfronto !== "function") {
+          throw new Error("Módulo do confronto oficial não carregado.");
+        }
+        window.startHatTrickOfficialConfronto({
+          ...teams,
+          campaignId: offlineCampaignId,
+          resumeInProgress: teams.status === "in_progress"
+        });
+        return;
+      }
+
+      // Primeira rodada: manter as escolhas e a escalação originais.
       await loadOfficialCampaignChoices();
 
     } catch (error) {
@@ -1166,19 +1248,43 @@ async function renderOfficialQuizPending() {
 
           const playerIds = selected.map(p => p.id);
 
-          const response = await offlineApi().saveLineup(
-            offlineCampaignId,
-            playerIds,
-            captainId,
-            "balanced",
-            clubName
-          );
+          let response;
 
-          if (response?.success === false) {
-            throw new Error(
-              response.message || "Escalação não confirmada."
-            );
-          }
+try {
+  response = await offlineApi().saveLineup(
+    offlineCampaignId,
+    playerIds,
+    captainId,
+    "balanced",
+    clubName
+  );
+
+  if (response?.success === false) {
+    throw new Error(
+      response.message || "Escalação não confirmada."
+    );
+  }
+
+} catch (error) {
+
+  const message = String(error?.message || "");
+
+  if (
+    /Trio, capitão e clube já foram confirmados/i.test(message)
+  ) {
+    console.log(
+      "[Campanha Oficial] Escalação já confirmada. Continuando..."
+    );
+
+    response = {
+      success: true,
+      already_confirmed: true
+    };
+
+  } else {
+    throw error;
+  }
+}
 
           console.log(
             "[Campanha Oficial] Escalação salva:",
@@ -1273,30 +1379,147 @@ async function renderOfficialQuizPending() {
     dailyChallengeMode=true;selected=[];stage=0;captainId=null;triviaCorrect=false;renderStage();
   }
 
-  function getCollection(){try{return JSON.parse(localStorage.getItem("ht-collection")||"[]")}catch(e){return[]}}
+
+  function getCollection(){
+    try {
+      return JSON.parse(
+        localStorage.getItem("ht-collection") || "[]"
+      );
+    } catch(e) {
+      return [];
+    }
+  }
+
+  // PASSO 1055 — Coleção oficial do Supabase
+  let officialCollection = [];
+  let officialCollectionLoading = false;
+
+  async function refreshOfficialCollection(){
+    if(
+      officialCollectionLoading ||
+      typeof window.HT_GET_OFFICIAL_COLLECTION !== "function"
+    ) return;
+
+    officialCollectionLoading = true;
+
+    try {
+      const rows = await window.HT_GET_OFFICIAL_COLLECTION();
+
+      officialCollection = Array.isArray(rows)
+        ? rows.filter(row => Number(row.quantity) > 0)
+        : [];
+
+      renderCollection();
+
+    } catch(error) {
+      console.warn(
+        "Não foi possível atualizar a coleção oficial:",
+        error
+      );
+    } finally {
+      officialCollectionLoading = false;
+    }
+  }
   function renderCollection(){
     const grid=$("#collection-grid"), count=$("#collection-count");
     if(!grid||!count)return;
 
-    const ownedCards=getCollection();
-    const ownedByEdition=new Map();
-    ownedCards.forEach(card=>{
-      const key=`${String(card.name).toLowerCase()}|${String(card.year)}`;
-      const current=ownedByEdition.get(key);
-      if(!current || (card.count||1)>(current.count||1)) ownedByEdition.set(key,card);
+   
+    
+    const ownedCards = getCollection();
+    const ownedById = new Map();
+
+    // Inclui todas as edições, mesmo as que compartilham nome e ano.
+    const catalogById = new Map(
+      playersRaw.map(card => [String(card.id), card])
+    );
+
+    players.forEach(card => {
+      catalogById.set(String(card.id), card);
     });
 
-    const catalog=[...players].sort((a,b)=>{
+    function addOwnedCard(card, official = false){
+      if(!card) return;
+
+      const id = String(card.id || card.player_id || "");
+      const base = catalogById.get(id);
+
+      if(!base){
+        console.warn("Carta não encontrada no catálogo:", id);
+        return;
+      }
+
+      const normalized = {
+        ...base,
+        ...card,
+        id: base.id,
+        year: card.year ?? base.year,
+        count: Math.max(1, Number(card.count || card.quantity) || 1)
+      };
+
+      const current = ownedById.get(id);
+
+      if(
+        !current ||
+        official ||
+        normalized.count > current.count
+      ){
+        ownedById.set(id, normalized);
+      }
+    }
+
+    // Cartas antigas
+    ownedCards.forEach(card => addOwnedCard(card));
+
+    // Cartas oficiais do Supabase
+    officialCollection.forEach(row => {
+      const id = String(
+        row.card_key || row.card_data?.player_id || ""
+      );
+
+      addOwnedCard({
+        ...(row.card_data || {}),
+        id,
+        count: row.quantity
+      }, true);
+    });
+
+
+
+    
+    const catalog = [...players];
+
+    // Acrescenta edições conquistadas que o catálogo visual omitiu.
+    const visibleIds = new Set(catalog.map(card => String(card.id)));
+
+    ownedById.forEach((card, id) => {
+      if(!visibleIds.has(id)){
+        catalog.push(card);
+        visibleIds.add(id);
+      }
+    });
+
+    catalog.sort((a,b)=>{
+
       const rarityOrder={"A HISTÓRIA":0,"GOAT":1,"LENDÁRIO":2,"GOLDEN BOY":3,"HERÓI BR":4,"ICÔNICO":5};
       return (rarityOrder[a.rarity]??4)-(rarityOrder[b.rarity]??4) || a.name.localeCompare(b.name,"pt-BR") || String(a.year).localeCompare(String(b.year));
     });
-    const uniqueOwned=ownedCards.length;
-    const totalCopies=ownedCards.reduce((sum,card)=>sum+(card.count||1),0);
-    const unlocked= catalog.filter(card=>ownedByEdition.has(`${card.name.toLowerCase()}|${String(card.year)}`)).length;
-    count.textContent=`${unlocked} de ${catalog.length} cartas desbloqueadas · ${totalCopies} ${totalCopies===1?"cópia":"cópias"}`;
+        
+    const uniqueOwned = ownedById.size;
 
-    grid.innerHTML=catalog.map(card=>{
-      const owned=ownedByEdition.get(`${card.name.toLowerCase()}|${String(card.year)}`);
+    const totalCopies = [...ownedById.values()]
+      .reduce((sum, card) => sum + (card.count || 1), 0);
+
+    const unlocked = catalog.filter(
+      card => ownedById.has(String(card.id))
+    ).length;
+
+    count.textContent =
+      `${unlocked} de ${catalog.length} cartas desbloqueadas · ${totalCopies} ${totalCopies===1?"cópia":"cópias"}`;
+
+    grid.innerHTML = catalog.map(card => {
+      const owned = ownedById.get(String(card.id));
+
       const rarity=owned?.rarity||card.rarity;
       const figure=rarity==="A HISTÓRIA"?"♔":rarity==="GOAT"?"♛":rarity==="LENDÁRIO"?"♜":rarity==="HERÓI BR"?"⚽":rarity==="GOLDEN BOY"?"★":"✦";
       if(!owned){
@@ -1314,9 +1537,34 @@ async function renderOfficialQuizPending() {
       </article>`;
     }).join("");
   }
-  window.addEventListener("ht:collection-updated",renderCollection);
-  const collectionRefresh=$("#collection-refresh"); if(collectionRefresh)collectionRefresh.addEventListener("click",renderCollection);
+  
+  // PASSO 1055 — Atualização automática da coleção oficial
+
+  window.addEventListener(
+    "ht:collection-updated",
+    () => {
+      renderCollection();
+      refreshOfficialCollection();
+    }
+  );
+
+  window.addEventListener(
+    "ht:cloud-loaded",
+    refreshOfficialCollection
+  );
+
+  const collectionRefresh = $("#collection-refresh");
+
+  if(collectionRefresh){
+    collectionRefresh.addEventListener("click", () => {
+      renderCollection();
+      refreshOfficialCollection();
+    });
+  }
+
   renderCollection();
+  refreshOfficialCollection();
+
 
 
   // Painel de carreira e galeria de conquistas (dados persistidos neste navegador).

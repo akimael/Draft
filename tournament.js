@@ -2,8 +2,23 @@
 (() => {
   "use strict";
   const $ = (s, r=document) => r.querySelector(s);
-  const names = ["Atlético Imortal","Onze de Ouro","Lendas FC","Real Fantasia","Seleção Eterna","Aurora United","Galácticos","Clube dos Craques","Dinastia FC","Fúria Mundial","Elite 3x3","Ordem do Futebol","Império FC","Legado United"];
-  const pool = window.HT_PLAYER_DATABASE || [];
+const names = [
+  "Atlético Imortal",
+  "Onze de Ouro",
+  "Lendas FC",
+  "Real Fantasia",
+  "Seleção Eterna",
+  "Aurora United",
+  "Galácticos",
+  "Clube dos Craques",
+  "Dinastia FC",
+  "Fúria Mundial",
+  "Elite 3x3",
+  "Ordem do Futebol",
+  "Império FC",
+  "Legado United",
+  "Estrela d'Or"
+];  const pool = window.HT_PLAYER_DATABASE || [];
   if(!pool.length) console.error("HT_PLAYER_DATABASE não foi carregado. Confira a ordem dos scripts no HTML.");
 
   function enrichPlayer(player){
@@ -128,14 +143,44 @@
     const match={a:user,b:opponent,winner:null,ga:0,gb:0,events:[]};
     tournament={teams:[user,opponent],round:3,user,scorers:{},history:[],finished:false,matches:[match],userMatch:match,matchStarted:false,minute:0,goals:[],penaltyRound:0,usedUserShooters:[],usedCpuShooters:[],dailyChallenge:true};
   }
-  function renderField(a,b){
-    const card=p=>`<div class="ht-field-player">${window.HT_CARD_VIEW?.mini?window.HT_CARD_VIEW.mini(p):`<strong>${p.overall}</strong><span>${p.name}</span>`}</div>`;
-    return `<div class="ht-match-field"><div class="ht-field-team"><div class="ht-field-team-name">${a.name}</div><div class="ht-field-players">${a.players.map(card).join("")}</div></div><div class="ht-field-versus">VS</div><div class="ht-field-team"><div class="ht-field-team-name">${b.name}</div><div class="ht-field-players">${b.players.map(card).join("")}</div></div></div>`;
-  }
+  
+function renderField(a, b) {
+  // Cartas compactas da Arena offline, sem depender do componente das ofertas.
+  const esc = value => String(value ?? '').replace(/[&<>"']/g, ch =>
+    ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  const flags = {'Brasil':'br','Argentina':'ar','Portugal':'pt','Itália':'it','França':'fr','Espanha':'es','Alemanha':'de','Inglaterra':'gb-eng','Uruguai':'uy','Países Baixos':'nl','Croácia':'hr','Hungria':'hu','Polônia':'pl','Noruega':'no','Bélgica':'be'};
+  const card = (p, team) => {
+    const captain = String(p.id) === String(team.captainId);
+    const code = p.countryCode || flags[p.nationality] || '';
+    const flag = code && code !== 'gb-eng' ? `<img class="ht-field-flag" src="https://flagcdn.com/w40/${esc(code)}.png" alt="${esc(p.nationality)}">` : `<span class="ht-field-flag-emoji">${esc(p.flag || '🌐')}</span>`;
+    return `<div class="ht-field-card${captain?' is-captain-card':''}" data-rarity="${esc(p.rarity)}">
+      ${captain?'<span class="ht-captain-mark">C</span>':''}
+      <small class="ht-offline-rarity">${esc(p.rarity)}</small>
+      <strong class="ht-offline-ovr">${esc(p.overall)}</strong>
+      <span class="ht-offline-position">${esc(p.position)}</span>
+      ${flag}<b class="ht-offline-name">${esc(p.name)}</b>
+    </div>`;
+  };
+  const team = t => `<div class="ht-field-team"><div class="ht-field-team-name">${esc(t.name)}</div><div class="ht-field-cards">${t.players.map(p=>card(p,t)).join('')}</div></div>`;
+  return `<div class="ht-pitch">${team(a)}${team(b)}</div>`;
+}
+
   function renderStart(panel){
-    const user=tournament.user,opp=tournament.userMatch.a.isUser?tournament.userMatch.b:tournament.userMatch.a;
-    panel.innerHTML=`<div class="ht-kicker">${tournament.dailyChallenge?"DESAFIO DIÁRIO":roundNames[tournament.round]}</div><h1 class="ht-title">Prepare seu trio.</h1><p class="ht-description">Você enfrentará ${opp.name}. A força do time considera os atributos dos jogadores, a química e a tática. Escolha sua estratégia para começar.</p>${renderField(user,opp)}<div class="ht-panel"><h3>Estratégia</h3><div class="ht-form-grid"><label>Tática do trio<select id="ht-tactic"><option value="balanced">Equilibrada</option><option value="attack">Ofensiva</option><option value="defense">Defensiva</option><option value="press">Pressão alta</option></select></label></div><div class="ht-stats-row"><div class="ht-stat"><strong>${Math.round(average(user))}</strong><span>Média geral</span></div><div class="ht-stat"><strong>${chemistry(user)}%</strong><span>Química final</span></div><div class="ht-stat"><strong>${Math.round(effectiveStrength(user))}</strong><span>Força efetiva</span></div></div></div><div class="ht-action-row"><button class="ht-btn" id="ht-start-match">Iniciar partida →</button></div>`;
+    const match=tournament?.userMatch;
+    const user=tournament?.user;
+    const opp=match?.a?.isUser ? match?.b : match?.a;
+    if(!user || !opp || !Array.isArray(user.players) || !Array.isArray(opp.players)){
+      const error=new Error("Confronto incompleto: não foi possível identificar as duas equipes.");
+      console.error("[Campanha/Arena] Confronto inválido", {tournament, match}, error);
+      panel.innerHTML='<div class="ht-panel"><h3>CONFRONTO INDISPONÍVEL</h3><p>Não foi possível identificar o adversário. Reabra a campanha para recuperar o confronto oficial.</p></div>';
+      return;
+    }
+    panel.innerHTML=`<div class="ht-kicker">${tournament.dailyChallenge?"DESAFIO DIÁRIO":roundNames[tournament.round]}</div><h1 class="ht-title">Prepare seu trio.</h1><p class="ht-description">Você enfrentará ${opp.name}. A força do time considera os atributos dos jogadores, a química e a tática. Escolha sua estratégia para começar.</p>${renderField(user,opp)}<div class="ht-panel"><h3>Estratégia</h3><div class="ht-form-grid"><label>Tática do trio<select id="ht-tactic"><option value="balanced">Equilibrada</option><option value="attack">Ofensiva</option><option value="defense">Defensiva</option><option value="press">Pressão alta</option></select></label></div><div class="ht-stats-row"><div class="ht-stat"><strong>${Math.round(average(user))}</strong><span>Média geral</span></div><div class="ht-stat"><strong>${chemistry(user)}%</strong><span>Química final</span></div><div class="ht-stat"><strong class="ht-ata-def">${Math.round(teamProfile(user).attack)} <small>/</small> ${Math.round(teamProfile(user).defense)}</strong><span>ATA/DEF</span></div></div></div><div class="ht-action-row"><button class="ht-btn" id="ht-start-match">Iniciar partida →</button></div>`;
     $("#ht-start-match",panel).addEventListener("click",()=>{
+      if(tournament?.officialCampaign){
+        startOfficialMatch(panel);
+        return;
+      }
       user.tactic=$("#ht-tactic",panel).value;
       startUserMatch(panel);
     });
@@ -168,14 +213,31 @@
     return events.sort((x,y)=>x.minute-y.minute);
   }
   function startUserMatch(panel){
+    if(tournament?.officialCampaign){
+      officialError(panel,new Error("Partida oficial deve ser iniciada pelo Supabase."));
+      return;
+    }
     tournament.matchStarted=true;tournament.minute=0;tournament.goals=createGoalEvents(tournament.userMatch);tournament.userMatch.events=[];tournament.userMatch.ga=0;tournament.userMatch.gb=0;
     renderLiveMatch(panel);
-    tournament.timer=setInterval(()=>{tournament.minute+=2;const events=tournament.goals.filter(e=>e.minute<=tournament.minute&&!e.done);events.forEach(e=>{e.done=true;tournament.userMatch.events.push(`${e.minute}' — ${e.text}`);if(e.type==="goal"){const match=tournament.userMatch;if(e.team===match.a.name)match.ga++;else match.gb++;if(e.team===tournament.user.name)tournament.scorers[e.player]=(tournament.scorers[e.player]||0)+1;}});renderLiveMatch(panel);if(tournament.minute>=90){clearInterval(tournament.timer);finishMinuteNinety(panel);}},1000);
+    tournament.timer=setInterval(()=>{tournament.minute+=2;const events=tournament.goals.filter(e=>e.minute<=tournament.minute&&!e.done);events.forEach(e=>{e.done=true;tournament.userMatch.events.push(`${e.minute}' — ${e.text}`);if(e.type==="goal"){const match=tournament.userMatch;if(e.team===match.a.name)match.ga++;else match.gb++;if(e.team===tournament.user.name)tournament.scorers[e.player]=(tournament.scorers[e.player]||0)+1;}});renderLiveMatch(panel);if(tournament.minute>=90){clearInterval(tournament.timer);finishMinuteNinety(panel);}},320);
   }
+  function renderOfflineTeamComparison(user, opponent){
+    const teamBlock = team => {
+      const profile = teamProfile(team);
+      return `<div class="ht-offline-team-metrics">
+        <strong class="ht-offline-metrics-name">${officialEscape(team.name)}</strong>
+        <div class="ht-offline-metric"><span>QUÍMICA</span><b>${Math.round(chemistry(team))}%</b></div>
+        <div class="ht-offline-metric"><span>ATAQUE</span><b>${Math.round(profile.attack)}</b></div>
+        <div class="ht-offline-metric"><span>DEFESA</span><b>${Math.round(profile.defense)}</b></div>
+      </div>`;
+    };
+    return `<div class="ht-chemistry-panel ht-offline-match-comparison" aria-label="Comparativo das equipes">${teamBlock(user)}${teamBlock(opponent)}</div>`;
+  }
+
   function renderLiveMatch(panel){
     const match=tournament.userMatch,user=match.a.isUser?match.a:match.b,opp=match.a.isUser?match.b:match.a;
     const userScore=match.a.isUser?match.ga:match.gb,oppScore=match.a.isUser?match.gb:match.ga;
-    panel.innerHTML=`<div class="ht-kicker">${tournament.dailyChallenge?"DESAFIO DIÁRIO":roundNames[tournament.round]}</div><h1 class="ht-title">Arena d'OR</h1><p class="ht-description">Acompanhe os 90 minutos. O placar e a narração aparecem conforme os lances acontecem.</p>${renderField(user,opp)}<div class="ht-live-score"><span>${user.name}</span><strong>${userScore} <i>—</i> ${oppScore}</strong><span>${opp.name}</span><div class="ht-live-minute">${Math.min(90,tournament.minute)}'</div></div><div class="ht-live-commentary"><strong>AO VIVO</strong><ul class="ht-event-list">${match.events.slice(-5).map(e=>`<li>${e}</li>`).join("")||"<li>O árbitro autoriza o início da partida.</li>"}</ul></div>`;
+    panel.innerHTML=`<div class="ht-kicker">${tournament.dailyChallenge?"DESAFIO DIÁRIO":roundNames[tournament.round]}</div><h1 class="ht-title">Arena d'OR</h1><p class="ht-description">Acompanhe os 90 minutos. O placar e a narração aparecem conforme os lances acontecem.</p>${renderField(user,opp)}${renderOfflineTeamComparison(user,opp)}<div class="ht-live-score"><span>${user.name}</span><strong>${userScore} <i>—</i> ${oppScore}</strong><span>${opp.name}</span><div class="ht-live-minute">${Math.min(90,tournament.minute)}'</div></div><div class="ht-live-commentary"><strong>AO VIVO</strong><ul class="ht-event-list">${match.events.map(e=>`<li>${officialEscape(e)}</li>`).join("")||"<li>O árbitro autoriza o início da partida.</li>"}</ul></div>`;
   }
   function finishMinuteNinety(panel){
     const match=tournament.userMatch;
@@ -347,8 +409,9 @@ const meanB=Math.max(.12,1.35+(profileB.attack-profileA.defense)*.018+(average(m
   function officialError(panel,error){
     console.error("[Arena oficial]",error);
     const message=String(error?.message||"Não foi possível consultar a Arena.");
+    panel.querySelector('.ht-official-error')?.remove();
     const notice=document.createElement("p");
-    notice.className="ht-small-note";
+    notice.className="ht-small-note ht-official-error";
     notice.textContent=message;
     panel.appendChild(notice);
   }
@@ -466,7 +529,9 @@ const meanB=Math.max(.12,1.35+(profileB.attack-profileA.defense)*.018+(average(m
 
     if(t!==tournament)return;
 
+    t.officialLiveMounted=false;
     await pollOfficialArena(panel,t);
+    startOfficialClock(panel,t);
 
     if(
       t!==tournament||
@@ -694,7 +759,7 @@ const meanB=Math.max(.12,1.35+(profileB.attack-profileA.defense)*.018+(average(m
         if(t!==tournament)return;
         user.tactic=selectedTactic;
       }catch(saveError){
-        if(!/Não é possível alterar a tática durante uma partida/i.test(String(saveError.message||""))){
+        if(!/Não é possível alterar a tática durante uma partida|Trio, capitão e clube já foram confirmados/i.test(String(saveError.message||""))){
           throw saveError;
         }
         alreadyStarted=true;
@@ -709,6 +774,7 @@ const meanB=Math.max(.12,1.35+(profileB.attack-profileA.defense)*.018+(average(m
       if(t!==tournament)return;
 
       t.matchStarted=true;
+      t.officialLiveMounted=false;
       t.minute=0;
       t.userMatch.ga=0;
       t.userMatch.gb=0;
@@ -717,6 +783,7 @@ const meanB=Math.max(.12,1.35+(profileB.attack-profileA.defense)*.018+(average(m
 
       await pollOfficialArena(panel,t);
       if(t!==tournament||t.finished||t.penaltiesPending)return;
+      startOfficialClock(panel,t);
 
       t.timer=setInterval(()=>{
         if(t!==tournament||t.finished){
@@ -733,6 +800,28 @@ const meanB=Math.max(.12,1.35+(profileB.attack-profileA.defense)*.018+(average(m
       officialError(panel,error);
       if(button){button.disabled=false;button.textContent="INICIAR PARTIDA →";}
     }
+  }
+
+  function updateOfficialClock(panel,t){
+    if(t!==tournament || t.finished || !t.officialCampaign)return;
+    const el=panel.querySelector('.ht-live-minute');
+    if(!el)return;
+    // 90 minutos em 14,4 segundos, limitado ao último minuto confirmado.
+    // O SQL continua sendo a única autoridade para gols e encerramento.
+    const elapsed = Math.max(0,performance.now()-(t.clockAnchorTime||performance.now()));
+    const visual = Math.min(90, Math.floor((t.clockAnchorMinute||0) + elapsed * 90 / 14400));
+    el.textContent = `${Math.max(0,visual)}'`;
+  }
+
+  function startOfficialClock(panel,t){
+    if(t.visualClockTimer)clearInterval(t.visualClockTimer);
+    t.visualClockTimer=setInterval(()=>{
+      if(t!==tournament || t.finished || t.penaltiesPending){
+        clearInterval(t.visualClockTimer);
+        return;
+      }
+      updateOfficialClock(panel,t);
+    },80);
   }
 
   async function pollOfficialArena(panel,t){
@@ -753,9 +842,30 @@ const meanB=Math.max(.12,1.35+(profileB.attack-profileA.defense)*.018+(average(m
       updateOfficialScorers(t,officialEvents);
       t.userMatch.events=officialEvents.map(event=>formatOfficialEvent(event,t));
 
-      renderLiveMatch(panel);
+      if (!t.officialLiveMounted || !panel.querySelector('.ht-live-score')) {
+        renderLiveMatch(panel);
+        t.officialLiveMounted = true;
+      } else {
+        const score = panel.querySelector('.ht-live-score strong');
+        const userScore = t.userMatch.a.isUser ? t.userMatch.ga : t.userMatch.gb;
+        const oppScore = t.userMatch.a.isUser ? t.userMatch.gb : t.userMatch.ga;
+        if (score) score.innerHTML = `${userScore} <i>—</i> ${oppScore}`;
+        const events = panel.querySelector('.ht-live-commentary .ht-event-list');
+        if (events) {
+          const previousCount = Number(events.dataset.count || 0);
+          if (previousCount !== t.userMatch.events.length) {
+            events.innerHTML = t.userMatch.events.map(e=>`<li>${officialEscape(e)}</li>`).join('') || '<li>O árbitro autoriza o início da partida.</li>';
+            events.dataset.count = String(t.userMatch.events.length);
+            events.scrollTop = events.scrollHeight;
+          }
+        }
+      }
+      t.clockAnchorMinute = t.minute;
+      t.clockAnchorTime = performance.now();
+      updateOfficialClock(panel,t);
 
       if(t.minute>=90){
+        clearInterval(t.visualClockTimer);
         clearInterval(t.timer);
         if(state.requires_penalties){
           t.penaltiesPending=true;
@@ -935,6 +1045,7 @@ const meanB=Math.max(.12,1.35+(profileB.attack-profileA.defense)*.018+(average(m
       if(t!==tournament)return;
 
       t.finished=true;
+      clearInterval(t.visualClockTimer);
 
       const won=result.human_won===true;
       const isFinal=t.round===3;
@@ -1041,29 +1152,36 @@ const meanB=Math.max(.12,1.35+(profileB.attack-profileA.defense)*.018+(average(m
       const next=$("#ht-next-round",panel);
       if(next){
         next.addEventListener("click",async()=>{
+          if(next.disabled)return;
           next.disabled=true;
+          next.textContent='PREPARANDO PRÓXIMA FASE...';
           try{
+            // O SQL é a fonte oficial do confronto da próxima fase.
+            // Não consultar o chaveamento antes: isso pode bloquear a RPC.
             const prepared=await officialApi().nextRound(t.campaignId);
-            if(prepared?.success===false||!prepared?.human_match_id){
-              throw new Error(
-                prepared?.message||"Próxima fase indisponível."
-              );
+            if(prepared?.success===false){
+              throw new Error(prepared.message||"Próxima fase indisponível.");
             }
-            const teams=await officialApi().teams(
-              t.campaignId,prepared.human_match_id
-            );
-            if(teams?.success===false){
-              throw new Error(
-                teams.message||"Adversário indisponível."
-              );
+            const matchId=prepared?.human_match_id;
+            if(!matchId){
+              throw new Error("O Supabase não retornou human_match_id para a próxima fase.");
+            }
+            const teams=await officialApi().teams(t.campaignId,matchId);
+            if(teams?.success===false)throw new Error(teams.message||'Não foi possível carregar o adversário.');
+            if(!teams?.team_a||!teams?.team_b)throw new Error('O servidor não retornou as duas equipes.');
+            if (typeof window.startHatTrickOfficialConfronto !== "function") {
+              throw new Error("Módulo da Arena não está carregado.");
             }
             window.startHatTrickOfficialConfronto({
               ...teams,
+              match_id:teams.match_id||matchId,
               campaignId:t.campaignId,
-              previousScorers:{...t.scorers}
+              previousScorers:{...t.scorers},
+              resumeInProgress:teams.status === "in_progress"
             });
           }catch(error){
             next.disabled=false;
+            next.textContent='PRÓXIMA FASE →';
             officialError(panel,error);
           }
         });
@@ -1080,7 +1198,11 @@ const meanB=Math.max(.12,1.35+(profileB.attack-profileA.defense)*.018+(average(m
       const restart=$("#ht-new-campaign",panel);
       if(restart){
         restart.addEventListener("click",()=>{
+          if (restart.disabled) return;
+          restart.disabled=true;
+          restart.textContent="CRIANDO NOVA CAMPANHA...";
           tournament=null;
+          panel.innerHTML='<div class="ht-panel"><h3>PREPARANDO NOVA CAMPANHA...</h3><p>Verificando o encerramento da campanha anterior.</p></div>';
           window.dispatchEvent(new CustomEvent("ht:restart-campaign"));
         });
       }

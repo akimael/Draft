@@ -1,3 +1,4 @@
+
 (() => {
   "use strict";
   const SUPABASE_URL = "https://hwlvnuhmsaybsgrrcduc.supabase.co";
@@ -126,8 +127,25 @@
     }
     lastLoadError = "";
     const extra=progress?.extra_data||{};
+    // PASSO 1017-N: reconciliar conquistas oficiais e legadas sem apagar nenhuma.
+    // Em caso de falha de leitura, preservar o progresso legado e avisar no console.
+    let officialAchievements = [];
+    const {data:achievementRows,error:achievementError} = await client
+      .from("player_achievements")
+      .select("achievement_id")
+      .eq("user_id",user.id);
+    if(achievementError) {
+      console.warn("Não foi possível ler conquistas oficiais:",achievementError.message);
+    } else {
+      officialAchievements = (achievementRows||[]).map(row=>row.achievement_id)
+        .filter(id=>typeof id==="string"&&id.length>0);
+    }
+    const mergedAchievements = [...new Set([
+      ...(Array.isArray(extra.achievements)?extra.achievements:[]),
+      ...officialAchievements
+    ])];
     localStorage.setItem("ht-collection",JSON.stringify(Array.isArray(extra.collection)?extra.collection:[]));
-    localStorage.setItem("ht-career-achievements-v1",JSON.stringify({stats:progress?.stats||{matches:0,goals:0,conceded:0,wins:0,losses:0},unlocked:Array.isArray(extra.achievements)?extra.achievements:[]}));
+    localStorage.setItem("ht-career-achievements-v1",JSON.stringify({stats:progress?.stats||{matches:0,goals:0,conceded:0,wins:0,losses:0},unlocked:mergedAchievements}));
     localStorage.setItem("ht-favorite-trio-v1",JSON.stringify(Array.isArray(extra.favorite_trio)?extra.favorite_trio:[]));
     localStorage.setItem("ht-club-name-v1",String(extra.club_name||"Meu Clube").slice(0,40));
     window.dispatchEvent(new Event("ht:club-updated"));
@@ -220,6 +238,7 @@
       finally { submit.disabled=false; }
     });
     $("#ht-auth-toggle")?.addEventListener("click",()=>switchMode($("#ht-auth-mode").value==="signup"?"login":"signup"));
+
     $("#ht-auth-recovery")?.addEventListener("click",async()=>{
       const email=$("#ht-auth-email").value.trim(); if(!email){setStatus("Digite seu e-mail no campo acima para receber o link de recuperação.",true);return;}
       const {error}=await client.auth.resetPasswordForEmail(email,{redirectTo:"https://hattrickdor.com.br/perfil.html"});

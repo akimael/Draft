@@ -52,3 +52,232 @@
 .ht-competitive-page .cp1054-final .cp1054-match{border:2px solid #d7b56b;background:#252719}
 .ht-competitive-page .cp1054-trophy{text-align:center;color:#e7c77f;font:800 11px/1.4 Arial,sans-serif;letter-spacing:.06em;padding:16px 5px;background:linear-gradient(135deg,#2b281a,#15251b);border:1px solid #aa874b;border-radius:12px}
 @media(max-width:1200px){.ht-competitive-page .cp-rounds.cp1054-tree{grid-template-columns:repeat(3,155px) 180px repeat(3,155px)}}
+
+/* PASSO 1070 — montagem de trio idêntica ao Casual, sem alterar seleção por classes. */
+.ht-competitive-page .cp1070-lineup{background:#122018;border:1px solid #65583a;border-radius:7px;padding:clamp(16px,2.5vw,28px);max-width:1000px;margin:22px auto}
+.ht-competitive-page .cp1070-lineup h2{font:800 clamp(20px,2.2vw,26px)/1.2 Arial,sans-serif;color:#e4c786;margin:10px 0 16px}
+.ht-competitive-page .cp1070-lineup h3{font:800 16px/1.3 Arial,sans-serif;color:#e4c786;margin:20px 0 12px}
+.ht-competitive-page .cp1070-lineup>p{color:#fff;line-height:1.5;font-size:14px}
+.ht-competitive-page .cp1070-lineup #cp-lineup-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;align-items:start;margin:12px 0}
+.ht-competitive-page .cp1070-lineup .cp829-captain-card{padding:0;border:0;background:transparent;cursor:pointer;min-width:0;outline:none}
+.ht-competitive-page .cp1070-lineup .cp829-captain-card .ht-unified-card{width:100%;max-width:220px;margin:auto}
+.ht-competitive-page .cp1070-lineup .cp829-captain-label{display:block;margin:9px auto;padding:8px 5px;border-radius:24px;background:#35362d;color:#e9dfc7;font:800 clamp(8px,1.2vw,12px)/1.2 Arial,sans-serif;text-align:center}
+.ht-competitive-page .cp1070-lineup .cp829-captain-card.is-captain .ht-unified-card{outline:3px solid #ffcc68;outline-offset:2px}
+.ht-competitive-page .cp1070-lineup .cp829-captain-card.is-captain .cp829-captain-label{background:#ffcc68;color:#231a09}
+.ht-competitive-page .cp1070-lineup .cp829-captain-card:focus-visible .ht-unified-card{outline:3px solid #fff}
+.ht-competitive-page .cp1070-lineup .ht-team-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;padding:12px;border:1px solid #6c6245;border-radius:12px;background:#101b16;min-width:0;margin:22px 0 18px}
+.ht-competitive-page .cp1070-lineup .ht-team-metrics>span{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:10px 5px;border:1px solid #465a48;border-radius:8px;background:#203329;min-width:0;text-align:center}
+.ht-competitive-page .cp1070-lineup .ht-team-metrics small{font:800 10px/1.25 'DM Sans',Arial,sans-serif;letter-spacing:.09em;color:#c6d1be}
+.ht-competitive-page .cp1070-lineup .ht-team-metrics strong{font:900 clamp(16px,2vw,24px)/1.2 'DM Sans',Arial,sans-serif;color:#f7d990;font-variant-numeric:tabular-nums}
+.ht-competitive-page .cp1070-lineup .cp-form{display:block;margin:18px 0}
+.ht-competitive-page .cp1070-lineup .cp-form label{display:grid;gap:8px;font-size:14px;letter-spacing:normal;color:#fff}
+.ht-competitive-page .cp1070-lineup .cp-form select{width:100%;border:1px solid #536353;border-radius:4px;background:#0c1711;color:#fff;padding:11px}
+.ht-competitive-page .cp1070-lineup .cp1070-count{margin:14px 0 0;color:#fff}
+.ht-competitive-page .cp1070-lineup .cp-actions{margin-top:12px}
+.ht-competitive-page .cp1070-lineup .cp-button:not(.cp-secondary){background:#ffcc68;border-color:#ffcc68;color:#231a09}
+.ht-competitive-page .cp1070-lineup .cp1070-warning{font-size:12px;color:#b6c0b6;margin-top:16px}
+@media(max-width:650px){.ht-competitive-page .cp1070-lineup #cp-lineup-cards{gap:7px}.ht-competitive-page .cp1070-lineup .cp829-captain-label{font-size:8px;padding:7px 2px}.ht-competitive-page .cp1070-lineup .ht-team-metrics{gap:5px;padding:7px}.ht-competitive-page .cp1070-lineup .ht-team-metrics>span{padding:8px 2px}}
+
+
+/* PASSO 1071 — Arena Competitiva usa o mesmo desenho do Torneio Casual. */
+.ht-competitive-page .ht-live-pitch, .ht-competitive-page .ht-live-pitch{
+  position:relative; isolation:isolate; overflow:visible;
+  background:repeating-linear-gradient(90deg,#104d2b 0 12.5%,#155a33 12.5% 25%)!important;
+  border:3px solid rgba(236,255,237,.85)!important;
+  border-radius:3px;
+}
+.ht-competitive-page .ht-live-team{position:relative;z-index:1}
+.ht-competitive-page .ht-goal-overlay{z-index:8;overflow:hidden}
+@media(max-width:650px){.dor-goal-word{font-size:clamp(24px,7vw,52px)}
+.dor-pitch-area{border-width:1.5px}
+.dor-pitch-six{border-width:1.5px}
+.dor-pitch-center-circle{border-width:1.5px}}
+@media(prefers-reduced-motion:reduce){.dor-goal-word span,.ht-goal-active .dor-goal-word{animation:none!important}}
+.ht-competitive-page .ht-arena-shell{position:relative;max-width:1100px;margin:auto;padding:clamp(12px,2.5vw,26px);background:linear-gradient(145deg,#121a19,#080d0e);border:1px solid #3e4c44;border-radius:22px;box-shadow:0 20px 70px #0009;overflow:hidden}
+.ht-competitive-page .ht-arena-kicker{display:flex;align-items:center;gap:9px;font-size:11px;letter-spacing:.18em;color:#d5dfda;font-weight:800;margin:0 0 14px}
+.ht-competitive-page .ht-arena-live{margin-left:auto;color:#e8e8e8;font-size:10px;letter-spacing:.08em}
+.ht-competitive-page .ht-live-dot{width:8px;height:8px;background:#f3494b;border-radius:50%;box-shadow:0 0 12px #e64244;animation:ht-live-pulse 1.6s infinite}
+.ht-competitive-page .ht-arena-scoreboard{display:grid;grid-template-columns:minmax(0,1fr) minmax(135px,220px) minmax(0,1fr);align-items:center;gap:8px;min-height:155px;padding:14px clamp(12px,3vw,34px);border-radius:15px;background:linear-gradient(#050505c9,#050505d9),url('placar.png') center/100% 100% no-repeat;border:1px solid #58605a}
+.ht-competitive-page .ht-arena-club{display:flex;flex-direction:column;gap:7px;min-width:0;text-align:center}
+.ht-competitive-page .ht-arena-club strong{font-size:clamp(13px,2.3vw,24px);line-height:1.2;color:#fff;overflow-wrap:anywhere;text-shadow:0 2px 6px #000}
+.ht-competitive-page .ht-arena-club small{font-size:12px;color:#e7e7e7}
+.ht-competitive-page .ht-arena-center{text-align:center}
+.ht-competitive-page .ht-arena-score{font-size:clamp(34px,5.5vw,64px);font-weight:900;color:#ffec28;white-space:nowrap;font-variant-numeric:tabular-nums;line-height:1.1;text-shadow:0 3px 9px #000}
+.ht-competitive-page .ht-arena-clock{font-size:clamp(19px,3vw,30px);font-weight:900;color:#fff;font-variant-numeric:tabular-nums}
+.ht-competitive-page .ht-arena-period{font-size:10px;color:#ffec28;font-weight:900;letter-spacing:.1em}
+.ht-competitive-page .ht-arena-stadium{position:relative;margin-top:14px;padding:clamp(14px,3vw,36px);background:radial-gradient(ellipse at center,#384941 0,#14201b 65%,#070a09 100%);border:1px solid #485b4d;border-radius:16px;box-shadow:inset 0 0 45px #000c}
+.ht-competitive-page .ht-arena-stands{position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(165deg,transparent 0 8px,#d9e9d40b 9px 10px);opacity:.65}
+.ht-competitive-page .ht-live-pitch{position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;gap:10%;align-items:stretch;min-height:clamp(210px,40vw,500px);margin:0;padding:4% 9%;background:#063a13 url('campo-escuro.png') center/100% 100% no-repeat;border:0;border-radius:5px;box-shadow:0 12px 35px #000b;aspect-ratio:2048/1171}
+.ht-competitive-page .ht-goal-overlay{position:absolute;z-index:5;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#050505b0;pointer-events:none}
+.ht-competitive-page .ht-goal-overlay[hidden]{display:none!important}
+.ht-competitive-page .ht-goal-overlay img{width:min(65%,500px);max-height:55%;object-fit:contain;filter:drop-shadow(0 7px 16px #000)}
+.ht-competitive-page .ht-goal-overlay strong{margin-top:10px;font-size:clamp(15px,2.5vw,28px);color:#fff;text-shadow:0 3px 8px #000}
+.ht-competitive-page .ht-goal-active img{animation:ht-goal-impact .7s cubic-bezier(.15,1.5,.4,1) both}
+.ht-competitive-page .ht-goal-active strong{animation:ht-goal-appear .7s .15s both}
+.ht-competitive-page .ht-arena-timeline{height:7px;margin:13px 2px;background:#3d4845;border-radius:99px;overflow:hidden}
+.ht-competitive-page .ht-arena-commentary{position:relative;min-height:110px;padding:19px clamp(20px,3vw,40px);background:#151515 url('comentario.png') center/100% 100% no-repeat;display:flex;flex-direction:column;justify-content:center}
+.ht-competitive-page .ht-arena-commentary-label{font-size:10px;letter-spacing:.14em;color:#151515;font-weight:900}
+.ht-competitive-page .ht-arena-commentary p{margin:12px 0 0;color:#fff;font-weight:800;text-shadow:0 1px 4px #000;font-size:clamp(13px,2vw,19px)}
+.ht-competitive-page .ht-arena-events{margin-top:16px;color:#ddd}
+.ht-competitive-page .ht-arena-events summary{cursor:pointer;font-size:13px;font-weight:700}
+.ht-competitive-page .ht-arena-events li{margin:7px 0;font-size:13px}
+.ht-competitive-page .ht-arena-penalties{font-weight:900;text-align:center;color:#fff}
+.ht-competitive-page .ht-live-team{position:relative;z-index:1}
+.ht-competitive-page .ht-goal-overlay{z-index:8;overflow:hidden}
+.ht-competitive-page .ht-live-pitch{display:grid;grid-template-columns:1fr 1fr;gap:10%;min-height:clamp(210px,40vw,500px);padding:4% 9%;aspect-ratio:2048/1171}
+.ht-competitive-page .ht-goal-overlay[hidden]{display:none!important}
+.ht-competitive-page .ht-team-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;
+ padding:12px;border:1px solid #6c6245;border-radius:12px;background:#101b16;min-width:0}
+.ht-competitive-page .ht-team-metrics>span{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;
+ padding:10px 5px;border:1px solid #465a48;border-radius:8px;background:#203329;min-width:0;text-align:center}
+.ht-competitive-page .ht-team-metrics small{font:800 10px/1.25 'DM Sans',Arial,sans-serif;letter-spacing:.09em;color:#c6d1be}
+.ht-competitive-page .ht-team-metrics strong{font:900 clamp(16px,2vw,24px)/1.2 'DM Sans',Arial,sans-serif;color:#f7d990;font-variant-numeric:tabular-nums}
+.ht-competitive-page .ht-arena-comparison{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:16px 0 8px}
+.ht-competitive-page .ht-arena-comparison .ht-team-metrics{padding:8px;gap:6px}
+.ht-competitive-page .ht-arena-comparison .ht-team-metrics>span{padding:8px 3px}
+.ht-competitive-page .ht-live-pitch{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:center;min-height:200px;aspect-ratio:2048/1171;padding:4% 3%;gap:5%;overflow:visible}
+.ht-competitive-page .ht-live-team{position:relative;z-index:1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:center;justify-items:center;gap:clamp(2px,.5vw,7px);width:100%;min-width:0}
+.ht-competitive-page .ht-live-player.ht-unified-field{position:relative;box-sizing:border-box;display:block;width:100%;max-width:96px;height:auto;aspect-ratio:4/5;min-width:0;min-height:0;padding:0;margin:0;background:none;border:0;box-shadow:none;overflow:visible}
+.ht-competitive-page .ht-field-card{--paper:#3c2d23;--edge:#b78e6c;--ink:#fff2dc;box-sizing:border-box;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:3px;width:100%;height:100%;min-width:0;padding:6px 3px 5px;border:2px solid var(--edge);border-radius:8px 4px 8px 4px;background:var(--paper);color:var(--ink);overflow:visible;text-align:center;box-shadow:0 5px 12px #0007}
+.ht-competitive-page .ht-field-card[data-rarity="GOAT"]{--paper:#30243b;--edge:#bd91e6;--ink:#fff}
+.ht-competitive-page .ht-field-card[data-rarity="LENDÁRIO"]{--paper:#4b3b20;--edge:#e2bf70;--ink:#fff0cc}
+.ht-competitive-page .ht-field-card[data-rarity="A HISTÓRIA"]{--paper:#e9dcb8;--edge:#f9ebc4;--ink:#382b1c}
+.ht-competitive-page .ht-field-card[data-rarity="HERÓI BR"]{--paper:#1b4a2e;--edge:#73d69c;--ink:#fff}
+.ht-competitive-page .ht-field-card[data-rarity="GOLDEN BOY"]{--paper:#542b45;--edge:#f3a6d4;--ink:#fff}
+.ht-competitive-page .ht-field-card[data-rarity="ICÔNICO"]{--paper:#3c2e22;--edge:#b88c6a;--ink:#fff}
+.ht-competitive-page .ht-field-rarity{font:800 clamp(5px,.65vw,8px)/1.15 Arial,sans-serif;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ht-competitive-page .ht-field-ovr{position:static;transform:none;width:auto;max-width:100%;padding:0;margin:3px 0 0;background:none;border:0;border-radius:0;color:var(--ink);font:900 clamp(17px,2.2vw,29px)/1 Arial,sans-serif;white-space:nowrap}
+.ht-competitive-page .ht-field-position{font:800 clamp(6px,.75vw,9px)/1.1 Arial,sans-serif;white-space:nowrap;max-width:100%;overflow:hidden}
+.ht-competitive-page .ht-field-flag{display:block;width:clamp(16px,2vw,23px);height:clamp(10px,1.35vw,15px);object-fit:cover;flex-shrink:0;margin:1px 0}
+.ht-competitive-page .ht-field-name{font:800 clamp(6px,.8vw,10px)/1.1 Arial,sans-serif;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere;max-width:100%;margin:auto 0 0;min-height:1.1em}
+.ht-competitive-page .ht-field-captain{position:absolute;right:-5px;top:-8px;display:grid;place-items:center;width:19px;height:19px;border:2px solid #16160e;border-radius:50%;background:#f5d57e;color:#1d190d;font:900 11px/1 Arial,sans-serif;box-shadow:0 2px 6px #0009;z-index:2}
+@media(max-width:600px){.ht-competitive-page .ht-live-pitch{min-height:145px;padding:4% 2%;gap:3%}
+.ht-competitive-page .ht-live-player.ht-unified-field{max-width:66px}
+.ht-competitive-page .ht-field-card{padding:3px 1px;gap:2px;border-width:1.5px}
+.ht-competitive-page .ht-field-rarity{font-size:5px}
+.ht-competitive-page .ht-field-ovr{font-size:17px;margin:0}
+.ht-competitive-page .ht-field-position{font-size:6px}
+.ht-competitive-page .ht-field-flag{width:15px;height:10px}
+.ht-competitive-page .ht-field-name{font-size:6px}
+.ht-competitive-page .ht-field-captain{width:15px;height:15px;font-size:9px;right:-4px;top:-6px}}
+.ht-competitive-page .ht-arena-events{display:block;border:1px solid #555a4e;border-radius:10px;padding:12px;margin-top:14px;background:#151b17}
+.ht-competitive-page .ht-arena-events summary{font-size:clamp(15px,2vw,22px);padding:8px}
+.ht-competitive-page .ht-arena-scoreboard{grid-template-columns:minmax(0,1fr) minmax(90px,145px) minmax(0,1fr);min-height:105px;gap:6px;padding:12px}
+.ht-competitive-page .ht-arena-club strong{overflow-wrap:normal;word-break:normal;hyphens:none;font-size:clamp(11px,2.2vw,17px)}
+.ht-competitive-page .ht-arena-club small{font-size:clamp(9px,1.6vw,12px);overflow:hidden;text-overflow:ellipsis}
+.ht-competitive-page .ht-arena-score{font-size:clamp(27px,5vw,44px)}
+.ht-competitive-page .ht-arena-comparison .ht-team-metrics{gap:3px;padding:4px;min-width:0}
+.ht-competitive-page .ht-arena-comparison .ht-team-metrics>span{padding:6px 1px;min-width:0}
+.ht-competitive-page .ht-arena-comparison .ht-team-metrics small{font-size:clamp(8px,1.4vw,10px);letter-spacing:0}
+.ht-competitive-page .ht-arena-comparison .ht-team-metrics strong{font-size:clamp(12px,2.2vw,19px)}
+@media(max-width:650px){.ht-competitive-page .ht-arena-shell{padding:10px;border-radius:12px}
+.ht-competitive-page .ht-arena-kicker{font-size:9px;letter-spacing:.06em;line-height:1.4;flex-wrap:wrap}
+.ht-competitive-page .ht-arena-scoreboard{grid-template-columns:minmax(0,1fr) minmax(85px,100px) minmax(0,1fr);padding:10px 6px;gap:5px;min-height:100px}
+.ht-competitive-page .ht-arena-club strong{font-size:clamp(10px,2.8vw,13px);line-height:1.25}
+.ht-competitive-page .ht-arena-score{font-size:clamp(25px,7vw,34px)}
+.ht-competitive-page .ht-arena-clock{font-size:16px}
+.ht-competitive-page .ht-arena-comparison{gap:6px}
+.ht-competitive-page .ht-arena-comparison .ht-team-metrics{gap:2px;padding:3px;border-radius:7px}
+.ht-competitive-page .ht-arena-comparison .ht-team-metrics>span{gap:3px;padding:5px 1px}
+.ht-competitive-page .ht-arena-comparison .ht-team-metrics small{font-size:8px}
+.ht-competitive-page .ht-arena-comparison .ht-team-metrics strong{font-size:12px}
+.ht-competitive-page .ht-arena-stadium{padding:7px}
+.ht-competitive-page .ht-live-pitch{grid-template-columns:repeat(2,minmax(0,1fr));gap:2%;padding:3% 2%;min-height:150px}
+.ht-competitive-page .ht-live-team{grid-template-columns:repeat(3,minmax(0,1fr));gap:2px}
+.ht-competitive-page .ht-live-player.ht-unified-field{width:100%!important;max-width:100%!important;min-width:0!important}
+.ht-competitive-page .ht-field-card{min-width:0;width:100%;overflow:hidden}
+.ht-competitive-page .ht-field-name{font-size:clamp(6px,1.55vw,9px);overflow-wrap:normal;word-break:normal;line-height:1.15}
+.ht-competitive-page .ht-field-position{font-size:clamp(6px,1.4vw,8px)}}
+.dor-pitch-markings{position:absolute;inset:0;pointer-events:none;z-index:0;color:rgba(241,255,243,.83)}
+.dor-pitch-markings span{position:absolute;display:block;box-sizing:border-box}
+.dor-pitch-center-line{top:0;bottom:0;left:50%;border-left:2px solid currentColor}
+.dor-pitch-center-circle{width:19%;aspect-ratio:1;border:2px solid currentColor;border-radius:50%;left:50%;top:50%;transform:translate(-50%,-50%)}
+.dor-pitch-area{top:20%;height:60%;width:16%;border:2px solid currentColor}
+.dor-pitch-area-left{left:0;border-left:0}
+.dor-pitch-area-right{right:0;border-right:0}
+.dor-pitch-six{top:35%;height:30%;width:6%;border:2px solid currentColor}
+.dor-pitch-six-left{left:0;border-left:0}
+.dor-pitch-six-right{right:0;border-right:0}
+.dor-pitch-goal{top:41%;height:18%;width:3%;border:3px solid #f4fff1;background:repeating-linear-gradient(0deg,transparent 0 7px,#e9ffef5c 8px 9px),repeating-linear-gradient(90deg,transparent 0 7px,#e9ffef5c 8px 9px)}
+.dor-pitch-goal-left{left:-3%;border-right:0}
+.dor-pitch-goal-right{right:-3%;border-left:0}
+.dor-pitch-spot{top:50%;width:6px;height:6px;background:#f3fff0;border-radius:50%;transform:translateY(-50%)}
+.dor-pitch-spot-left{left:11%}
+.dor-pitch-spot-right{right:11%}
+.dor-goal-word{display:flex;align-items:center;justify-content:center;white-space:nowrap;font:1000 clamp(28px,7.4vw,100px)/1 Impact,'Arial Black',sans-serif;letter-spacing:-.045em;color:#fff6d4;filter:drop-shadow(0 6px 1px #3c250e) drop-shadow(0 0 18px #ffb82d)}
+.dor-goal-word span{display:inline-block}
+.dor-goal-word span:nth-child(2){animation-delay:55ms}
+.dor-goal-word span:nth-child(3){animation-delay:110ms}
+.dor-goal-word span:nth-child(4){animation-delay:165ms}
+.dor-goal-word span:nth-child(5){animation-delay:220ms}
+.dor-goal-word span:nth-child(6){animation-delay:275ms}
+.dor-goal-word span:nth-child(7){animation-delay:330ms}
+.dor-goal-word span:nth-child(8){animation-delay:385ms}
+.dor-goal-word span:nth-child(9){animation-delay:440ms}
+.dor-goal-word span,.ht-goal-active .dor-goal-word{animation:none!important}
+.ht-competitive-page #cp-arena{padding:0;background:transparent;border:0;box-shadow:none}
+.ht-competitive-page #cp-arena .ht-arena-shell{max-width:1100px}
+.ht-competitive-page .ht-arena-timeline #cp-time-progress{display:block;height:100%;width:0;background:linear-gradient(90deg,#eee,#e9b735);transition:width .3s linear}
+.ht-competitive-page .ht-arena-comparison{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:16px 0 8px}
+.ht-competitive-page .ht-team-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;padding:12px;border:1px solid #6c6245;border-radius:12px;background:#101b16;min-width:0}
+.ht-competitive-page .ht-team-metrics>span{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:10px 5px;border:1px solid #465a48;border-radius:8px;background:#203329;min-width:0;text-align:center}
+.ht-competitive-page .ht-team-metrics small{font:800 10px/1.25 Arial,sans-serif;letter-spacing:.09em;color:#c6d1be}
+.ht-competitive-page .ht-team-metrics strong{font:900 clamp(16px,2vw,24px)/1.2 Arial,sans-serif;color:#f7d990}
+.ht-competitive-page .ht-arena-comparison .ht-team-metrics{padding:8px;gap:6px}
+.ht-competitive-page .ht-live-pitch{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:center;gap:2%;padding:3% 2%;min-height:150px;aspect-ratio:2048/1171;overflow:visible}
+.ht-competitive-page .ht-live-team{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));justify-items:center;align-items:center;gap:2px;width:100%;min-width:0}
+.ht-competitive-page .ht-live-player.ht-unified-field{position:relative;display:block;width:100%;max-width:96px;aspect-ratio:4/5;min-width:0;padding:0;background:none;border:0;box-shadow:none;overflow:visible}
+.ht-competitive-page .ht-field-card{--paper:#3c2d23;--edge:#b78e6c;--ink:#fff2dc;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:3px;width:100%;height:100%;padding:6px 3px 5px;border:2px solid var(--edge);border-radius:8px 4px 8px 4px;background:var(--paper);color:var(--ink);text-align:center;box-shadow:0 5px 12px #0007}
+.ht-competitive-page .ht-field-card[data-rarity="GOAT"]{--paper:#30243b;--edge:#bd91e6;--ink:#fff}
+.ht-competitive-page .ht-field-card[data-rarity="LENDÁRIO"]{--paper:#4b3b20;--edge:#e2bf70;--ink:#fff0cc}
+.ht-competitive-page .ht-field-card[data-rarity="A HISTÓRIA"]{--paper:#e9dcb8;--edge:#f9ebc4;--ink:#382b1c}
+.ht-competitive-page .ht-field-card[data-rarity="HERÓI BR"]{--paper:#1b4a2e;--edge:#73d69c;--ink:#fff}
+.ht-competitive-page .ht-field-card[data-rarity="GOLDEN BOY"]{--paper:#542b45;--edge:#f3a6d4;--ink:#fff}
+.ht-competitive-page .ht-field-card[data-rarity="ICÔNICO"]{--paper:#3c2e22;--edge:#b88c6a;--ink:#fff}
+.ht-competitive-page .ht-field-rarity{font:800 clamp(5px,.65vw,8px)/1.15 Arial,sans-serif;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ht-competitive-page .ht-field-ovr{font:900 clamp(17px,2.2vw,29px)/1 Arial,sans-serif;margin:3px 0 0;color:var(--ink)}
+.ht-competitive-page .ht-field-position{font:800 clamp(6px,.75vw,9px)/1.1 Arial,sans-serif}
+.ht-competitive-page .ht-field-flag{display:block;width:clamp(16px,2vw,23px);height:clamp(10px,1.35vw,15px);object-fit:cover;margin:1px 0}
+.ht-competitive-page .ht-field-name{font:800 clamp(6px,.8vw,10px)/1.1 Arial,sans-serif;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere;max-width:100%;margin:auto 0 0}
+.ht-competitive-page .ht-field-captain{position:absolute;right:-5px;top:-8px;display:grid;place-items:center;width:19px;height:19px;border:2px solid #16160e;border-radius:50%;background:#f5d57e;color:#1d190d;font:900 11px/1 Arial,sans-serif;z-index:2}
+.ht-competitive-page .ht-goal-overlay{position:absolute;inset:0;z-index:8;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#050505b0;pointer-events:none}
+.ht-competitive-page .ht-goal-overlay[hidden]{display:none!important}
+.ht-competitive-page .dor-goal-word{display:flex;white-space:nowrap;font:1000 clamp(28px,7.4vw,100px)/1 Impact,'Arial Black',sans-serif;letter-spacing:-.045em;color:#fff6d4;filter:drop-shadow(0 6px 1px #3c250e) drop-shadow(0 0 18px #ffb82d)}
+.ht-competitive-page .dor-goal-word span{display:inline-block}
+.ht-competitive-page .ht-goal-active .dor-goal-word span{animation:dor-goal-letter 850ms cubic-bezier(.18,1.5,.35,1) both}
+.ht-competitive-page .ht-goal-active .dor-goal-word{animation:dor-goal-flash 1.2s ease-out both}
+@keyframes dor-goal-letter{0%{opacity:0;transform:translateY(-90px) rotate(-15deg) scale(.2)}65%{opacity:1;transform:translateY(10px) rotate(5deg) scale(1.18)}100%{opacity:1;transform:translateY(0) rotate(0) scale(1)}}
+@keyframes dor-goal-flash{0%{filter:brightness(3)}40%{filter:brightness(1.4)}100%{filter:brightness(1)}}
+@media(max-width:600px){.ht-competitive-page .ht-arena-comparison .ht-team-metrics{gap:3px;padding:4px}.ht-competitive-page .ht-arena-comparison .ht-team-metrics>span{padding:6px 1px}.ht-competitive-page .ht-arena-comparison .ht-team-metrics small{font-size:8px}.ht-competitive-page .ht-arena-comparison .ht-team-metrics strong{font-size:12px}.ht-competitive-page .ht-field-card{padding:3px 1px;gap:2px;border-width:1.5px}.ht-competitive-page .ht-field-rarity{font-size:5px}.ht-competitive-page .ht-field-ovr{font-size:17px}.ht-competitive-page .ht-field-name{font-size:6px}.ht-competitive-page .ht-field-captain{width:15px;height:15px;font-size:9px;right:-4px;top:-6px}}
+
+/* PASSO 1086 — encerramento automático e tela de eliminado */
+.ht-competitive-page .cp-transition-panel,.ht-competitive-page .cp-eliminated-panel{max-width:760px;margin:28px auto;text-align:center;padding:clamp(24px,5vw,52px);}
+.ht-competitive-page .cp-transition-countdown{font:900 clamp(38px,8vw,68px)/1 Arial,sans-serif;color:#f2d58d;margin:18px 0 8px;text-shadow:0 3px 18px #d9a63b55;font-variant-numeric:tabular-nums}
+.ht-competitive-page .cp-transition-note{color:#c8c5b8;line-height:1.6}
+.ht-competitive-page .cp-eliminated-icon{font-size:clamp(48px,9vw,76px);margin:12px 0;filter:drop-shadow(0 5px 16px #0008)}
+.ht-competitive-page .cp-eliminated-panel h2{color:#e8c979;letter-spacing:.04em}
+.ht-competitive-page .cp-eliminated-score{display:inline-block;margin:16px auto;padding:12px 22px;border:1px solid #75623d;border-radius:12px;background:#151b17;color:#f6e4b8;font-weight:900;font-size:clamp(18px,3vw,26px)}
+.ht-competitive-page .cp-eliminated-link{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;margin-top:14px;min-height:46px;padding:12px 24px}
+
+/* PASSO 1090 — cerimônia do campeão competitivo e box oficial */
+.cp-champion-panel{text-align:center;border-color:#c8a45e;background:radial-gradient(circle at top,#40351f 0,#17231b 48%,#0c1410 100%)}
+.cp-champion-panel h2{color:#f5d990;font-size:clamp(27px,4vw,46px)}
+.cp-champion-trophy{display:block;width:min(260px,70%);height:auto;margin:5px auto 15px}
+.cp-champion-prizes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;max-width:720px;margin:25px auto}
+.cp-champion-prizes>div{border:1px solid #b79857;background:#131b15;border-radius:12px;padding:22px 12px;display:flex;align-items:center;flex-direction:column;gap:10px}
+.cp-champion-prizes img{height:50px;width:50px;object-fit:contain}
+.cp-champion-prizes strong{color:#f5d990;font-size:clamp(15px,2vw,21px)}
+.cp-champion-prizes small{color:#c2c8b9}
+.cp-champion-reward{border:1px solid #927a49;border-radius:12px;padding:25px 15px;margin:20px auto;max-width:740px;background:#101914}
+.cp-champion-reward .ht-box-closed{cursor:default}
+.cp-champion-reward #cp-open-champion-box{margin:10px auto}
+.cp-champion-card{display:flex;justify-content:center;margin:20px auto;max-width:260px;animation:cp1090reveal .65s ease-out}
+.cp-champion-card .ht-unified-card{width:100%}
+.cp-champion-exit{display:inline-block;text-decoration:none;margin-top:14px}
+@keyframes cp1090reveal{from{opacity:0;transform:translateY(15px) scale(.93)}to{opacity:1;transform:none}}
+@media(max-width:580px){.cp-champion-prizes{grid-template-columns:1fr}}
+
+/* PASSO 1100 — box clicável e acessível enquanto houver recompensa pendente */
+.ht-competitive-page #cp-champion-box[role="button"]{cursor:pointer;transition:transform .2s,filter .2s}
+.ht-competitive-page #cp-champion-box[role="button"]:hover{transform:translateY(-4px);filter:brightness(1.13)}
+.ht-competitive-page #cp-champion-box[role="button"]:focus-visible{outline:3px solid #f5d990;outline-offset:5px}

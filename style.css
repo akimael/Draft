@@ -708,3 +708,73 @@ body { background-color: #171817 !important; }
 .ht-collection-attributes b{color:inherit}
 /* Arte existente deve aparecer sozinha, sem indicação de espaço reservado */
 .ht-champ-placeholder{display:none!important}
+
+/* Comparativo da Arena offline: aproveita o grid original de química. */
+.ht-game-overlay .ht-offline-match-comparison{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.ht-game-overlay .ht-offline-team-metrics{min-width:0;display:grid;gap:8px;padding:14px;border:1px solid #66583c;background:#22231f;border-radius:9px}
+.ht-game-overlay .ht-offline-metrics-name{font-size:13px;color:#f2dba7;overflow-wrap:anywhere}
+.ht-game-overlay .ht-offline-metric{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 0;border-top:1px solid #ffffff18}
+.ht-game-overlay .ht-offline-metric span{font-size:10px;font-weight:800;letter-spacing:.03em;color:#d6c39b;margin:0}
+.ht-game-overlay .ht-offline-metric b{font-size:17px;color:#f3d187;white-space:nowrap}
+@media(max-width:600px){.ht-game-overlay .ht-offline-match-comparison{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}.ht-game-overlay .ht-offline-team-metrics{padding:9px 6px}.ht-game-overlay .ht-offline-metric span{font-size:8px}.ht-game-overlay .ht-offline-metric b{font-size:14px}}
+
+/* CAMPANHA OFFLINE: componentes nativos, sem sobreposição de cartas online. */
+.ht-game-overlay .ht-field-card .ht-offline-rarity{display:block;font:800 7px/1.2 Arial,sans-serif;letter-spacing:.05em;color:#e4c68b;margin:0 0 4px}
+.ht-game-overlay .ht-field-card .ht-offline-ovr{display:block;font:800 22px/1.1 Arial,sans-serif;color:#ffda8a}
+.ht-game-overlay .ht-field-card .ht-offline-position{display:block;font:700 8px/1.1 Arial,sans-serif;margin:2px 0;color:#e8e2d5}
+.ht-game-overlay .ht-field-card .ht-offline-name{display:block;font:800 10px/1.2 Arial,sans-serif;overflow-wrap:anywhere;color:inherit}
+.ht-game-overlay .ht-field-card .ht-field-flag-emoji{font-size:14px;line-height:1}
+.ht-game-overlay .ht-field-card .ht-captain-mark{background:#e9c779!important;color:#20190c!important}
+.ht-game-overlay .ht-field-card[data-rarity="A HISTÓRIA"] .ht-offline-rarity,.ht-game-overlay .ht-field-card[data-rarity="A HISTÓRIA"] .ht-offline-ovr,.ht-game-overlay .ht-field-card[data-rarity="A HISTÓRIA"] .ht-offline-position{color:#4a351d}
+.ht-game-overlay .ht-form-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;margin:18px 0}
+.ht-game-overlay .ht-form-grid label{display:flex;flex-direction:column;align-items:flex-start;gap:9px;font-size:12px;color:#d8c49a}
+.ht-game-overlay .ht-form-grid select{min-width:180px;max-width:100%;padding:11px 13px;border:1px solid #8c774e;border-radius:6px;background:#111713;color:#f5e9ce}
+.ht-game-overlay .ht-stats-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:18px}
+.ht-game-overlay .ht-stat{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;min-width:0;padding:16px 10px;border:1px solid #62573e;border-radius:8px;background:#20251e;text-align:center}
+.ht-game-overlay .ht-stat strong{display:block;color:#f0cf84;font-size:27px;line-height:1.1}
+.ht-game-overlay .ht-stat span{display:block;color:#c7c8ba;font-size:11px;line-height:1.4}
+.ht-game-overlay .ht-live-commentary .ht-event-list{max-height:none;overflow:visible;overscroll-behavior:auto}
+@media(max-width:600px){.ht-game-overlay .ht-field-card .ht-offline-ovr{font-size:16px}.ht-game-overlay .ht-field-card .ht-offline-name{font-size:8px}.ht-game-overlay .ht-field-card .ht-offline-rarity{font-size:6px}.ht-game-overlay .ht-stats-row{gap:6px}.ht-game-overlay .ht-stat{padding:12px 5px}.ht-game-overlay .ht-stat strong{font-size:21px}.ht-game-overlay .ht-stat span{font-size:9px}}
+
+/* Campanha offline: narração completa, sem caixa de altura fixa. */
+.ht-game-overlay .ht-match-card > .ht-event-list{max-height:none;overflow:visible}
+
+/* PASSO VISUAL: acabamento exclusivo da Arena offline. */
+.ht-game-overlay .ht-live-commentary{
+  border:2px solid #c28a3e;
+  border-radius:4px 4px 10px 10px;
+  padding:15px;
+  box-sizing:border-box;
+}
+.ht-game-overlay .ht-offline-match-comparison .ht-offline-team-metrics{
+  padding:8px 12px;
+  gap:2px;
+  align-content:start;
+}
+.ht-game-overlay .ht-offline-match-comparison .ht-offline-metrics-name{
+  font-size:11px;
+  margin:0 0 2px;
+  line-height:1.25;
+}
+.ht-game-overlay .ht-offline-match-comparison .ht-offline-metric{
+  padding:3px 0;
+  gap:6px;
+}
+.ht-game-overlay .ht-offline-match-comparison .ht-offline-metric span{
+  font-size:9px;
+  line-height:1.2;
+}
+.ht-game-overlay .ht-offline-match-comparison .ht-offline-metric b{
+  font-size:14px;
+  line-height:1.2;
+}
+.ht-game-overlay .ht-stat .ht-ata-def small{
+  font-size:.65em;
+  font-weight:500;
+  color:#d4c29b;
+}
+@media(max-width:600px){
+ .ht-game-overlay .ht-offline-match-comparison .ht-offline-team-metrics{padding:7px 6px;}
+ .ht-game-overlay .ht-offline-match-comparison .ht-offline-metric span{font-size:8px;}
+ .ht-game-overlay .ht-offline-match-comparison .ht-offline-metric b{font-size:12px;}
+}
