@@ -49,15 +49,24 @@
   const api = Object.freeze({
 
     async authenticated() {
-      const { data, error } =
-        await getClient().auth.getUser();
+  const { data, error } =
+    await getClient().auth.getUser();
 
-      if (error) {
-        throw new Error(error.message);
-      }
+  if (error) {
+    const missingSession =
+      error.name === 'AuthSessionMissingError' ||
+      error.code === 'session_not_found' ||
+      /auth session missing/i.test(error.message || '');
 
-      return Boolean(data?.user);
-    },
+    if (missingSession) {
+      return false;
+    }
+
+    throw new Error(error.message);
+  }
+
+  return Boolean(data?.user);
+},
 
     start: () =>
       rpc('ht_start_offline_campaign'),
