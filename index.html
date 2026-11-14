@@ -1,112 +1,99 @@
-<!doctype html>
+<!DOCTYPE html>
+
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#101111">
-  <title>HAT-TRICK d'OR — 3v3</title>
-  <meta name="description" content="Monte seu trio histórico e dispute o torneio 3x3 do HAT-TRICK d'OR.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
-<link rel="stylesheet" href="cartas-unificadas.css">  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="cloud.js" defer></script>
-  <script src="offline-campaign-api.js" defer></script>
-  <script src="main.js" defer></script>
-  <script src="card-view.js" defer></script>
-  <script src="tournament.js" defer></script>
-  <link rel="icon" type="image/png" href="/favicon-hattrickdor.png">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="#101111" name="theme-color"/>
+<title>HAT-TRICK d'OR — 3v3</title>
+<meta content="Monte seu trio histórico e dispute o torneio 3x3 do HAT-TRICK d'OR." name="description"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Playfair+Display:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="style.css" rel="stylesheet"/>
+<link href="cartas-unificadas.css" rel="stylesheet"/> <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script defer="" src="cloud.js"></script>
+<script defer="" src="offline-campaign-api.js"></script>
+<script defer="" src="main.js"></script>
+<script defer="" src="card-view.js"></script>
+<script defer="" src="tournament.js"></script>
+<link href="/favicon-hattrickdor.png" rel="icon" type="image/png"/>
 </head>
 <body>
-  <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
-  <header class="site-header">
-    <a class="brand" href="#inicio" aria-label="HAT-TRICK d'OR início"><span class="brand-name">HAT-TRICK <b>d'OR</b></span></a>
-    <nav class="main-nav" aria-label="Navegação principal">
-      <a class="ht-wallet-nav" href="perfil.html#carteira" aria-label="Saldo de fichas"><img src="ficha-de-jogo.png" alt=""><strong id="ht-wallet-balance">—</strong><span>Fichas</span></a><a href="#inicio">Início</a><a href="#categorias">Cartas</a><a href="#desafio-diario">Desafio Diário</a><a href="perfil.html">Perfil</a><a href="#como-jogar">Como jogar</a><a href="online.html">Online</a>
-    </nav>
-  </header>
-
-  <main>
-    <section class="hero section-wrap" id="inicio">
-      <div class="hero-copy">
-        <h1>HAT-TRICK<br><span>d'OR</span></h1>
-        <p class="hero-slogan">Jogue um mata-mata contra a CPU, colecione e desafie os seus amigos.<br> Pense no seu capitão, trio ideal e consiga a maior química e equilibrio possível.<br><strong>QUEM VENCE O 3X3?</strong></p>
-        <div class="hero-actions">
-  <button class="button button-gold" data-mode="campaign">
+<div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
+<header class="site-header">
+<a aria-label="HAT-TRICK d'OR início" class="brand" href="#inicio"><span class="brand-name">HAT-TRICK <b>d'OR</b></span></a>
+<nav aria-label="Navegação principal" class="main-nav">
+<a aria-label="Saldo de fichas" class="ht-wallet-nav" href="perfil.html#carteira"><img alt="" src="ficha-de-jogo.png"/><strong id="ht-wallet-balance">—</strong><span>Fichas</span></a><a href="#inicio">Início</a><a href="perfil.html">Perfil</a><a href="#como-jogar">Como jogar</a><a href="online.html">Online</a>
+</nav>
+</header>
+<main>
+<section class="hero section-wrap" id="inicio">
+<div class="hero-copy">
+<h1>HAT-TRICK<br/><span>d'OR</span></h1>
+<p class="hero-slogan">Dispute partidas 3v3 nos modos offline e online! Avance no campeonato offline para conquistar novas cartas e fichas de jogo ou encare torneios competitivos em busca de premiações ainda melhores.<br/><br/>Escolha seu capitão, monte o trio ideal e encontre a combinação perfeita entre química e equilíbrio para alcançar a vitória!<br/><strong>QUEM VENCE O 3V3?</strong></p>
+<div class="hero-actions">
+<button class="button button-gold" data-mode="campaign">
     JOGAR <span>→</span>
-  </button>
-
-  <button class="button button-ghost" data-mode="online">
+</button>
+<button class="button button-ghost" data-mode="online">
    MODO ONLINE <span>→</span>
-  </button>
-
-  <button class="button button-daily" data-mode="daily">DESAFIO DIÁRIO <span>✦</span></button>
-
-  <a href="perfil.html" class="button button-collection">MEU PERFIL <span>→</span></a>
+</button>
+<button class="button button-daily" data-mode="daily">DESAFIO DIÁRIO <span>✦</span></button>
+<a class="button button-collection" href="perfil.html">MEU PERFIL <span>→</span></a>
 </div>
-      </div>
-      <div class="hero-art" aria-label="Cartas colecionáveis do jogo">
-        <div class="orbit orbit-a"></div><div class="orbit orbit-b"></div>
-        <div class="hero-card card-goat tilt-left"><div class="card-top"><span>GOAT</span><span>✦</span></div><div class="card-rating">103</div><div class="card-silhouette">✦</div><div class="card-player">RONALDO</div><div class="card-position">ATACANTE · 🇧🇷</div><div class="mini-stats"><span>FIN <b>—</b></span><span>DRB <b>—</b></span><span>PAS <b>—</b></span><span>DEF <b>—</b></span></div></div>
-        <div class="hero-card card-legendary tilt-center"><div class="card-top"><span>LENDÁRIO</span><span>✦</span></div><div class="card-rating">98</div><div class="card-silhouette">♜</div><div class="card-player">RONALDINHO</div><div class="card-position">MEIA · 🇧🇷</div><div class="mini-stats"><span>FIN <b>—</b></span><span>DRB <b>—</b></span><span>PAS <b>—</b></span><span>DEF <b>—</b></span></div></div>
-        <div class="hero-card card-history tilt-right"><div class="card-top"><span>A HISTÓRIA</span><span>✧</span></div><div class="card-rating">105</div><div class="card-silhouette">♔</div><div class="card-player">PELÉ</div><div class="card-position">ATACANTE · 🇧🇷</div><div class="mini-stats"><span>FIN <b>—</b></span><span>DRB <b>—</b></span><span>PAS <b>—</b></span><span>DEF <b>—</b></span></div></div>
-      </div>
-      <div class="hero-bottom"><span>01 / 04</span><span class="hero-bottom-line"></span></div>
-    </section>
+</div>
+<div aria-label="Cartas colecionáveis do jogo" class="hero-art">
+<div class="orbit orbit-a"></div><div class="orbit orbit-b"></div>
+<div class="hero-card card-goat tilt-left"><div class="card-top"><span>GOAT</span><span>✦</span></div><div class="card-rating">103</div><div class="card-silhouette">✦</div><div class="card-player">RONALDO</div><div class="card-position">ATACANTE · 🇧🇷</div><div class="mini-stats"><span>FIN <b>—</b></span><span>DRB <b>—</b></span><span>PAS <b>—</b></span><span>DEF <b>—</b></span></div></div>
+<div class="hero-card card-legendary tilt-center"><div class="card-top"><span>LENDÁRIO</span><span>✦</span></div><div class="card-rating">98</div><div class="card-silhouette">♜</div><div class="card-player">RONALDINHO</div><div class="card-position">MEIA · 🇧🇷</div><div class="mini-stats"><span>FIN <b>—</b></span><span>DRB <b>—</b></span><span>PAS <b>—</b></span><span>DEF <b>—</b></span></div></div>
+<div class="hero-card card-history tilt-right"><div class="card-top"><span>A HISTÓRIA</span><span>✧</span></div><div class="card-rating">105</div><div class="card-silhouette">♔</div><div class="card-player">PELÉ</div><div class="card-position">ATACANTE · 🇧🇷</div><div class="mini-stats"><span>FIN <b>—</b></span><span>DRB <b>—</b></span><span>PAS <b>—</b></span><span>DEF <b>—</b></span></div></div>
+</div>
+<div class="hero-bottom"><span>01 / 04</span><span class="hero-bottom-line"></span></div>
+</section>
+<section class="section-wrap categories-section" id="categorias">
+<div class="section-heading"><div><div class="eyebrow left"></div><h2>Seis classes.<br/><em>Conheça.</em></h2></div><p>Cada carta surgiu a partir de uma pré-definição, ter concorrido ao Melhor do Mundo, ou, conquistado. Assim foram feitas as separações. <br/>Menção honrosa para o futebol Brasileiro, Golden boy e os Maiores jogadores da História.</p></div><p class="ht-captain-explainer">O bônus depende da raridade da carta escolhida como capitão. Ele é somado à química-base do trio, até o limite de 100%.</p>
+<div class="category-grid">
+<article class="category-card category-golden-boy"><div class="cat-number">01</div><div class="cat-card-art"><span class="cat-rating">91</span><span class="cat-silhouette">★</span><span class="cat-name">GOLDEN BOY</span></div><div class="cat-footer"><div><h3>Golden Boy</h3><p>Vencedores do prêmio de 2003 a 2025</p></div><span class="rarity-pill">ROSA</span></div><div class="cat-max">GERAL MÁXIMO<b>91</b></div><div aria-label="Bônus de capitão: mais 10 pontos de química" class="cat-captain-bonus">★ CAPITÃO <strong>+10</strong> pontos de química</div></article>
+<article class="category-card category-iconic"><div class="cat-number">02</div><div class="cat-card-art"><span class="cat-rating">94</span><span class="cat-silhouette">✦</span><span class="cat-name">ÍCONES</span></div><div class="cat-footer"><div><h3>Icônicos</h3><p>Vice-campeões da Bola de Ouro</p></div><span class="rarity-pill">BRONZE</span></div><div class="cat-max">GERAL MÁXIMO <b>94</b></div><div aria-label="Bônus de capitão: mais 20 pontos de química" class="cat-captain-bonus">★ CAPITÃO <strong>+20</strong> pontos de química</div></article>
+<article class="category-card category-hero-br"><div class="cat-number">03</div><div class="cat-card-art"><span class="cat-rating">96</span><span class="cat-silhouette">⚽</span><span class="cat-name">HERÓI BR</span></div><div class="cat-footer"><div><h3>Herói BR</h3><p>Ídolos dos clubes brasileiros</p></div><span class="rarity-pill">VERDE</span></div><div class="cat-max">GERAL MÁXIMO <b>98</b></div><div aria-label="Bônus de capitão: mais 30 pontos de química" class="cat-captain-bonus">★ CAPITÃO <strong>+30</strong> pontos de química</div></article>
+<article class="category-card category-legendary"><div class="cat-number">04</div><div class="cat-card-art"><span class="cat-rating">98</span><span class="cat-silhouette">♜</span><span class="cat-name">LENDAS</span></div><div class="cat-footer"><div><h3>Lendários</h3><p>Vencedores da Bola de Ouro</p></div><span class="rarity-pill">OURO</span></div><div class="cat-max">GERAL MÁXIMO <b>98</b></div><div aria-label="Bônus de capitão: mais 15 pontos de química" class="cat-captain-bonus">★ CAPITÃO <strong>+15</strong> pontos de química</div></article>
+<article class="category-card category-goat"><div class="cat-number">05</div><div class="cat-card-art"><span class="cat-rating">103</span><span class="cat-silhouette">♛</span><span class="cat-name">GOAT</span></div><div class="cat-footer"><div><h3>GOAT</h3><p>Versões a partir da 2ª conquista</p></div><span class="rarity-pill">ROXO</span></div><div class="cat-max">GERAL MÁXIMO <b>105</b></div><div aria-label="Bônus de capitão: mais 10 pontos de química" class="cat-captain-bonus">★ CAPITÃO <strong>+10</strong> pontos de química</div></article>
+<article class="category-card category-history"><div class="cat-number">06</div><div class="cat-card-art"><span class="cat-rating">105</span><span class="cat-silhouette">♔</span><span class="cat-name">A HISTÓRIA</span></div><div class="cat-footer"><div><h3>A História</h3><p>São a história do Futebol</p></div><span class="rarity-pill">ETÉREO</span></div><div class="cat-max">GERAL MÁXIMO <b>105</b></div><div aria-label="Bônus de capitão: mais 5 pontos de química" class="cat-captain-bonus">★ CAPITÃO <strong>+5</strong> pontos de química</div></article>
+</div>
+</section>
+<section class="section-wrap ht-online-promo ht-online-promo-refined" id="modos-online">
+<h2>MODO <em>ONLINE</em>.</h2>
+<p>Prepare seu trio para desafiar amigos ou disputar campeonatos. Conheça os formatos X1 casual, torneio casual com até 16 equipes e torneio competitivo com fichas e premiações.</p>
+<div class="ht-online-promo-grid"><article><b>X1 CASUAL</b><span>Convide alguém por código ou link privado.</span></article><article><b>TORNEIO CASUAL</b><span>Monte uma chave de até 16 equipes, com CPU nas vagas restantes.</span></article><article><b>COMPETITIVO</b><span>Dispute com 16 jogadores. Inscrição: 1.000 fichas e no mínimo 3 cartas na coleção. O campeão recebe 3.000 fichas e uma box especial.</span></article></div>
+<a class="button button-gold" href="online.html">CONHECER O ONLINE →</a>
 
-    
-
-    <section class="section-wrap categories-section" id="categorias">
-      <div class="section-heading"><div><div class="eyebrow left"></div><h2>Seis classes.<br><em>Conheça.</em></h2></div><p>Cada carta surgiu a partir de uma pré-definição, ter concorrido ao Melhor do Mundo, ou, conquistado. Assim foram feitas as separações. <br>Menção honrosa para o futebol Brasileiro, Golden boy e os Maiores jogadores da História.</p></div>
-      <div class="category-grid">
-        <article class="category-card category-golden-boy"><div class="cat-number">01</div><div class="cat-card-art"><span class="cat-rating">91</span><span class="cat-silhouette">★</span><span class="cat-name">GOLDEN BOY</span></div><div class="cat-footer"><div><h3>Golden Boy</h3><p>Vencedores do prêmio de 2003 a 2025</p></div><span class="rarity-pill">ROSA</span></div><div class="cat-max">GERAL MÁXIMO<b>91</b></div></article>
-        <article class="category-card category-iconic"><div class="cat-number">02</div><div class="cat-card-art"><span class="cat-rating">94</span><span class="cat-silhouette">✦</span><span class="cat-name">ÍCONES</span></div><div class="cat-footer"><div><h3>Icônicos</h3><p>Vice-campeões da Bola de Ouro</p></div><span class="rarity-pill">BRONZE</span></div><div class="cat-max">GERAL MÁXIMO <b>94</b></div></article>
-        <article class="category-card category-hero-br"><div class="cat-number">03</div><div class="cat-card-art"><span class="cat-rating">96</span><span class="cat-silhouette">⚽</span><span class="cat-name">HERÓI BR</span></div><div class="cat-footer"><div><h3>Herói BR</h3><p>Ídolos dos clubes brasileiros</p></div><span class="rarity-pill">VERDE</span></div><div class="cat-max">GERAL MÁXIMO <b>98</b></div></article>
-        <article class="category-card category-legendary"><div class="cat-number">04</div><div class="cat-card-art"><span class="cat-rating">98</span><span class="cat-silhouette">♜</span><span class="cat-name">LENDAS</span></div><div class="cat-footer"><div><h3>Lendários</h3><p>Vencedores da Bola de Ouro</p></div><span class="rarity-pill">OURO</span></div><div class="cat-max">GERAL MÁXIMO <b>98</b></div></article>
-        <article class="category-card category-goat"><div class="cat-number">05</div><div class="cat-card-art"><span class="cat-rating">103</span><span class="cat-silhouette">♛</span><span class="cat-name">GOAT</span></div><div class="cat-footer"><div><h3>GOAT</h3><p>Versões a partir da 2ª conquista</p></div><span class="rarity-pill">ROXO</span></div><div class="cat-max">GERAL MÁXIMO <b>105</b></div></article>
-        <article class="category-card category-history"><div class="cat-number">06</div><div class="cat-card-art"><span class="cat-rating">105</span><span class="cat-silhouette">♔</span><span class="cat-name">A HISTÓRIA</span></div><div class="cat-footer"><div><h3>A História</h3><p>São a história do Futebol</p></div><span class="rarity-pill">ETÉREO</span></div><div class="cat-max">GERAL MÁXIMO <b>105</b></div></article>
-      </div>
-    </section>
-
-    
-
-    <section class="section-wrap ht-online-promo" id="modos-online">
-      <div class="eyebrow left">NOVAS EXPERIÊNCIAS</div><h2>MODO <em>ONLINE</em>.</h2>
-      <p>Prepare seu trio para desafiar amigos ou disputar campeonatos. Conheça os formatos X1 casual, torneio casual com até 16 equipes e torneio competitivo com fichas e premiações.</p>
-      <div class="ht-online-promo-grid"><article><b>X1 CASUAL</b><span>Convide alguém por código ou link privado.</span></article><article><b>TORNEIO CASUAL</b><span>Monte uma chave de até 16 equipes, com CPU nas vagas restantes.</span></article><article><b>COMPETITIVO</b><span>Fila de jogadores, entrada de fichas e premiação ao campeão.</span></article></div>
-      <a class="button button-gold" href="online.html">CONHECER O ONLINE →</a>
-      <p class="ht-online-note">O X1 está disponível para testes; os torneios estão em desenvolvimento e validação.</p>
-    </section>
-
-    <section class="daily-section section-wrap" id="desafio-diario">
-      <div class="daily-card daily-challenge-promo">
-        <div class="daily-emblem">✦</div>
-        <div class="daily-copy"><div class="eyebrow left"><span class="eyebrow-line"></span>UM DESAFIO TODOS OS DIAS</div><h2>DESAFIO DIÁRIO.</h2><p>Monte seu trio e enfrente o trio histórico para ganhar premiações.</p></div>
-        <button class="button button-gold" data-mode="daily">JOGAR DESAFIO <span>→</span></button>
-      </div>
-    </section>
-
-
-    <section class="how-section" id="como-jogar"><div class="section-wrap how-inner"><div class="how-heading"><div class="eyebrow left"><span class="eyebrow-line"></span> SIMPLES DE ENTENDER</div><h2>Entenda as regras.</h2><p>Monte um trio com os melhores jogadores do mundo, atente-se nas quimicas e no equilibrio do time. Após a segunda pick, haverá um Quiz do futebol geral, caso acerte a pergunta, aumentará as chances de virem jogadores da classe Lendário pra cima.</div><div class="steps"><article class="step"><span>01</span><div><h3>Estratégia</h3><p>Monte seu trio pensando na química entre os países ou continentes. Um time com maior química tem maiores chances de vencer. Cuidado com as posições do campo.</p></div><b>✦</b></article><article class="step"><span>02</span><div><h3>Defina seu capitão</h3><p>Escolha quem vai liderar a equipe e aumentar a química do seu trio.</p></div><b>♜</b></article><article class="step"><span>03</span><div><h3>Supere o mata-mata</h3><p>Oitavas, quartas, semifinal e final. Vença e resgate recompensas.</p></div><b>♛</b></article></div></div></section>
-    <section class="final-cta section-wrap"><div class="cta-emblem">✦</div><div><h2>Grandes jogadores.<br><em>Um confronto 3v3.</em></h2></div></section>
-    <section class="support-promo section-wrap" aria-labelledby="support-title">
-      <div class="support-promo-copy"><div class="eyebrow left"><span class="eyebrow-line"></span> PROJETO INDEPENDENTE</div><h2 id="support-title">Curte o jogo?<br><em>Apoie o criador.</em></h2><p>Ajude a manter o HAT-TRICK d'OR em evolução. Todo apoio é voluntário e ajuda no desenvolvimento do projeto.</p></div>
-      <a class="button button-gold" href="apoie.html">SAIBA COMO APOIAR <span>→</span></a>
-    </section>
-  </main>
-  <footer class="site-footer site-footer-rich">
-  <a class="brand" href="index.html"><span class="brand-name">HAT-TRICK <b>d'OR</b></span></a>
-  <p>Divirta-se com os melhores jogadores.</p>
-  <nav class="footer-links" aria-label="Links institucionais">
-    <a href="como-jogar.html">Como jogar</a><a href="online.html">Online</a><a href="sobre.html">Sobre</a><a href="termos.html">Termos</a><a href="privacidade.html">Privacidade</a><a href="contato.html">Contato</a><a href="apoie.html">Apoie o criador</a>
-  </nav>
-  <span>HAT-TRICK d'OR • 2026</span>
+</section>
+<section class="daily-section section-wrap" id="desafio-diario">
+<div class="daily-card daily-challenge-promo">
+<div class="daily-emblem">✦</div>
+<div class="daily-copy"><div class="eyebrow left"><span class="eyebrow-line"></span>UM DESAFIO TODOS OS DIAS</div><h2>DESAFIO DIÁRIO.</h2><p>Monte seu trio e enfrente o trio histórico para ganhar premiações.</p></div>
+<button class="button button-gold" data-mode="daily">JOGAR DESAFIO <span>→</span></button>
+</div>
+</section>
+<section class="how-section" id="como-jogar"><div class="section-wrap how-inner"><div class="how-heading"><div class="eyebrow left"><span class="eyebrow-line"></span> SIMPLES DE ENTENDER</div><h2>Entenda as regras.</h2><p>Monte um trio com os melhores jogadores do mundo, atente-se nas quimicas e no equilíbrio do time. Após a segunda pick, haverá um Quiz do futebol geral, caso acerte a pergunta, aumentará as chances de virem jogadores da classe Lendário pra cima.</p></div><div class="steps"><article class="step"><span>01</span><div><h3>Estratégia</h3><p>Monte seu trio pensando na química entre os países ou continentes. Um time com maior química tem maiores chances de vencer. Cuidado com as posições do campo.</p></div><b>✦</b></article><article class="step"><span>02</span><div><h3>Defina seu capitão</h3><p>Escolha quem vai liderar a equipe e aumentar a química do seu trio.</p></div><b>♜</b></article><article class="step"><span>03</span><div><h3>Supere o mata-mata</h3><p>Oitavas, quartas, semifinal e final. Vença e resgate recompensas.</p></div><b>♛</b></article></div></div></section>
+<section class="final-cta section-wrap"><div class="cta-emblem">✦</div><div><h2>Grandes jogadores.<br/><em>Um confronto 3v3.</em></h2></div></section>
+<section aria-labelledby="support-title" class="support-promo section-wrap">
+<div class="support-promo-copy"><div class="eyebrow left"><span class="eyebrow-line"></span> PROJETO INDEPENDENTE</div><h2 id="support-title">Curte o jogo?<br/><em>Apoie o criador.</em></h2><p>Ajude a manter o HAT-TRICK d'OR em evolução. Todo apoio é voluntário e ajuda no desenvolvimento do projeto.</p></div>
+<a class="button button-gold" href="apoie.html">SAIBA COMO APOIAR <span>→</span></a>
+</section>
+</main>
+<footer class="site-footer site-footer-rich">
+<a class="brand" href="index.html"><span class="brand-name">HAT-TRICK <b>d'OR</b></span></a>
+<p>Divirta-se com os melhores jogadores.</p>
+<nav aria-label="Links institucionais" class="footer-links">
+<a href="como-jogar.html">Como jogar</a><a href="online.html">Online</a><a href="sobre.html">Sobre</a><a href="termos.html">Termos</a><a href="privacidade.html">Privacidade</a><a href="contato.html">Contato</a><a href="apoie.html">Apoie o criador</a>
+</nav>
+<span>HAT-TRICK d'OR • 2026</span>
 </footer>
-
-  <dialog class="game-modal" id="game-modal">
-    <button class="modal-close" id="modal-close" aria-label="Fechar">×</button><div class="modal-eyebrow" id="modal-eyebrow">HAT-TRICK d'OR</div><h2 id="modal-title">Em breve</h2><p id="modal-description"></p><button class="button button-gold modal-confirm" id="modal-confirm">Entendi <span>→</span></button>
-  </dialog>
-  <div id="ht-game-root" aria-live="polite"></div>
+<dialog class="game-modal" id="game-modal">
+<button aria-label="Fechar" class="modal-close" id="modal-close">×</button><div class="modal-eyebrow" id="modal-eyebrow">HAT-TRICK d'OR</div><h2 id="modal-title">Em breve</h2><p id="modal-description"></p><button class="button button-gold modal-confirm" id="modal-confirm">Entendi <span>→</span></button>
+</dialog>
+<div aria-live="polite" id="ht-game-root"></div>
 </body>
 </html>
