@@ -137,8 +137,11 @@ const names = [
   }
   function createDailyChallenge(detail){
     const user={name:detail.clubName||"Meu Trio",players:detail.players.map(enrichPlayer),captainId:detail.captainId,isUser:true,tactic:"balanced"};
-    const legends=pool.filter(p=>p.rarity==="LENDÁRIO"||p.rarity==="GOAT"||p.rarity==="A HISTÓRIA");
-    const opponent={name:"Trio Histórico",players:shuffle(legends.length>=3?legends:pool).slice(0,3).map(enrichPlayer),captainId:null,isUser:false,tactic:"balanced"};
+    // DESAFIO DIÁRIO: adversários fixos, sem alterar os demais torneios.
+    const historicIds=["pele","beckenbauer","yashin"];
+    const historicPlayers=historicIds.map(id=>pool.find(p=>String(p.id||"").split("-")[0].toLowerCase()===id));
+    if(historicPlayers.some(p=>!p))throw new Error("Trio histórico indisponível no catálogo.");
+    const opponent={name:"Trio Histórico",players:historicPlayers.map(enrichPlayer),captainId:null,isUser:false,tactic:"balanced"};
     opponent.captainId=opponent.players[0]?.id;
     const match={a:user,b:opponent,winner:null,ga:0,gb:0,events:[]};
     tournament={teams:[user,opponent],round:3,user,scorers:{},history:[],finished:false,matches:[match],userMatch:match,matchStarted:false,minute:0,goals:[],penaltyRound:0,usedUserShooters:[],usedCpuShooters:[],dailyChallenge:true};
@@ -177,6 +180,16 @@ function renderField(a, b) {
     }
     panel.innerHTML=`<div class="ht-kicker">${tournament.dailyChallenge?"DESAFIO DIÁRIO":roundNames[tournament.round]}</div><h1 class="ht-title">Prepare seu trio.</h1><p class="ht-description">Você enfrentará ${opp.name}. A força do time considera os atributos dos jogadores, a química e a tática. Escolha sua estratégia para começar.</p>${renderField(user,opp)}<div class="ht-panel"><h3>Estratégia</h3><div class="ht-form-grid"><label>Tática do trio<select id="ht-tactic"><option value="balanced">Equilibrada</option><option value="attack">Ofensiva</option><option value="defense">Defensiva</option><option value="press">Pressão alta</option></select></label></div><div class="ht-stats-row"><div class="ht-stat"><strong>${Math.round(average(user))}</strong><span>Média geral</span></div><div class="ht-stat"><strong>${chemistry(user)}%</strong><span>Química final</span></div><div class="ht-stat"><strong class="ht-ata-def">${Math.round(teamProfile(user).attack)} <small>/</small> ${Math.round(teamProfile(user).defense)}</strong><span>ATA/DEF</span></div></div></div><div class="ht-action-row"><button class="ht-btn" id="ht-start-match">Iniciar partida →</button></div>`;
     $("#ht-start-match",panel).addEventListener("click",()=>{
+      if(tournament?.dailyChallenge){
+        const d=new Date();
+        const today=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+        if(localStorage.getItem("ht-daily-challenge-played")===today){
+          alert("Você já iniciou o Desafio Diário hoje. Volte amanhã!");return;
+        }
+        try{localStorage.setItem("ht-daily-challenge-played",today);}catch(e){
+          alert("Não foi possível registrar sua tentativa diária.");return;
+        }
+      }
       if(tournament?.officialCampaign){
         startOfficialMatch(panel);
         return;
@@ -344,7 +357,7 @@ const meanB=Math.max(.12,1.35+(profileB.attack-profileA.defense)*.018+(average(m
 
         const goldenInfo=card.rarity==="GOLDEN BOY"?`<div class="ht-golden-reward-info">${card.nationality} · ${card.continent}<br>FIN ${card.attributes.finalizacao} · DRB ${card.attributes.drible} · PAS ${card.attributes.passe} · DEF ${card.attributes.defesa}</div>`:"";
 
-        $("#ht-reward-result",panel).innerHTML=`<div class="ht-reward-card" data-rarity="${card.rarity}">${clubBadge(card)}<div class="ht-reward-rating">${card.overall}</div><div class="ht-reward-year">${card.rarity==="GOLDEN BOY"?`idade:${card.awardAge} · premio:${card.awardYear}`:card.year}</div><h3>${card.name}</h3><p>${card.rarity}</p>${goldenInfo}<small>${existing?"DUPLICATA! CÓPIAS ATUALIZADAS NA COLEÇÃO":"NOVA CARTA ADICIONADA À COLEÇÃO"}</small></div><p class="ht-small-note">Sua coleção foi salva neste navegador. Acesse a aba “Coleção” na página inicial para ver suas cartas.</p>`;
+        $("#ht-reward-result",panel).innerHTML=`<div class="ht-reward-card" data-rarity="${card.rarity}">${tournament.dailyChallenge ? "" : clubBadge(card)}<div class="ht-reward-rating">${card.overall}</div><div class="ht-reward-year">${card.rarity==="GOLDEN BOY"?`idade:${card.awardAge} · premio:${card.awardYear}`:card.year}</div><h3>${card.name}</h3><p>${card.rarity}</p>${goldenInfo}<small>${existing?"DUPLICATA! CÓPIAS ATUALIZADAS NA COLEÇÃO":"NOVA CARTA ADICIONADA À COLEÇÃO"}</small></div><p class="ht-small-note">Sua coleção foi salva neste navegador. Acesse a aba “Coleção” na página inicial para ver suas cartas.</p>`;
 
         window.dispatchEvent(new CustomEvent("ht:collection-updated"));
       });
